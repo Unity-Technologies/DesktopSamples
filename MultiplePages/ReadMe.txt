@@ -1,7 +1,7 @@
 Windows Store App example showing how to navigate between a regular XAML page and XAML page with Unity inside
 
 QuickStart
-* Open project with 5.0
+* Open project with Unity 5.3 or higher
 * Build to Windows Store Apps (SDK 8.1) on top of Export folder
 * Open the generated solution
 * Right click on the solution in the solution explorer, add existing item. Add Global.cs, StartPage.xaml, StartPage.xaml.cs
