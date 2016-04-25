@@ -4,7 +4,7 @@ Compatible with 5.3 or higher
 
 
 
-# What license is Windows Store Apps samples shipped under?
+# What license is Windows Store samples shipped under?
 
 This is released under the [MIT/X11 license](LICENSE).
 
