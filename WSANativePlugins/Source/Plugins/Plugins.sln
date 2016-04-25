@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows 8
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DesktopPlugins", "DesktopPlugins\DesktopPlugins.vcxproj", "{CAB529A5-96F2-4539-9E06-315F66BCDE96}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WSAPlugins", "WSAPlugins\WSAPlugins.vcxproj", "{709C79BB-2BC4-4B06-AC95-F07446953863}"
@@ -26,8 +28,8 @@ Global
 		{CAB529A5-96F2-4539-9E06-315F66BCDE96}.Release|x64.Build.0 = Release|x64
 		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|ARM.ActiveCfg = Debug|ARM
 		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|ARM.Build.0 = Debug|ARM
-		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|Win32.ActiveCfg = Release|Win32
-		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|Win32.Build.0 = Release|Win32
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|Win32.ActiveCfg = Debug|Win32
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|Win32.Build.0 = Debug|Win32
 		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|x64.ActiveCfg = Debug|Win32
 		{709C79BB-2BC4-4B06-AC95-F07446953863}.Release|ARM.ActiveCfg = Release|ARM
 		{709C79BB-2BC4-4B06-AC95-F07446953863}.Release|ARM.Build.0 = Release|ARM
