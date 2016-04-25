@@ -14,7 +14,7 @@
     <Resource Language="x-generate" />
   </Resources>
   <Applications>
-    <Application Id="App" Executable="Template.exe" EntryPoint="XAMLUnityConnection.App">
+    <Application Id="App" Executable="XAMLUnityConnection.exe" EntryPoint="XAMLUnityConnection.App">
       <VisualElements DisplayName="XAMLUnityConnection" Logo="Assets\SquareTile.png" SmallLogo="Assets\SmallTile.png" Description="XAMLUnityConnection" ForegroundText="light" BackgroundColor="#000000">
         <DefaultTile ShortName="XAMLUnityConn" />
         <SplashScreen Image="Assets\SplashScreen.png" />

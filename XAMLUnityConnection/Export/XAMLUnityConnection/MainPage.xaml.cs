@@ -16,10 +16,11 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using UnityPlayer;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace Template
+namespace XAMLUnityConnection
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -99,14 +100,14 @@ namespace Template
             {}
         }
 
-        public SwapChainBackgroundPanel GetSwapChainBackgroundPanel()
+        public SwapChainPanel GetSwapChainPanel()
 		{
-            return DXSwapChainBackgroundPanel;
+            return DXSwapChainPanel;
 		}
 
         public void RemoveSplashScreen()
         {
-            DXSwapChainBackgroundPanel.Children.Remove(ExtendedSplashGrid);
+			DXSwapChainPanel.Children.Remove(ExtendedSplashGrid);
             if (onResizeHandler != null)
             {
                 Window.Current.SizeChanged -= onResizeHandler;
@@ -116,7 +117,10 @@ namespace Template
 
 		private void OnInitialized()
 		{
-			Communications.SetEvent(UnityToXAML);
+			AppCallbacks.Instance.InvokeOnAppThread(() =>
+			{
+				Communications.SetEvent(UnityToXAML);
+			}, false);
 		}
 		public void UnityToXAML(object arg)
 		{

@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 using UnityPlayer;
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=234227
 
-namespace Template
+namespace XAMLUnityConnection
 {
 	/// <summary>
 	/// Provides application-specific behavior to supplement the default Application class.
@@ -34,7 +34,7 @@ namespace Template
 		public App()
 		{
 			this.InitializeComponent();
-			appCallbacks = new AppCallbacks(false);
+			appCallbacks = new AppCallbacks();
             appCallbacks.Initialized += RemoveSplashScreen;
 		}
 
@@ -61,7 +61,7 @@ namespace Template
 				_bridge = new WinRTBridge.WinRTBridge();
 				appCallbacks.SetBridge(_bridge);
 
-                appCallbacks.SetSwapChainBackgroundPanel(mainPage.GetSwapChainBackgroundPanel());
+                appCallbacks.SetSwapChainPanel(mainPage.GetSwapChainPanel());
 
 
 				appCallbacks.SetCoreWindowEvents(Window.Current.CoreWindow);

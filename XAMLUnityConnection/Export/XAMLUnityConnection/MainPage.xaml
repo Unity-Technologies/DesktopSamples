@@ -1,14 +1,14 @@
 ﻿<Page
-    x:Class="Template.MainPage"
+    x:Class="XAMLUnityConnection.MainPage"
     IsTabStop="false"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Template"
+    xmlns:local="using:XAMLUnityConnection"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <SwapChainBackgroundPanel x:Name="DXSwapChainBackgroundPanel">
+    <SwapChainPanel x:Name="DXSwapChainPanel">
         <Grid x:Name="ExtendedSplashGrid">
             <Image x:Name="ExtendedSplashImage" Source="Assets/SplashScreen.png"/>
         </Grid>
@@ -19,5 +19,5 @@
         <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="435,369,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" IsReadOnly="True"/>
         <TextBox HorizontalAlignment="Left" Margin="67,10,0,0" TextWrapping="Wrap" Text="Communications from XAML to Unity" VerticalAlignment="Top" Height="47" Width="291" IsReadOnly="True"/>
 
-    </SwapChainBackgroundPanel>
+    </SwapChainPanel>
 </Page>
