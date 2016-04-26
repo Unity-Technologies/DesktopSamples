@@ -5,8 +5,15 @@ Compatible with 5.3 or higher
 # List
 
 * Association Launch
-
-   Shows how to launch your application via file type association or protocol. By using this technique you can launch other Windows Store or desktop applications from yours.
+    * Shows how to launch your application via file type association or protocol. By using this technique you can launch other Windows Store or desktop applications from yours.
+* Live Tiles
+    * ToDo
+* Multiple Pages
+    * Shows how to navigate between XAML pages, where one page contains Unity layout and the other one contains simple XAML elements.
+* Native Plugins
+    * Shows basic usage of native plugins which are accessed from C# using Platform Invoke.
+* XAML Unity Connection
+    * Shows how to communicate between your Unity game and host XAML application. The sample uses InvokeOnAppThread and InvokeOnUIThread functions to transfer data between your application thread and UI thread.
 
 # What license is Windows Store samples shipped under?
 
