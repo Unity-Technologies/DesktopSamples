@@ -5,7 +5,9 @@ Compatible with 5.3 or higher
 # List
 
 * Association Launch
-  Shows how to launch your application via file type association or protocol. By using this technique you can launch other Windows Store or desktop applications from yours.
+```
+Shows how to launch your application via file type association or protocol. By using this technique you can launch other Windows Store or desktop applications from yours.
+```
 
 # What license is Windows Store samples shipped under?
 
