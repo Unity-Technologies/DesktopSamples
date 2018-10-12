@@ -1,0 +1,3 @@
+This project demonstrates how to use IL2CPP scripting backend when you want final UWP application to use a C# project.
+
+The generated Visual Studio project can be found in bin\ folder. It was built from Unity 2018.2.7f1. To be able to build it on your machine, you will have to point UnityCommon.props to your Unity installation on your machine. If you use a different Unity version, make sure to rebuild the Unity project on top of bin directory as you might otherwise run into incompatible data conflicts.

@@ -1,0 +1,7 @@
+﻿<Application
+    x:Class="UWP_IL2CPP_WithCSharpProject_Example.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UWP_IL2CPP_WithCSharpProject_Example">
+
+</Application>
