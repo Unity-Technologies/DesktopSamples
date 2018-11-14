@@ -1,5 +1,7 @@
-﻿using UnityPlayer;
+﻿using System.Runtime.InteropServices;
+using UnityPlayer;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -16,15 +18,29 @@ namespace UWP_IL2CPP_WithCSharpProject_Example
         private AppCallbacks m_AppCallbacks;
         public SplashScreen splashScreen;
 
+        // In C++ below would be:
+        // __declspec(dllimport) void __stdcall AddActivatedEventArgs(IInspectable* activatedEventArgs)
+        [DllImport("GameAssembly.dll")]
+        static extern void AddActivatedEventArgs(IActivatedEventArgs args);
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
         {
+            CoreApplication.GetCurrentView().Activated += OnAppActivated;
+
             this.InitializeComponent();
             SetupOrientation();
             m_AppCallbacks = new AppCallbacks();
+        }
+
+        private void OnAppActivated(CoreApplicationView sender, IActivatedEventArgs args)
+        {
+            // In C++ you would do this:
+            // AddActivatedEventArgs(reinterpret_cast<IInspectable*>(static_cast<Platform::Object^>(args)));
+            AddActivatedEventArgs(args);
         }
 
         /// <summary>

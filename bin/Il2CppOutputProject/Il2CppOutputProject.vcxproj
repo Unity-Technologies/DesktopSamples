@@ -39,11 +39,35 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Assembly-CSharp_0.cpp">
+    </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Bulk_Generics_0.cpp">
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Bulk_Generics_1.cpp">
     </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Generics_10.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Generics_11.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Generics_12.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Generics_13.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Generics_14.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Generics_15.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Generics_16.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Generics_17.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Generics_18.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Generics_19.cpp">
+    </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Bulk_Generics_2.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_Generics_20.cpp">
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Bulk_Generics_3.cpp">
     </ClCompile>
@@ -116,6 +140,16 @@
     <ClCompile Include="Source\il2cppOutput\Bulk_System.Configuration_0.cpp">
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Bulk_System.Core_0.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_System.ObjectModel_0.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_System.Runtime.InteropServices.WindowsRuntime_0.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_System.Runtime.WindowsRuntime.UI.Xaml_0.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_System.Runtime.WindowsRuntime_0.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_System.Runtime_0.cpp">
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Bulk_System.Xml_0.cpp">
     </ClCompile>
@@ -199,6 +233,8 @@
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Bulk_UnityEngine_0.cpp">
     </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Bulk_WindowsRuntimeMetadata_0.cpp">
+    </ClCompile>
     <ClCompile Include="Source\il2cppOutput\GenericMethods0.cpp">
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\GenericMethods1.cpp">
@@ -210,6 +246,32 @@
     <ClCompile Include="Source\il2cppOutput\Il2CppCodeRegistration.cpp">
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers0.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers1.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers10.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers11.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers12.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers13.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers2.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers3.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers4.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers5.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers6.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers7.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers8.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppComCallableWrappers9.cpp">
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Il2CppCompilerCalculateTypeValuesTable.cpp">
     </ClCompile>
@@ -281,6 +343,8 @@
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Il2CppCompilerCalculateTypeValues_3Table.cpp">
     </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppCompilerCalculateTypeValues_40Table.cpp">
+    </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Il2CppCompilerCalculateTypeValues_4Table.cpp">
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Il2CppCompilerCalculateTypeValues_5Table.cpp">
@@ -315,11 +379,19 @@
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Il2CppMethodPointerTable.cpp">
     </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppProjectedComCallableWrapperMethods0.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppProjectedComCallableWrapperMethods1.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\il2cppOutput\Il2CppProjectedComCallableWrapperMethods2.cpp">
+    </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Il2CppReversePInvokeWrapperTable.cpp">
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\Il2CppTypeDefinitions.cpp">
     </ClCompile>
     <ClCompile Include="Source\il2cppOutput\UnresolvedVirtualCallStubs.cpp">
+    </ClCompile>
+    <ClCompile Include="Source\CppPlugins\ActivationArgumentsHelper.cpp">
     </ClCompile>
     <ClCompile Include="IL2CPP\external\boehmgc\allchblk.c">
     </ClCompile>

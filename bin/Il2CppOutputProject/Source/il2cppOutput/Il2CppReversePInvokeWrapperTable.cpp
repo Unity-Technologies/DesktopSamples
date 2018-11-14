@@ -21,6 +21,7 @@ struct String_t;
 // System.Void
 struct Void_t1185182177;
 
+struct IActivatedEventArgs_t1078164430;
 struct unitytls_errorstate_t2875872539 ;
 struct unitytls_key_ref_t1942754627 ;
 struct unitytls_tlsctx_t2030371563 ;
@@ -315,7 +316,8 @@ extern "C" uint32_t CDECL ReversePInvokeWrapper_UnityTlsContext_VerifyCallback_m
 extern "C" void CDECL ReversePInvokeWrapper_UnityTlsContext_CertificateCallback_m2570489642(void* ___userData0, unitytls_tlsctx_t2030371563 * ___ctx1, uint8_t* ___cn2, size_t_t1959134062  ___cnLen3, unitytls_x509name_t1095957490 * ___caList4, size_t_t1959134062  ___caListLen5, unitytls_x509list_ref_t2029050115 * ___chain6, unitytls_key_ref_t1942754627 * ___key7, unitytls_errorstate_t2875872539 * ___errorState8);
 extern "C" int32_t CDECL ReversePInvokeWrapper_DeflateStreamNative_UnmanagedRead_m255710264(intptr_t ___buffer0, int32_t ___length1, intptr_t ___data2);
 extern "C" int32_t CDECL ReversePInvokeWrapper_DeflateStreamNative_UnmanagedWrite_m232731864(intptr_t ___buffer0, int32_t ___length1, intptr_t ___data2);
-extern const Il2CppMethodPointer g_ReversePInvokeWrapperPointers[8] = 
+extern "C" void DEFAULT_CALL ReversePInvokeWrapper_PrintActivationArguments_OnAppActivated_m28916119(IActivatedEventArgs_t1078164430* ___activatedArgs0);
+extern const Il2CppMethodPointer g_ReversePInvokeWrapperPointers[9] = 
 {
 	reinterpret_cast<Il2CppMethodPointer>(ReversePInvokeWrapper_AppleTlsContext_NativeReadCallback_m2315213031),
 	reinterpret_cast<Il2CppMethodPointer>(ReversePInvokeWrapper_AppleTlsContext_NativeWriteCallback_m2714148351),
@@ -325,4 +327,5 @@ extern const Il2CppMethodPointer g_ReversePInvokeWrapperPointers[8] =
 	reinterpret_cast<Il2CppMethodPointer>(ReversePInvokeWrapper_UnityTlsContext_CertificateCallback_m2570489642),
 	reinterpret_cast<Il2CppMethodPointer>(ReversePInvokeWrapper_DeflateStreamNative_UnmanagedRead_m255710264),
 	reinterpret_cast<Il2CppMethodPointer>(ReversePInvokeWrapper_DeflateStreamNative_UnmanagedWrite_m232731864),
+	reinterpret_cast<Il2CppMethodPointer>(ReversePInvokeWrapper_PrintActivationArguments_OnAppActivated_m28916119),
 };

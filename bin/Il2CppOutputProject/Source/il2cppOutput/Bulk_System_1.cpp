@@ -2281,8 +2281,8 @@ public:
 #pragma clang diagnostic pop
 #endif
 #endif // UNITYTLSCONVERSIONS_T2748364829_H
-#ifndef SR_T167583545_H
-#define SR_T167583545_H
+#ifndef SR_T167583544_H
+#define SR_T167583544_H
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
@@ -2290,7 +2290,7 @@ public:
 #endif
 
 // SR
-struct  SR_t167583545  : public RuntimeObject
+struct  SR_t167583544  : public RuntimeObject
 {
 public:
 
@@ -2300,7 +2300,7 @@ public:
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-#endif // SR_T167583545_H
+#endif // SR_T167583544_H
 struct Il2CppArrayBounds;
 #ifndef RUNTIMEARRAY_H
 #define RUNTIMEARRAY_H

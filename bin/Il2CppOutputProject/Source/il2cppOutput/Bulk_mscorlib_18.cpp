@@ -659,6 +659,12 @@ struct TypeU5BU5D_t3940880105;
 #pragma clang diagnostic pop
 #endif
 #endif // RUNTIMEOBJECT_H
+// Windows.Foundation.IStringable
+struct NOVTABLE IStringable_t1634798504 : Il2CppIInspectable
+{
+	static const Il2CppGuid IID;
+	virtual il2cpp_hresult_t STDCALL IStringable_ToString_m698137009(Il2CppHString* comReturnValue) = 0;
+};
 struct Il2CppArrayBounds;
 #ifndef RUNTIMEARRAY_H
 #define RUNTIMEARRAY_H
@@ -9151,6 +9157,8 @@ extern "C" IL2CPP_METHOD_ATTR int32_t String_Compare_m3203413707 (RuntimeObject 
 extern "C" IL2CPP_METHOD_ATTR void __Filters__ctor_m4259786029 (__Filters_t550753867 * __this, const RuntimeMethod* method);
 // System.Void System.__Il2CppComObject::Finalize()
 extern "C" IL2CPP_METHOD_ATTR void __Il2CppComObject_Finalize_m2923638372 (Il2CppComObject * __this, const RuntimeMethod* method);
+// System.String System.Object::ToString()
+extern "C" IL2CPP_METHOD_ATTR String_t* Object_ToString_m1740002499 (RuntimeObject * __this, const RuntimeMethod* method);
 // System.IntPtr XamMac.CoreFoundation.CFHelpers::CFStringGetLength(System.IntPtr)
 extern "C" IL2CPP_METHOD_ATTR intptr_t CFHelpers_CFStringGetLength_m1003035781 (RuntimeObject * __this /* static, unused */, intptr_t ___handle0, const RuntimeMethod* method);
 // System.Int32 System.IntPtr::op_Explicit(System.IntPtr)
@@ -17278,6 +17286,31 @@ extern "C" IL2CPP_METHOD_ATTR void __Il2CppComDelegate_Finalize_m2460829410 (__I
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
+// System.String System.__Il2CppComObject::ToString()
+extern "C" IL2CPP_METHOD_ATTR String_t* __Il2CppComObject_ToString_m2200915729 (Il2CppComObject * __this, const RuntimeMethod* method)
+{
+	IStringable_t1634798504* ____istringable_t1634798504 = NULL;
+	if (IL2CPP_HR_SUCCEEDED(__this->identity->QueryInterface(IStringable_t1634798504::IID, reinterpret_cast<void**>(&____istringable_t1634798504))))
+	{
+		// Native function invocation
+		Il2CppHString returnValue = NULL;
+		const il2cpp_hresult_t hr = ____istringable_t1634798504->IStringable_ToString_m698137009(&returnValue);
+		____istringable_t1634798504->Release();
+
+		il2cpp_codegen_com_raise_exception_if_failed(hr, false);
+
+		// Marshaling of return value back from native representation
+		String_t* _returnValue_unmarshaled = NULL;
+		_returnValue_unmarshaled = il2cpp_codegen_marshal_hstring_result(returnValue);
+
+		// Marshaling cleanup of return value native representation
+		il2cpp_codegen_marshal_free_hstring(returnValue);
+		returnValue = NULL;
+
+		return _returnValue_unmarshaled;
+	}
+	return Object_ToString_m1740002499(__this, NULL);
+}
 // System.Void System.__Il2CppComObject::Finalize()
 extern "C" IL2CPP_METHOD_ATTR void __Il2CppComObject_Finalize_m2923638372 (Il2CppComObject * __this, const RuntimeMethod* method)
 {

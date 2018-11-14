@@ -312,6 +312,8 @@ struct GenericInterfaceFuncInvoker2
 	}
 };
 
+// AOT.MonoPInvokeCallbackAttribute
+struct MonoPInvokeCallbackAttribute_t378106515;
 // Microsoft.Win32.SafeHandles.SafeWaitHandle
 struct SafeWaitHandle_t1972936122;
 // System.Action
@@ -760,6 +762,8 @@ struct UnityLogWriter_t1374348020;
 struct UnitySynchronizationContext_t1887453786;
 // UnityEngine.UnitySynchronizationContext/WorkRequest[]
 struct WorkRequestU5BU5D_t3723878365;
+// UnityEngine.WSA.AppCallbackItem
+struct AppCallbackItem_t4184449723;
 // UnityEngine.Windows.Speech.DictationRecognizer
 struct DictationRecognizer_t838322161;
 // UnityEngine.Windows.Speech.DictationRecognizer/DictationCompletedDelegate
@@ -4818,6 +4822,26 @@ public:
 #pragma clang diagnostic pop
 #endif
 #endif // SPRITEATLASMANAGER_T3158462485_H
+#ifndef APPLICATION_T1328177177_H
+#define APPLICATION_T1328177177_H
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+
+// UnityEngine.WSA.Application
+struct  Application_t1328177177  : public RuntimeObject
+{
+public:
+
+public:
+};
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#endif // APPLICATION_T1328177177_H
 #ifndef PHRASERECOGNITIONSYSTEM_T3404389927_H
 #define PHRASERECOGNITIONSYSTEM_T3404389927_H
 #ifdef __clang__
@@ -4914,6 +4938,26 @@ public:
 #pragma clang diagnostic pop
 #endif
 #endif // NETFXCOREEXTENSIONS_T4089902045_H
+#ifndef MONOPINVOKECALLBACKATTRIBUTE_T378106515_H
+#define MONOPINVOKECALLBACKATTRIBUTE_T378106515_H
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+
+// AOT.MonoPInvokeCallbackAttribute
+struct  MonoPInvokeCallbackAttribute_t378106515  : public Attribute_t861562559
+{
+public:
+
+public:
+};
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#endif // MONOPINVOKECALLBACKATTRIBUTE_T378106515_H
 #ifndef BOOLEAN_T97287965_H
 #define BOOLEAN_T97287965_H
 #ifdef __clang__
@@ -17524,6 +17568,26 @@ public:
 #pragma clang diagnostic pop
 #endif
 #endif // REQUESTATLASCALLBACK_T3100554279_H
+#ifndef APPCALLBACKITEM_T4184449723_H
+#define APPCALLBACKITEM_T4184449723_H
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+
+// UnityEngine.WSA.AppCallbackItem
+struct  AppCallbackItem_t4184449723  : public MulticastDelegate_t
+{
+public:
+
+public:
+};
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#endif // APPCALLBACKITEM_T4184449723_H
 #ifndef DICTATIONCOMPLETEDDELEGATE_T174017847_H
 #define DICTATIONCOMPLETEDDELEGATE_T174017847_H
 #ifdef __clang__
@@ -18749,6 +18813,8 @@ extern "C" IL2CPP_METHOD_ATTR int32_t Queue_1_get_Count_m3368911732_gshared (Que
 // !0 System.Collections.Generic.Queue`1<UnityEngine.UnitySynchronizationContext/WorkRequest>::Dequeue()
 extern "C" IL2CPP_METHOD_ATTR WorkRequest_t1354518612  Queue_1_Dequeue_m979967976_gshared (Queue_1_t1200778106 * __this, const RuntimeMethod* method);
 
+// System.Void System.Attribute::.ctor()
+extern "C" IL2CPP_METHOD_ATTR void Attribute__ctor_m1529526131 (Attribute_t861562559 * __this, const RuntimeMethod* method);
 // System.Void System.Object::.ctor()
 extern "C" IL2CPP_METHOD_ATTR void Object__ctor_m297566312 (RuntimeObject * __this, const RuntimeMethod* method);
 // System.IntPtr UnityEngine.AnimationCurve::Internal_Create(UnityEngine.Keyframe[])
@@ -19165,8 +19231,6 @@ extern "C" IL2CPP_METHOD_ATTR String_t* String_Concat_m3755062657 (RuntimeObject
 extern "C" IL2CPP_METHOD_ATTR MethodInfo_t * Type_GetMethod_m637078096 (Type_t * __this, String_t* p0, int32_t p1, Binder_t2999457153 * p2, TypeU5BU5D_t3940880105* p3, ParameterModifierU5BU5D_t2943407543* p4, const RuntimeMethod* method);
 // System.Boolean System.Type::get_IsPrimitive()
 extern "C" IL2CPP_METHOD_ATTR bool Type_get_IsPrimitive_m1114712797 (Type_t * __this, const RuntimeMethod* method);
-// System.Void System.Attribute::.ctor()
-extern "C" IL2CPP_METHOD_ATTR void Attribute__ctor_m1529526131 (Attribute_t861562559 * __this, const RuntimeMethod* method);
 // UnityEngine.Playables.PlayableHandle UnityEngine.Experimental.Playables.CameraPlayable::GetHandle()
 extern "C" IL2CPP_METHOD_ATTR PlayableHandle_t1095853803  CameraPlayable_GetHandle_m1459651790 (CameraPlayable_t3330816414 * __this, const RuntimeMethod* method);
 // System.Boolean UnityEngine.Playables.PlayableHandle::op_Equality(UnityEngine.Playables.PlayableHandle,UnityEngine.Playables.PlayableHandle)
@@ -20048,6 +20112,8 @@ extern "C" IL2CPP_METHOD_ATTR String_t* Vector3Int_ToString_m3033835977 (Vector3
 extern "C" IL2CPP_METHOD_ATTR bool Vector4_Equals_m1779210055 (Vector4_t3319028937 * __this, RuntimeObject * ___other0, const RuntimeMethod* method);
 // System.String UnityEngine.Vector4::ToString()
 extern "C" IL2CPP_METHOD_ATTR String_t* Vector4_ToString_m1596036856 (Vector4_t3319028937 * __this, const RuntimeMethod* method);
+// System.Void UnityEngine.WSA.Application::InternalInvokeOnAppThread(System.Object,System.Boolean)
+extern "C" IL2CPP_METHOD_ATTR void Application_InternalInvokeOnAppThread_m46625338 (RuntimeObject * __this /* static, unused */, RuntimeObject * ___item0, bool ___waitUntilDone1, const RuntimeMethod* method);
 // System.Void UnityEngine.Windows.Speech.DictationRecognizer::DestroyThreaded(System.IntPtr)
 extern "C" IL2CPP_METHOD_ATTR void DictationRecognizer_DestroyThreaded_m230658918 (RuntimeObject * __this /* static, unused */, intptr_t ___self0, const RuntimeMethod* method);
 // System.Void UnityEngine.Windows.Speech.DictationRecognizer::Destroy(System.IntPtr)
@@ -20094,6 +20160,22 @@ extern "C" IL2CPP_METHOD_ATTR MethodInfo_t * Delegate_get_Method_m3071622864 (De
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// System.Void AOT.MonoPInvokeCallbackAttribute::.ctor(System.Type)
+extern "C" IL2CPP_METHOD_ATTR void MonoPInvokeCallbackAttribute__ctor_m4023534747 (MonoPInvokeCallbackAttribute_t378106515 * __this, Type_t * ___type0, const RuntimeMethod* method)
+{
+	{
+		Attribute__ctor_m1529526131(__this, /*hidden argument*/NULL);
+		return;
+	}
+}
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
@@ -43567,6 +43649,199 @@ extern "C" IL2CPP_METHOD_ATTR void Vector4__cctor_m2519631228 (RuntimeObject * _
 		((Vector4_t3319028937_StaticFields*)il2cpp_codegen_static_fields_for(Vector4_t3319028937_il2cpp_TypeInfo_var))->set_negativeInfinityVector_7(L_3);
 		return;
 	}
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+extern "C"  void DelegatePInvokeWrapper_AppCallbackItem_t4184449723 (AppCallbackItem_t4184449723 * __this, const RuntimeMethod* method)
+{
+	typedef void (DEFAULT_CALL *PInvokeFunc)();
+	PInvokeFunc il2cppPInvokeFunc = reinterpret_cast<PInvokeFunc>(il2cpp_codegen_get_method_pointer(((RuntimeDelegate*)__this)->method));
+
+	// Native function invocation
+	il2cppPInvokeFunc();
+
+}
+// System.Void UnityEngine.WSA.AppCallbackItem::.ctor(System.Object,System.IntPtr)
+extern "C" IL2CPP_METHOD_ATTR void AppCallbackItem__ctor_m3654813658 (AppCallbackItem_t4184449723 * __this, RuntimeObject * ___object0, intptr_t ___method1, const RuntimeMethod* method)
+{
+	__this->set_method_ptr_0(il2cpp_codegen_get_method_pointer((RuntimeMethod*)___method1));
+	__this->set_method_3(___method1);
+	__this->set_m_target_2(___object0);
+}
+// System.Void UnityEngine.WSA.AppCallbackItem::Invoke()
+extern "C" IL2CPP_METHOD_ATTR void AppCallbackItem_Invoke_m921243464 (AppCallbackItem_t4184449723 * __this, const RuntimeMethod* method)
+{
+	il2cpp_codegen_raise_execution_engine_exception_if_method_is_not_found((RuntimeMethod*)(__this->get_method_3()));
+	DelegateU5BU5D_t1703627840* delegatesToInvoke = __this->get_delegates_11();
+	if (delegatesToInvoke != NULL)
+	{
+		il2cpp_array_size_t length = delegatesToInvoke->max_length;
+		for (il2cpp_array_size_t i = 0; i < length; i++)
+		{
+			Delegate_t1188392813* currentDelegate = (delegatesToInvoke)->GetAtUnchecked(static_cast<il2cpp_array_size_t>(i));
+			Il2CppMethodPointer targetMethodPointer = currentDelegate->get_method_ptr_0();
+			RuntimeMethod* targetMethod = (RuntimeMethod*)(currentDelegate->get_method_3());
+			RuntimeObject* targetThis = currentDelegate->get_m_target_2();
+			il2cpp_codegen_raise_execution_engine_exception_if_method_is_not_found(targetMethod);
+			bool ___methodIsStatic = MethodIsStatic(targetMethod);
+			if (___methodIsStatic)
+			{
+				if (il2cpp_codegen_method_parameter_count(targetMethod) == 0)
+				{
+					// open
+					{
+						typedef void (*FunctionPointerType) (RuntimeObject *, const RuntimeMethod*);
+						((FunctionPointerType)targetMethodPointer)(NULL, targetMethod);
+					}
+				}
+				else
+				{
+					// closed
+					{
+						typedef void (*FunctionPointerType) (RuntimeObject *, void*, const RuntimeMethod*);
+						((FunctionPointerType)targetMethodPointer)(NULL, targetThis, targetMethod);
+					}
+				}
+			}
+			else
+			{
+				{
+					// closed
+					if (il2cpp_codegen_method_is_virtual(targetMethod) && !il2cpp_codegen_object_is_of_sealed_type(targetThis) && il2cpp_codegen_delegate_has_invoker((Il2CppDelegate*)__this))
+					{
+						if (il2cpp_codegen_method_is_generic_instance(targetMethod))
+						{
+							if (il2cpp_codegen_method_is_interface_method(targetMethod))
+								GenericInterfaceActionInvoker0::Invoke(targetMethod, targetThis);
+							else
+								GenericVirtActionInvoker0::Invoke(targetMethod, targetThis);
+						}
+						else
+						{
+							if (il2cpp_codegen_method_is_interface_method(targetMethod))
+								InterfaceActionInvoker0::Invoke(il2cpp_codegen_method_get_slot(targetMethod), il2cpp_codegen_method_get_declaring_type(targetMethod), targetThis);
+							else
+								VirtActionInvoker0::Invoke(il2cpp_codegen_method_get_slot(targetMethod), targetThis);
+						}
+					}
+					else
+					{
+						typedef void (*FunctionPointerType) (void*, const RuntimeMethod*);
+						((FunctionPointerType)targetMethodPointer)(targetThis, targetMethod);
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		Il2CppMethodPointer targetMethodPointer = __this->get_method_ptr_0();
+		RuntimeMethod* targetMethod = (RuntimeMethod*)(__this->get_method_3());
+		RuntimeObject* targetThis = __this->get_m_target_2();
+		il2cpp_codegen_raise_execution_engine_exception_if_method_is_not_found(targetMethod);
+		bool ___methodIsStatic = MethodIsStatic(targetMethod);
+		if (___methodIsStatic)
+		{
+			if (il2cpp_codegen_method_parameter_count(targetMethod) == 0)
+			{
+				// open
+				{
+					typedef void (*FunctionPointerType) (RuntimeObject *, const RuntimeMethod*);
+					((FunctionPointerType)targetMethodPointer)(NULL, targetMethod);
+				}
+			}
+			else
+			{
+				// closed
+				{
+					typedef void (*FunctionPointerType) (RuntimeObject *, void*, const RuntimeMethod*);
+					((FunctionPointerType)targetMethodPointer)(NULL, targetThis, targetMethod);
+				}
+			}
+		}
+		else
+		{
+			{
+				// closed
+				if (il2cpp_codegen_method_is_virtual(targetMethod) && !il2cpp_codegen_object_is_of_sealed_type(targetThis) && il2cpp_codegen_delegate_has_invoker((Il2CppDelegate*)__this))
+				{
+					if (il2cpp_codegen_method_is_generic_instance(targetMethod))
+					{
+						if (il2cpp_codegen_method_is_interface_method(targetMethod))
+							GenericInterfaceActionInvoker0::Invoke(targetMethod, targetThis);
+						else
+							GenericVirtActionInvoker0::Invoke(targetMethod, targetThis);
+					}
+					else
+					{
+						if (il2cpp_codegen_method_is_interface_method(targetMethod))
+							InterfaceActionInvoker0::Invoke(il2cpp_codegen_method_get_slot(targetMethod), il2cpp_codegen_method_get_declaring_type(targetMethod), targetThis);
+						else
+							VirtActionInvoker0::Invoke(il2cpp_codegen_method_get_slot(targetMethod), targetThis);
+					}
+				}
+				else
+				{
+					typedef void (*FunctionPointerType) (void*, const RuntimeMethod*);
+					((FunctionPointerType)targetMethodPointer)(targetThis, targetMethod);
+				}
+			}
+		}
+	}
+}
+// System.IAsyncResult UnityEngine.WSA.AppCallbackItem::BeginInvoke(System.AsyncCallback,System.Object)
+extern "C" IL2CPP_METHOD_ATTR RuntimeObject* AppCallbackItem_BeginInvoke_m1102186696 (AppCallbackItem_t4184449723 * __this, AsyncCallback_t3962456242 * ___callback0, RuntimeObject * ___object1, const RuntimeMethod* method)
+{
+	void *__d_args[1] = {0};
+	return (RuntimeObject*)il2cpp_codegen_delegate_begin_invoke((RuntimeDelegate*)__this, __d_args, (RuntimeDelegate*)___callback0, (RuntimeObject*)___object1);
+}
+// System.Void UnityEngine.WSA.AppCallbackItem::EndInvoke(System.IAsyncResult)
+extern "C" IL2CPP_METHOD_ATTR void AppCallbackItem_EndInvoke_m973500837 (AppCallbackItem_t4184449723 * __this, RuntimeObject* ___result0, const RuntimeMethod* method)
+{
+	il2cpp_codegen_delegate_end_invoke((Il2CppAsyncResult*) ___result0, 0);
+}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+// System.Void UnityEngine.WSA.Application::InvokeOnAppThread(UnityEngine.WSA.AppCallbackItem,System.Boolean)
+extern "C" IL2CPP_METHOD_ATTR void Application_InvokeOnAppThread_m3044836237 (RuntimeObject * __this /* static, unused */, AppCallbackItem_t4184449723 * ___item0, bool ___waitUntilDone1, const RuntimeMethod* method)
+{
+	{
+		AppCallbackItem_t4184449723 * L_0 = ___item0;
+		bool L_1 = ___waitUntilDone1;
+		Application_InternalInvokeOnAppThread_m46625338(NULL /*static, unused*/, L_0, L_1, /*hidden argument*/NULL);
+		return;
+	}
+}
+// System.Void UnityEngine.WSA.Application::InternalInvokeOnAppThread(System.Object,System.Boolean)
+extern "C" IL2CPP_METHOD_ATTR void Application_InternalInvokeOnAppThread_m46625338 (RuntimeObject * __this /* static, unused */, RuntimeObject * ___item0, bool ___waitUntilDone1, const RuntimeMethod* method)
+{
+	typedef void (*Application_InternalInvokeOnAppThread_m46625338_ftn) (RuntimeObject *, bool);
+	static Application_InternalInvokeOnAppThread_m46625338_ftn _il2cpp_icall_func;
+	if (!_il2cpp_icall_func)
+	_il2cpp_icall_func = (Application_InternalInvokeOnAppThread_m46625338_ftn)il2cpp_codegen_resolve_icall ("UnityEngine.WSA.Application::InternalInvokeOnAppThread(System.Object,System.Boolean)");
+	_il2cpp_icall_func(___item0, ___waitUntilDone1);
+}
+// System.Boolean UnityEngine.WSA.Application::RunningOnAppThread()
+extern "C" IL2CPP_METHOD_ATTR bool Application_RunningOnAppThread_m50965200 (RuntimeObject * __this /* static, unused */, const RuntimeMethod* method)
+{
+	typedef bool (*Application_RunningOnAppThread_m50965200_ftn) ();
+	static Application_RunningOnAppThread_m50965200_ftn _il2cpp_icall_func;
+	if (!_il2cpp_icall_func)
+	_il2cpp_icall_func = (Application_RunningOnAppThread_m50965200_ftn)il2cpp_codegen_resolve_icall ("UnityEngine.WSA.Application::RunningOnAppThread()");
+	bool retVal = _il2cpp_icall_func();
+	return retVal;
 }
 #ifdef __clang__
 #pragma clang diagnostic pop

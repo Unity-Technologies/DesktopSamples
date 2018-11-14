@@ -61,8 +61,8 @@ extern const uint32_t Physics2D__cctor_m143866755_MetadataUsageId;
 struct RaycastHit2DU5BU5D_t4286651560;
 
 
-#ifndef U3CMODULEU3E_T692745537_H
-#define U3CMODULEU3E_T692745537_H
+#ifndef U3CMODULEU3E_T692745542_H
+#define U3CMODULEU3E_T692745542_H
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
@@ -70,7 +70,7 @@ struct RaycastHit2DU5BU5D_t4286651560;
 #endif
 
 // <Module>
-struct  U3CModuleU3E_t692745537 
+struct  U3CModuleU3E_t692745542 
 {
 public:
 
@@ -80,7 +80,7 @@ public:
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-#endif // U3CMODULEU3E_T692745537_H
+#endif // U3CMODULEU3E_T692745542_H
 #ifndef RUNTIMEOBJECT_H
 #define RUNTIMEOBJECT_H
 #ifdef __clang__

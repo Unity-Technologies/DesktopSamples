@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.9.28128.56
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWP_IL2CPP_WithCSharpProject_Example", "UWP_IL2CPP_WithCSharpProject_Example\UWP_IL2CPP_WithCSharpProject_Example.csproj", "{13A45C13-3265-47B8-BC48-A553B569DF55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWP_IL2CPP_WithCSharpProject_Example", "UWP_IL2CPP_WithCSharpProject_Example\UWP_IL2CPP_WithCSharpProject_Example_CSharpProject.csproj", "{13A45C13-3265-47B8-BC48-A553B569DF55}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EA17D85E-DA6F-49EA-A879-8F48265B121D} = {EA17D85E-DA6F-49EA-A879-8F48265B121D}
 	EndProjectSection

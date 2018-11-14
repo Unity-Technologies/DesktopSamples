@@ -1170,7 +1170,7 @@ extern const RuntimeMethod* Dictionary_2_Remove_m3109428628_RuntimeMethod_var;
 extern const RuntimeMethod* Dictionary_2_TryGetValue_m1013208020_RuntimeMethod_var;
 extern const RuntimeMethod* Dictionary_2__ctor_m1914723276_RuntimeMethod_var;
 extern const RuntimeMethod* Dictionary_2__ctor_m2392909825_RuntimeMethod_var;
-extern const RuntimeMethod* Dictionary_2__ctor_m2597574997_RuntimeMethod_var;
+extern const RuntimeMethod* Dictionary_2__ctor_m4186433798_RuntimeMethod_var;
 extern const RuntimeMethod* Dictionary_2_get_Keys_m2436183996_RuntimeMethod_var;
 extern const RuntimeMethod* Dictionary_2_get_Values_m2454260960_RuntimeMethod_var;
 extern const RuntimeMethod* Dictionary_2_get_Values_m3585629931_RuntimeMethod_var;
@@ -17176,7 +17176,7 @@ extern "C" IL2CPP_METHOD_ATTR XmlNamespaceManager_t418790500 * XmlLoader_ParsePa
 // System.Void System.Xml.XmlLoader::RemoveDuplicateNamespace(System.Xml.XmlElement,System.Xml.XmlNamespaceManager,System.Boolean)
 extern "C" IL2CPP_METHOD_ATTR void XmlLoader_RemoveDuplicateNamespace_m3580274951 (XmlLoader_t3991293842 * __this, XmlElement_t561603118 * ___elem0, XmlNamespaceManager_t418790500 * ___mgr1, bool ___fCheckElemAttrs2, const RuntimeMethod* method);
 // System.Xml.XmlAttribute System.Xml.XmlAttributeCollection::get_ItemOf(System.Int32)
-extern "C" IL2CPP_METHOD_ATTR XmlAttribute_t1173852259 * XmlAttributeCollection_get_ItemOf_m2829877268 (XmlAttributeCollection_t2316283784 * __this, int32_t ___i0, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR XmlAttribute_t1173852259 * XmlAttributeCollection_get_ItemOf_m2093630806 (XmlAttributeCollection_t2316283784 * __this, int32_t ___i0, const RuntimeMethod* method);
 // System.String System.Xml.XmlLoader::EntitizeName(System.String)
 extern "C" IL2CPP_METHOD_ATTR String_t* XmlLoader_EntitizeName_m249122502 (XmlLoader_t3991293842 * __this, String_t* ___name0, const RuntimeMethod* method);
 // System.Xml.XmlNamedNodeMap System.Xml.XmlDocument::get_Entities()
@@ -17270,7 +17270,7 @@ inline void Dictionary_2__ctor_m2392909825 (Dictionary_2_t2736202052 * __this, i
 	((  void (*) (Dictionary_2_t2736202052 *, int32_t, const RuntimeMethod*))Dictionary_2__ctor_m182537451_gshared)(__this, p0, method);
 }
 // System.Void System.Collections.Generic.Dictionary`2<System.String,System.String>::.ctor(System.Int32)
-inline void Dictionary_2__ctor_m2597574997 (Dictionary_2_t1632706988 * __this, int32_t p0, const RuntimeMethod* method)
+inline void Dictionary_2__ctor_m4186433798 (Dictionary_2_t1632706988 * __this, int32_t p0, const RuntimeMethod* method)
 {
 	((  void (*) (Dictionary_2_t1632706988 *, int32_t, const RuntimeMethod*))Dictionary_2__ctor_m2687535023_gshared)(__this, p0, method);
 }
@@ -17573,19 +17573,19 @@ extern "C" IL2CPP_METHOD_ATTR void GC_SuppressFinalize_m1177400158 (RuntimeObjec
 // System.Void System.IO.Stream::Dispose(System.Boolean)
 extern "C" IL2CPP_METHOD_ATTR void Stream_Dispose_m874059170 (Stream_t1273022909 * __this, bool p0, const RuntimeMethod* method);
 // System.Boolean System.Uri::op_Equality(System.Uri,System.Uri)
-extern "C" IL2CPP_METHOD_ATTR bool Uri_op_Equality_m2988156441 (RuntimeObject * __this /* static, unused */, Uri_t100236324 * p0, Uri_t100236324 * p1, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR bool Uri_op_Equality_m685520154 (RuntimeObject * __this /* static, unused */, Uri_t100236324 * p0, Uri_t100236324 * p1, const RuntimeMethod* method);
 // System.Boolean System.Uri::get_IsAbsoluteUri()
-extern "C" IL2CPP_METHOD_ATTR bool Uri_get_IsAbsoluteUri_m3834080655 (Uri_t100236324 * __this, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR bool Uri_get_IsAbsoluteUri_m3666899587 (Uri_t100236324 * __this, const RuntimeMethod* method);
 // System.String System.Uri::get_OriginalString()
-extern "C" IL2CPP_METHOD_ATTR String_t* Uri_get_OriginalString_m2551181575 (Uri_t100236324 * __this, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR String_t* Uri_get_OriginalString_m3715995233 (Uri_t100236324 * __this, const RuntimeMethod* method);
 // System.Void System.Uri::.ctor(System.String,System.UriKind)
-extern "C" IL2CPP_METHOD_ATTR void Uri__ctor_m391584135 (Uri_t100236324 * __this, String_t* p0, int32_t p1, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR void Uri__ctor_m3040793867 (Uri_t100236324 * __this, String_t* p0, int32_t p1, const RuntimeMethod* method);
 // System.String System.IO.Path::GetFullPath(System.String)
 extern "C" IL2CPP_METHOD_ATTR String_t* Path_GetFullPath_m4142135635 (RuntimeObject * __this /* static, unused */, String_t* p0, const RuntimeMethod* method);
 // System.Void System.Uri::.ctor(System.String)
-extern "C" IL2CPP_METHOD_ATTR void Uri__ctor_m1474792120 (Uri_t100236324 * __this, String_t* p0, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR void Uri__ctor_m800430703 (Uri_t100236324 * __this, String_t* p0, const RuntimeMethod* method);
 // System.Void System.Uri::.ctor(System.Uri,System.String)
-extern "C" IL2CPP_METHOD_ATTR void Uri__ctor_m279432735 (Uri_t100236324 * __this, Uri_t100236324 * p0, String_t* p1, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR void Uri__ctor_m4293005803 (Uri_t100236324 * __this, Uri_t100236324 * p0, String_t* p1, const RuntimeMethod* method);
 // System.Void System.NotImplementedException::.ctor()
 extern "C" IL2CPP_METHOD_ATTR void NotImplementedException__ctor_m3058704252 (NotImplementedException_t3489357830 * __this, const RuntimeMethod* method);
 // System.Void System.Xml.XmlCharacterData::.ctor(System.String,System.Xml.XmlDocument)
@@ -17908,7 +17908,7 @@ extern "C" IL2CPP_METHOD_ATTR void XmlTextReaderImpl_ParseDtdFromParserContext_m
 // System.Xml.XmlResolver System.Xml.XmlTextReaderImpl::GetTempResolver()
 extern "C" IL2CPP_METHOD_ATTR XmlResolver_t626023767 * XmlTextReaderImpl_GetTempResolver_m1799442211 (XmlTextReaderImpl_t178060594 * __this, const RuntimeMethod* method);
 // System.Boolean System.Uri::op_Inequality(System.Uri,System.Uri)
-extern "C" IL2CPP_METHOD_ATTR bool Uri_op_Inequality_m3504002810 (RuntimeObject * __this /* static, unused */, Uri_t100236324 * p0, Uri_t100236324 * p1, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR bool Uri_op_Inequality_m839253362 (RuntimeObject * __this /* static, unused */, Uri_t100236324 * p0, Uri_t100236324 * p1, const RuntimeMethod* method);
 // System.Void System.Xml.XmlTextReaderImpl::OpenUrlDelegate(System.Object)
 extern "C" IL2CPP_METHOD_ATTR void XmlTextReaderImpl_OpenUrlDelegate_m194810252 (XmlTextReaderImpl_t178060594 * __this, RuntimeObject * ___xmlResolver0, const RuntimeMethod* method);
 // System.Void System.Xml.XmlTextReaderImpl::ThrowWithoutLineInfo(System.String,System.String)
@@ -23608,7 +23608,7 @@ IL_002a:
 		XmlAttributeCollection_t2316283784 * L_8 = V_0;
 		int32_t L_9 = V_3;
 		NullCheck(L_8);
-		XmlAttribute_t1173852259 * L_10 = XmlAttributeCollection_get_ItemOf_m2829877268(L_8, L_9, /*hidden argument*/NULL);
+		XmlAttribute_t1173852259 * L_10 = XmlAttributeCollection_get_ItemOf_m2093630806(L_8, L_9, /*hidden argument*/NULL);
 		V_4 = L_10;
 		XmlAttribute_t1173852259 * L_11 = V_4;
 		NullCheck(L_11);
@@ -26789,7 +26789,7 @@ extern "C" IL2CPP_METHOD_ATTR RuntimeObject* XmlNamespaceManager_GetEnumerator_m
 	{
 		int32_t L_0 = __this->get_lastDecl_1();
 		Dictionary_2_t1632706988 * L_1 = (Dictionary_2_t1632706988 *)il2cpp_codegen_object_new(Dictionary_2_t1632706988_il2cpp_TypeInfo_var);
-		Dictionary_2__ctor_m2597574997(L_1, ((int32_t)il2cpp_codegen_add((int32_t)L_0, (int32_t)1)), /*hidden argument*/Dictionary_2__ctor_m2597574997_RuntimeMethod_var);
+		Dictionary_2__ctor_m4186433798(L_1, ((int32_t)il2cpp_codegen_add((int32_t)L_0, (int32_t)1)), /*hidden argument*/Dictionary_2__ctor_m4186433798_RuntimeMethod_var);
 		V_0 = L_1;
 		V_1 = 0;
 		goto IL_0051;
@@ -26929,7 +26929,7 @@ IL_0048:
 		int32_t L_8 = __this->get_lastDecl_1();
 		int32_t L_9 = V_0;
 		Dictionary_2_t1632706988 * L_10 = (Dictionary_2_t1632706988 *)il2cpp_codegen_object_new(Dictionary_2_t1632706988_il2cpp_TypeInfo_var);
-		Dictionary_2__ctor_m2597574997(L_10, ((int32_t)il2cpp_codegen_add((int32_t)((int32_t)il2cpp_codegen_subtract((int32_t)L_8, (int32_t)L_9)), (int32_t)1)), /*hidden argument*/Dictionary_2__ctor_m2597574997_RuntimeMethod_var);
+		Dictionary_2__ctor_m4186433798(L_10, ((int32_t)il2cpp_codegen_add((int32_t)((int32_t)il2cpp_codegen_subtract((int32_t)L_8, (int32_t)L_9)), (int32_t)1)), /*hidden argument*/Dictionary_2__ctor_m4186433798_RuntimeMethod_var);
 		V_1 = L_10;
 		goto IL_00ad;
 	}
@@ -33059,7 +33059,7 @@ IL_002f:
 		XmlAttributeCollection_t2316283784 * L_10 = VirtFuncInvoker0< XmlAttributeCollection_t2316283784 * >::Invoke(14 /* System.Xml.XmlAttributeCollection System.Xml.XmlNode::get_Attributes() */, ((XmlElement_t561603118 *)CastclassClass((RuntimeObject*)L_9, XmlElement_t561603118_il2cpp_TypeInfo_var)));
 		int32_t L_11 = ___attributeIndex0;
 		NullCheck(L_10);
-		XmlAttribute_t1173852259 * L_12 = XmlAttributeCollection_get_ItemOf_m2829877268(L_10, L_11, /*hidden argument*/NULL);
+		XmlAttribute_t1173852259 * L_12 = XmlAttributeCollection_get_ItemOf_m2093630806(L_10, L_11, /*hidden argument*/NULL);
 		V_0 = L_12;
 		XmlAttribute_t1173852259 * L_13 = V_0;
 		if (!L_13)
@@ -33086,7 +33086,7 @@ IL_006b:
 		XmlAttributeCollection_t2316283784 * L_19 = VirtFuncInvoker0< XmlAttributeCollection_t2316283784 * >::Invoke(14 /* System.Xml.XmlAttributeCollection System.Xml.XmlNode::get_Attributes() */, ((XmlElement_t561603118 *)CastclassClass((RuntimeObject*)L_18, XmlElement_t561603118_il2cpp_TypeInfo_var)));
 		int32_t L_20 = ___attributeIndex0;
 		NullCheck(L_19);
-		XmlAttribute_t1173852259 * L_21 = XmlAttributeCollection_get_ItemOf_m2829877268(L_19, L_20, /*hidden argument*/NULL);
+		XmlAttribute_t1173852259 * L_21 = XmlAttributeCollection_get_ItemOf_m2093630806(L_19, L_20, /*hidden argument*/NULL);
 		V_0 = L_21;
 		XmlAttribute_t1173852259 * L_22 = V_0;
 		if (!L_22)
@@ -33170,7 +33170,7 @@ IL_0036:
 		__this->set_attrIndex_3(L_11);
 		int32_t L_12 = V_1;
 		NullCheck(L_9);
-		XmlAttribute_t1173852259 * L_13 = XmlAttributeCollection_get_ItemOf_m2829877268(L_9, L_12, /*hidden argument*/NULL);
+		XmlAttribute_t1173852259 * L_13 = XmlAttributeCollection_get_ItemOf_m2093630806(L_9, L_12, /*hidden argument*/NULL);
 		__this->set_curNode_0(L_13);
 		return (bool)1;
 	}
@@ -33204,7 +33204,7 @@ IL_005f:
 		NullCheck(L_21);
 		XmlAttributeCollection_t2316283784 * L_22 = VirtFuncInvoker0< XmlAttributeCollection_t2316283784 * >::Invoke(14 /* System.Xml.XmlAttributeCollection System.Xml.XmlNode::get_Attributes() */, L_21);
 		NullCheck(L_22);
-		XmlAttribute_t1173852259 * L_23 = XmlAttributeCollection_get_ItemOf_m2829877268(L_22, 0, /*hidden argument*/NULL);
+		XmlAttribute_t1173852259 * L_23 = XmlAttributeCollection_get_ItemOf_m2093630806(L_22, 0, /*hidden argument*/NULL);
 		__this->set_curNode_0(L_23);
 		__this->set_attrIndex_3(0);
 		return (bool)1;
@@ -33928,7 +33928,7 @@ IL_0094:
 		XmlAttributeCollection_t2316283784 * L_22 = V_2;
 		int32_t L_23 = V_3;
 		NullCheck(L_22);
-		XmlAttribute_t1173852259 * L_24 = XmlAttributeCollection_get_ItemOf_m2829877268(L_22, L_23, /*hidden argument*/NULL);
+		XmlAttribute_t1173852259 * L_24 = XmlAttributeCollection_get_ItemOf_m2093630806(L_22, L_23, /*hidden argument*/NULL);
 		V_4 = L_24;
 		XmlAttribute_t1173852259 * L_25 = V_4;
 		NullCheck(L_25);
@@ -38230,7 +38230,7 @@ extern "C" IL2CPP_METHOD_ATTR Uri_t100236324 * XmlResolver_ResolveUri_m305117215
 	{
 		Uri_t100236324 * L_0 = ___baseUri0;
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_1 = Uri_op_Equality_m2988156441(NULL /*static, unused*/, L_0, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_1 = Uri_op_Equality_m685520154(NULL /*static, unused*/, L_0, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (L_1)
 		{
 			goto IL_001e;
@@ -38239,7 +38239,7 @@ extern "C" IL2CPP_METHOD_ATTR Uri_t100236324 * XmlResolver_ResolveUri_m305117215
 	{
 		Uri_t100236324 * L_2 = ___baseUri0;
 		NullCheck(L_2);
-		bool L_3 = Uri_get_IsAbsoluteUri_m3834080655(L_2, /*hidden argument*/NULL);
+		bool L_3 = Uri_get_IsAbsoluteUri_m3666899587(L_2, /*hidden argument*/NULL);
 		if (L_3)
 		{
 			goto IL_004a;
@@ -38248,7 +38248,7 @@ extern "C" IL2CPP_METHOD_ATTR Uri_t100236324 * XmlResolver_ResolveUri_m305117215
 	{
 		Uri_t100236324 * L_4 = ___baseUri0;
 		NullCheck(L_4);
-		String_t* L_5 = Uri_get_OriginalString_m2551181575(L_4, /*hidden argument*/NULL);
+		String_t* L_5 = Uri_get_OriginalString_m3715995233(L_4, /*hidden argument*/NULL);
 		NullCheck(L_5);
 		int32_t L_6 = String_get_Length_m3847582255(L_5, /*hidden argument*/NULL);
 		if (L_6)
@@ -38261,11 +38261,11 @@ IL_001e:
 	{
 		String_t* L_7 = ___relativeUri1;
 		Uri_t100236324 * L_8 = (Uri_t100236324 *)il2cpp_codegen_object_new(Uri_t100236324_il2cpp_TypeInfo_var);
-		Uri__ctor_m391584135(L_8, L_7, 0, /*hidden argument*/NULL);
+		Uri__ctor_m3040793867(L_8, L_7, 0, /*hidden argument*/NULL);
 		V_0 = L_8;
 		Uri_t100236324 * L_9 = V_0;
 		NullCheck(L_9);
-		bool L_10 = Uri_get_IsAbsoluteUri_m3834080655(L_9, /*hidden argument*/NULL);
+		bool L_10 = Uri_get_IsAbsoluteUri_m3666899587(L_9, /*hidden argument*/NULL);
 		if (L_10)
 		{
 			goto IL_0048;
@@ -38274,7 +38274,7 @@ IL_001e:
 	{
 		Uri_t100236324 * L_11 = V_0;
 		NullCheck(L_11);
-		String_t* L_12 = Uri_get_OriginalString_m2551181575(L_11, /*hidden argument*/NULL);
+		String_t* L_12 = Uri_get_OriginalString_m3715995233(L_11, /*hidden argument*/NULL);
 		NullCheck(L_12);
 		int32_t L_13 = String_get_Length_m3847582255(L_12, /*hidden argument*/NULL);
 		if ((((int32_t)L_13) <= ((int32_t)0)))
@@ -38287,7 +38287,7 @@ IL_001e:
 		IL2CPP_RUNTIME_CLASS_INIT(Path_t1605229823_il2cpp_TypeInfo_var);
 		String_t* L_15 = Path_GetFullPath_m4142135635(NULL /*static, unused*/, L_14, /*hidden argument*/NULL);
 		Uri_t100236324 * L_16 = (Uri_t100236324 *)il2cpp_codegen_object_new(Uri_t100236324_il2cpp_TypeInfo_var);
-		Uri__ctor_m1474792120(L_16, L_15, /*hidden argument*/NULL);
+		Uri__ctor_m800430703(L_16, L_15, /*hidden argument*/NULL);
 		V_0 = L_16;
 	}
 
@@ -38325,7 +38325,7 @@ IL_0057:
 	{
 		Uri_t100236324 * L_22 = ___baseUri0;
 		NullCheck(L_22);
-		bool L_23 = Uri_get_IsAbsoluteUri_m3834080655(L_22, /*hidden argument*/NULL);
+		bool L_23 = Uri_get_IsAbsoluteUri_m3666899587(L_22, /*hidden argument*/NULL);
 		if (L_23)
 		{
 			goto IL_006f;
@@ -38343,7 +38343,7 @@ IL_006f:
 		Uri_t100236324 * L_26 = ___baseUri0;
 		String_t* L_27 = ___relativeUri1;
 		Uri_t100236324 * L_28 = (Uri_t100236324 *)il2cpp_codegen_object_new(Uri_t100236324_il2cpp_TypeInfo_var);
-		Uri__ctor_m279432735(L_28, L_26, L_27, /*hidden argument*/NULL);
+		Uri__ctor_m4293005803(L_28, L_26, L_27, /*hidden argument*/NULL);
 		return L_28;
 	}
 }
@@ -38359,7 +38359,7 @@ extern "C" IL2CPP_METHOD_ATTR bool XmlResolver_SupportsType_m3439235762 (XmlReso
 	{
 		Uri_t100236324 * L_0 = ___absoluteUri0;
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_1 = Uri_op_Equality_m2988156441(NULL /*static, unused*/, L_0, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_1 = Uri_op_Equality_m685520154(NULL /*static, unused*/, L_0, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (!L_1)
 		{
 			goto IL_0014;
@@ -44085,7 +44085,7 @@ extern "C" IL2CPP_METHOD_ATTR Uri_t100236324 * XmlTextReaderImpl_get_DtdParserPr
 		ParsingState_t1780334922 * L_3 = __this->get_address_of_ps_5();
 		Uri_t100236324 * L_4 = L_3->get_baseUri_14();
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_5 = Uri_op_Equality_m2988156441(NULL /*static, unused*/, L_4, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_5 = Uri_op_Equality_m685520154(NULL /*static, unused*/, L_4, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (!L_5)
 		{
 			goto IL_0050;
@@ -44565,7 +44565,7 @@ IL_000a:
 		ParsingState_t1780334922 * L_1 = __this->get_address_of_ps_5();
 		Uri_t100236324 * L_2 = L_1->get_baseUri_14();
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_3 = Uri_op_Equality_m2988156441(NULL /*static, unused*/, L_2, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_3 = Uri_op_Equality_m685520154(NULL /*static, unused*/, L_2, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (!L_3)
 		{
 			goto IL_0051;
@@ -45974,7 +45974,7 @@ extern "C" IL2CPP_METHOD_ATTR void XmlTextReaderImpl_OpenUrl_m4251952304 (XmlTex
 		ParsingState_t1780334922 * L_1 = __this->get_address_of_ps_5();
 		Uri_t100236324 * L_2 = L_1->get_baseUri_14();
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_3 = Uri_op_Inequality_m3504002810(NULL /*static, unused*/, L_2, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_3 = Uri_op_Inequality_m839253362(NULL /*static, unused*/, L_2, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (L_3)
 		{
 			goto IL_004d;

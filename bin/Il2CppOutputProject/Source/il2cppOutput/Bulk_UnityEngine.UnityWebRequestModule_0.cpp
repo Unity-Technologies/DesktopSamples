@@ -76,8 +76,8 @@ extern const uint32_t WebRequestUtils__cctor_m4190982137_MetadataUsageId;
 struct ByteU5BU5D_t4116647657;
 
 
-#ifndef U3CMODULEU3E_T692745552_H
-#define U3CMODULEU3E_T692745552_H
+#ifndef U3CMODULEU3E_T692745557_H
+#define U3CMODULEU3E_T692745557_H
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
@@ -85,7 +85,7 @@ struct ByteU5BU5D_t4116647657;
 #endif
 
 // <Module>
-struct  U3CModuleU3E_t692745552 
+struct  U3CModuleU3E_t692745557 
 {
 public:
 
@@ -95,7 +95,7 @@ public:
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-#endif // U3CMODULEU3E_T692745552_H
+#endif // U3CMODULEU3E_T692745557_H
 #ifndef RUNTIMEOBJECT_H
 #define RUNTIMEOBJECT_H
 #ifdef __clang__
@@ -1363,11 +1363,11 @@ extern "C" IL2CPP_METHOD_ATTR void CertificateHandler_Release_m648790222 (Certif
 // System.Char System.String::get_Chars(System.Int32)
 extern "C" IL2CPP_METHOD_ATTR Il2CppChar String_get_Chars_m2986988803 (String_t* __this, int32_t p0, const RuntimeMethod* method);
 // System.Void System.Uri::.ctor(System.String,System.UriKind)
-extern "C" IL2CPP_METHOD_ATTR void Uri__ctor_m391584135 (Uri_t100236324 * __this, String_t* p0, int32_t p1, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR void Uri__ctor_m3040793867 (Uri_t100236324 * __this, String_t* p0, int32_t p1, const RuntimeMethod* method);
 // System.Boolean System.Uri::get_IsAbsoluteUri()
-extern "C" IL2CPP_METHOD_ATTR bool Uri_get_IsAbsoluteUri_m3834080655 (Uri_t100236324 * __this, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR bool Uri_get_IsAbsoluteUri_m3666899587 (Uri_t100236324 * __this, const RuntimeMethod* method);
 // System.String System.Uri::get_AbsoluteUri()
-extern "C" IL2CPP_METHOD_ATTR String_t* Uri_get_AbsoluteUri_m637273031 (Uri_t100236324 * __this, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR String_t* Uri_get_AbsoluteUri_m2582056986 (Uri_t100236324 * __this, const RuntimeMethod* method);
 // System.Void System.Uri::.ctor(System.Uri,System.Uri)
 extern "C" IL2CPP_METHOD_ATTR void Uri__ctor_m253204164 (Uri_t100236324 * __this, Uri_t100236324 * p0, Uri_t100236324 * p1, const RuntimeMethod* method);
 // System.Void System.Text.RegularExpressions.Regex::.ctor(System.String)
@@ -1558,7 +1558,7 @@ extern "C" IL2CPP_METHOD_ATTR String_t* WebRequestUtils_RedirectTo_m55747000 (Ru
 	{
 		String_t* L_2 = ___redirectUri1;
 		Uri_t100236324 * L_3 = (Uri_t100236324 *)il2cpp_codegen_object_new(Uri_t100236324_il2cpp_TypeInfo_var);
-		Uri__ctor_m391584135(L_3, L_2, 2, /*hidden argument*/NULL);
+		Uri__ctor_m3040793867(L_3, L_2, 2, /*hidden argument*/NULL);
 		V_0 = L_3;
 		goto IL_0024;
 	}
@@ -1567,7 +1567,7 @@ IL_001c:
 	{
 		String_t* L_4 = ___redirectUri1;
 		Uri_t100236324 * L_5 = (Uri_t100236324 *)il2cpp_codegen_object_new(Uri_t100236324_il2cpp_TypeInfo_var);
-		Uri__ctor_m391584135(L_5, L_4, 0, /*hidden argument*/NULL);
+		Uri__ctor_m3040793867(L_5, L_4, 0, /*hidden argument*/NULL);
 		V_0 = L_5;
 	}
 
@@ -1575,7 +1575,7 @@ IL_0024:
 	{
 		Uri_t100236324 * L_6 = V_0;
 		NullCheck(L_6);
-		bool L_7 = Uri_get_IsAbsoluteUri_m3834080655(L_6, /*hidden argument*/NULL);
+		bool L_7 = Uri_get_IsAbsoluteUri_m3666899587(L_6, /*hidden argument*/NULL);
 		if (!L_7)
 		{
 			goto IL_003b;
@@ -1584,7 +1584,7 @@ IL_0024:
 	{
 		Uri_t100236324 * L_8 = V_0;
 		NullCheck(L_8);
-		String_t* L_9 = Uri_get_AbsoluteUri_m637273031(L_8, /*hidden argument*/NULL);
+		String_t* L_9 = Uri_get_AbsoluteUri_m2582056986(L_8, /*hidden argument*/NULL);
 		V_1 = L_9;
 		goto IL_0057;
 	}
@@ -1593,7 +1593,7 @@ IL_003b:
 	{
 		String_t* L_10 = ___baseUri0;
 		Uri_t100236324 * L_11 = (Uri_t100236324 *)il2cpp_codegen_object_new(Uri_t100236324_il2cpp_TypeInfo_var);
-		Uri__ctor_m391584135(L_11, L_10, 1, /*hidden argument*/NULL);
+		Uri__ctor_m3040793867(L_11, L_10, 1, /*hidden argument*/NULL);
 		V_2 = L_11;
 		Uri_t100236324 * L_12 = V_2;
 		Uri_t100236324 * L_13 = V_0;
@@ -1602,7 +1602,7 @@ IL_003b:
 		V_3 = L_14;
 		Uri_t100236324 * L_15 = V_3;
 		NullCheck(L_15);
-		String_t* L_16 = Uri_get_AbsoluteUri_m637273031(L_15, /*hidden argument*/NULL);
+		String_t* L_16 = Uri_get_AbsoluteUri_m2582056986(L_15, /*hidden argument*/NULL);
 		V_1 = L_16;
 		goto IL_0057;
 	}

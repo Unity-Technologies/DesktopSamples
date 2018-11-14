@@ -34,8 +34,8 @@ extern const uint32_t TerrainData__cctor_m2936165929_MetadataUsageId;
 
 
 
-#ifndef U3CMODULEU3E_T692745547_H
-#define U3CMODULEU3E_T692745547_H
+#ifndef U3CMODULEU3E_T692745552_H
+#define U3CMODULEU3E_T692745552_H
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
@@ -43,7 +43,7 @@ extern const uint32_t TerrainData__cctor_m2936165929_MetadataUsageId;
 #endif
 
 // <Module>
-struct  U3CModuleU3E_t692745547 
+struct  U3CModuleU3E_t692745552 
 {
 public:
 
@@ -53,7 +53,7 @@ public:
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-#endif // U3CMODULEU3E_T692745547_H
+#endif // U3CMODULEU3E_T692745552_H
 #ifndef RUNTIMEOBJECT_H
 #define RUNTIMEOBJECT_H
 #ifdef __clang__

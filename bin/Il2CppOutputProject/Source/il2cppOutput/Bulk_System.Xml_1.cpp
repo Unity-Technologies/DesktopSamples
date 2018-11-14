@@ -22479,7 +22479,7 @@ extern "C" IL2CPP_METHOD_ATTR void DatatypeImplementation__ctor_m893301879 (Data
 // System.Exception System.Xml.XmlConvert::TryToUri(System.String,System.Uri&)
 extern "C" IL2CPP_METHOD_ATTR Exception_t * XmlConvert_TryToUri_m2047746468 (RuntimeObject * __this /* static, unused */, String_t* ___s0, Uri_t100236324 ** ___result1, const RuntimeMethod* method);
 // System.String System.Uri::get_OriginalString()
-extern "C" IL2CPP_METHOD_ATTR String_t* Uri_get_OriginalString_m2551181575 (Uri_t100236324 * __this, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR String_t* Uri_get_OriginalString_m3715995233 (Uri_t100236324 * __this, const RuntimeMethod* method);
 // System.Exception System.Xml.Schema.StringFacetsChecker::CheckValueFacets(System.String,System.Xml.Schema.XmlSchemaDatatype,System.Boolean)
 extern "C" IL2CPP_METHOD_ATTR Exception_t * StringFacetsChecker_CheckValueFacets_m1260256697 (StringFacetsChecker_t2361523877 * __this, String_t* ___value0, XmlSchemaDatatype_t322714710 * ___datatype1, bool ___verifyUri2, const RuntimeMethod* method);
 // System.Int32 System.Xml.Schema.DatatypeImplementation::Compare(System.Byte[],System.Byte[])
@@ -22828,7 +22828,7 @@ extern "C" IL2CPP_METHOD_ATTR Exception_t * FacetsChecker_CheckPatternFacets_m12
 // System.String System.Xml.XmlComplianceUtil::CDataNormalize(System.String)
 extern "C" IL2CPP_METHOD_ATTR String_t* XmlComplianceUtil_CDataNormalize_m1660246425 (RuntimeObject * __this /* static, unused */, String_t* ___value0, const RuntimeMethod* method);
 // System.Boolean System.Text.RegularExpressions.Regex::IsMatch(System.String)
-extern "C" IL2CPP_METHOD_ATTR bool Regex_IsMatch_m3802225320 (Regex_t3657309853 * __this, String_t* p0, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR bool Regex_IsMatch_m4067478295 (Regex_t3657309853 * __this, String_t* p0, const RuntimeMethod* method);
 // System.Void System.Xml.Schema.RestrictionFacets::.ctor()
 extern "C" IL2CPP_METHOD_ATTR void RestrictionFacets__ctor_m3682034103 (RestrictionFacets_t1638599442 * __this, const RuntimeMethod* method);
 // System.Void System.Xml.Schema.FacetsChecker/FacetsCompiler::.ctor(System.Xml.Schema.DatatypeImplementation,System.Xml.Schema.RestrictionFacets)
@@ -22900,7 +22900,7 @@ extern "C" IL2CPP_METHOD_ATTR StringBuilder_t * StringBuilder_Insert_m3039182437
 // System.String System.Xml.Schema.FacetsChecker/FacetsCompiler::Preprocess(System.String)
 extern "C" IL2CPP_METHOD_ATTR String_t* FacetsCompiler_Preprocess_m544474351 (RuntimeObject * __this /* static, unused */, String_t* ___pattern0, const RuntimeMethod* method);
 // System.Void System.Text.RegularExpressions.Regex::.ctor(System.String,System.Text.RegularExpressions.RegexOptions)
-extern "C" IL2CPP_METHOD_ATTR void Regex__ctor_m1639286310 (Regex_t3657309853 * __this, String_t* p0, int32_t p1, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR void Regex__ctor_m1728442805 (Regex_t3657309853 * __this, String_t* p0, int32_t p1, const RuntimeMethod* method);
 // System.String System.Xml.Schema.XmlSchemaObject::get_SourceUri()
 extern "C" IL2CPP_METHOD_ATTR String_t* XmlSchemaObject_get_SourceUri_m2171292794 (XmlSchemaObject_t1315720168 * __this, const RuntimeMethod* method);
 // System.Int32 System.Xml.Schema.XmlSchemaObject::get_LineNumber()
@@ -23080,7 +23080,7 @@ extern "C" IL2CPP_METHOD_ATTR void XmlSchemaException__ctor_m1612965402 (XmlSche
 // System.Void System.Xml.Schema.XmlSchema::.ctor()
 extern "C" IL2CPP_METHOD_ATTR void XmlSchema__ctor_m4156575881 (XmlSchema_t3742557897 * __this, const RuntimeMethod* method);
 // System.Void System.Uri::.ctor(System.String,System.UriKind)
-extern "C" IL2CPP_METHOD_ATTR void Uri__ctor_m391584135 (Uri_t100236324 * __this, String_t* p0, int32_t p1, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR void Uri__ctor_m3040793867 (Uri_t100236324 * __this, String_t* p0, int32_t p1, const RuntimeMethod* method);
 // System.Void System.Xml.Schema.XmlSchema::set_BaseUri(System.Uri)
 extern "C" IL2CPP_METHOD_ATTR void XmlSchema_set_BaseUri_m3973089276 (XmlSchema_t3742557897 * __this, Uri_t100236324 * ___value0, const RuntimeMethod* method);
 // System.Void System.Xml.Schema.XsdBuilder::.ctor(System.Xml.XmlReader,System.Xml.XmlNamespaceManager,System.Xml.Schema.XmlSchema,System.Xml.XmlNameTable,System.Xml.Schema.SchemaNames,System.Xml.Schema.ValidationEventHandler)
@@ -28433,7 +28433,7 @@ extern "C" IL2CPP_METHOD_ATTR Exception_t * Datatype_anyURI_TryParseValue_m33280
 	{
 		Uri_t100236324 * L_7 = V_1;
 		NullCheck(L_7);
-		String_t* L_8 = Uri_get_OriginalString_m2551181575(L_7, /*hidden argument*/NULL);
+		String_t* L_8 = Uri_get_OriginalString_m3715995233(L_7, /*hidden argument*/NULL);
 		V_2 = L_8;
 		IL2CPP_RUNTIME_CLASS_INIT(DatatypeImplementation_t3722098011_il2cpp_TypeInfo_var);
 		FacetsChecker_t3316496195 * L_9 = ((DatatypeImplementation_t3722098011_StaticFields*)il2cpp_codegen_static_fields_for(DatatypeImplementation_t3722098011_il2cpp_TypeInfo_var))->get_stringFacetsChecker_16();
@@ -37797,7 +37797,7 @@ IL_0011:
 		RuntimeObject * L_6 = VirtFuncInvoker1< RuntimeObject *, int32_t >::Invoke(27 /* System.Object System.Collections.ArrayList::get_Item(System.Int32) */, L_4, L_5);
 		String_t* L_7 = ___value1;
 		NullCheck(((Regex_t3657309853 *)CastclassClass((RuntimeObject*)L_6, Regex_t3657309853_il2cpp_TypeInfo_var)));
-		bool L_8 = Regex_IsMatch_m3802225320(((Regex_t3657309853 *)CastclassClass((RuntimeObject*)L_6, Regex_t3657309853_il2cpp_TypeInfo_var)), L_7, /*hidden argument*/NULL);
+		bool L_8 = Regex_IsMatch_m4067478295(((Regex_t3657309853 *)CastclassClass((RuntimeObject*)L_6, Regex_t3657309853_il2cpp_TypeInfo_var)), L_7, /*hidden argument*/NULL);
 		if (L_8)
 		{
 			goto IL_003a;
@@ -39636,7 +39636,7 @@ IL_0072:
 			IL2CPP_RUNTIME_CLASS_INIT(FacetsCompiler_t1584362354_il2cpp_TypeInfo_var);
 			String_t* L_15 = FacetsCompiler_Preprocess_m544474351(NULL /*static, unused*/, L_14, /*hidden argument*/NULL);
 			Regex_t3657309853 * L_16 = (Regex_t3657309853 *)il2cpp_codegen_object_new(Regex_t3657309853_il2cpp_TypeInfo_var);
-			Regex__ctor_m1639286310(L_16, L_15, 0, /*hidden argument*/NULL);
+			Regex__ctor_m1728442805(L_16, L_15, 0, /*hidden argument*/NULL);
 			NullCheck(L_12);
 			VirtFuncInvoker1< int32_t, RuntimeObject * >::Invoke(29 /* System.Int32 System.Collections.ArrayList::Add(System.Object) */, L_12, L_16);
 			goto IL_00de;
@@ -46015,7 +46015,7 @@ IL_00b6:
 		NullCheck(L_33);
 		String_t* L_34 = VirtFuncInvoker0< String_t* >::Invoke(13 /* System.String System.Xml.XmlReader::get_BaseURI() */, L_33);
 		Uri_t100236324 * L_35 = (Uri_t100236324 *)il2cpp_codegen_object_new(Uri_t100236324_il2cpp_TypeInfo_var);
-		Uri__ctor_m391584135(L_35, L_34, 0, /*hidden argument*/NULL);
+		Uri__ctor_m3040793867(L_35, L_34, 0, /*hidden argument*/NULL);
 		NullCheck(L_32);
 		XmlSchema_set_BaseUri_m3973089276(L_32, L_35, /*hidden argument*/NULL);
 		XmlReader_t3121518892 * L_36 = ___reader0;

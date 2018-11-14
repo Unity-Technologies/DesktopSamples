@@ -16723,7 +16723,7 @@ extern "C" IL2CPP_METHOD_ATTR void Hashtable__ctor_m1815022027 (Hashtable_t18538
 // System.Uri System.Xml.Schema.XmlSchema::get_BaseUri()
 extern "C" IL2CPP_METHOD_ATTR Uri_t100236324 * XmlSchema_get_BaseUri_m2980600977 (XmlSchema_t3742557897 * __this, const RuntimeMethod* method);
 // System.Boolean System.Uri::op_Inequality(System.Uri,System.Uri)
-extern "C" IL2CPP_METHOD_ATTR bool Uri_op_Inequality_m3504002810 (RuntimeObject * __this /* static, unused */, Uri_t100236324 * p0, Uri_t100236324 * p1, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR bool Uri_op_Inequality_m839253362 (RuntimeObject * __this /* static, unused */, Uri_t100236324 * p0, Uri_t100236324 * p1, const RuntimeMethod* method);
 // System.Void System.Xml.Schema.SchemaCollectionPreprocessor::LoadExternals(System.Xml.Schema.XmlSchema,System.Xml.Schema.XmlSchemaCollection)
 extern "C" IL2CPP_METHOD_ATTR void SchemaCollectionPreprocessor_LoadExternals_m2433112869 (SchemaCollectionPreprocessor_t2786719976 * __this, XmlSchema_t3742557897 * ___schema0, XmlSchemaCollection_t3610399789 * ___xsc1, const RuntimeMethod* method);
 // System.Void System.Xml.Schema.SchemaCollectionPreprocessor::ValidateIdAttribute(System.Xml.Schema.XmlSchemaObject)
@@ -32958,7 +32958,7 @@ extern "C" IL2CPP_METHOD_ATTR bool SchemaCollectionPreprocessor_Execute_m1439275
 		NullCheck(L_7);
 		Uri_t100236324 * L_8 = XmlSchema_get_BaseUri_m2980600977(L_7, /*hidden argument*/NULL);
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_9 = Uri_op_Inequality_m3504002810(NULL /*static, unused*/, L_8, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_9 = Uri_op_Inequality_m839253362(NULL /*static, unused*/, L_8, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (!L_9)
 		{
 			goto IL_005f;
@@ -33315,7 +33315,7 @@ IL_005e:
 		V_2 = L_14;
 		Uri_t100236324 * L_15 = V_2;
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_16 = Uri_op_Inequality_m3504002810(NULL /*static, unused*/, L_15, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_16 = Uri_op_Inequality_m839253362(NULL /*static, unused*/, L_15, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (!L_16)
 		{
 			goto IL_0089;
@@ -33422,7 +33422,7 @@ IL_00cb:
 		NullCheck(L_45);
 		Uri_t100236324 * L_46 = XmlSchema_get_BaseUri_m2980600977(L_45, /*hidden argument*/NULL);
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_47 = Uri_op_Inequality_m3504002810(NULL /*static, unused*/, L_46, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_47 = Uri_op_Inequality_m839253362(NULL /*static, unused*/, L_46, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (!L_47)
 		{
 			goto IL_0143;
@@ -33489,7 +33489,7 @@ IL_014e:
 		NullCheck(L_67);
 		Uri_t100236324 * L_68 = XmlSchemaExternal_get_BaseUri_m3005280879(L_67, /*hidden argument*/NULL);
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_69 = Uri_op_Inequality_m3504002810(NULL /*static, unused*/, L_68, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_69 = Uri_op_Inequality_m839253362(NULL /*static, unused*/, L_68, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (L_69)
 		{
 			goto IL_01b9;
@@ -33511,7 +33511,7 @@ IL_014e:
 		NullCheck(L_73);
 		Uri_t100236324 * L_74 = XmlSchema_get_BaseUri_m2980600977(L_73, /*hidden argument*/NULL);
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_75 = Uri_op_Inequality_m3504002810(NULL /*static, unused*/, L_74, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_75 = Uri_op_Inequality_m839253362(NULL /*static, unused*/, L_74, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (L_75)
 		{
 			goto IL_01ab;
@@ -33548,7 +33548,7 @@ IL_01c0:
 		V_7 = G_B28_0;
 		Uri_t100236324 * L_81 = V_7;
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_82 = Uri_op_Inequality_m3504002810(NULL /*static, unused*/, L_81, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_82 = Uri_op_Inequality_m839253362(NULL /*static, unused*/, L_81, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (!L_82)
 		{
 			goto IL_01f4;
@@ -33658,7 +33658,7 @@ IL_0257:
 		V_4 = L_108;
 		Uri_t100236324 * L_109 = V_4;
 		IL2CPP_RUNTIME_CLASS_INIT(Uri_t100236324_il2cpp_TypeInfo_var);
-		bool L_110 = Uri_op_Inequality_m3504002810(NULL /*static, unused*/, L_109, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
+		bool L_110 = Uri_op_Inequality_m839253362(NULL /*static, unused*/, L_109, (Uri_t100236324 *)NULL, /*hidden argument*/NULL);
 		if (!L_110)
 		{
 			goto IL_0385;

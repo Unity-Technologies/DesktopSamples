@@ -896,7 +896,7 @@ extern const uint32_t ConfigurationLockCollection_CheckName_m2309108234_Metadata
 extern const uint32_t ConfigurationLockCollection_SetFromList_m308567964_MetadataUsageId;
 extern const uint32_t ConfigurationLockCollection__ctor_m3268022489_MetadataUsageId;
 extern const uint32_t ConfigurationManager_GetAssemblyInfo_m1661783787_MetadataUsageId;
-extern const uint32_t ConfigurationManager_GetSection_m2104119567_MetadataUsageId;
+extern const uint32_t ConfigurationManager_GetSection_m3606555405_MetadataUsageId;
 extern const uint32_t ConfigurationManager_OpenExeConfigurationInternal_m584204953_MetadataUsageId;
 extern const uint32_t ConfigurationManager__cctor_m3679384302_MetadataUsageId;
 extern const uint32_t ConfigurationManager_get_ConfigurationFactory_m737824481_MetadataUsageId;
@@ -10520,7 +10520,7 @@ extern "C" IL2CPP_METHOD_ATTR ConfigurationPropertyCollection_t2852175726 * Conf
 // System.String System.Configuration.ConfigurationProperty::ConvertToString(System.Object)
 extern "C" IL2CPP_METHOD_ATTR String_t* ConfigurationProperty_ConvertToString_m2431256523 (ConfigurationProperty_t3590861854 * __this, RuntimeObject * ___value0, const RuntimeMethod* method);
 // System.Void System.Xml.XmlWriter::WriteAttributeString(System.String,System.String)
-extern "C" IL2CPP_METHOD_ATTR void XmlWriter_WriteAttributeString_m3906092358 (XmlWriter_t127905479 * __this, String_t* p0, String_t* p1, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR void XmlWriter_WriteAttributeString_m4004822363 (XmlWriter_t127905479 * __this, String_t* p0, String_t* p1, const RuntimeMethod* method);
 // System.Int32 System.Configuration.ConfigurationPropertyCollection::get_Count()
 extern "C" IL2CPP_METHOD_ATTR int32_t ConfigurationPropertyCollection_get_Count_m1389130002 (ConfigurationPropertyCollection_t2852175726 * __this, const RuntimeMethod* method);
 // System.Void System.InvalidOperationException::.ctor()
@@ -10962,7 +10962,7 @@ extern "C" IL2CPP_METHOD_ATTR ProtectedConfigurationSection_t1525901209 * Protec
 // System.Configuration.ProtectedConfigurationProviderCollection System.Configuration.ProtectedConfigurationSection::GetAllProviders()
 extern "C" IL2CPP_METHOD_ATTR ProtectedConfigurationProviderCollection_t729952796 * ProtectedConfigurationSection_GetAllProviders_m980554682 (ProtectedConfigurationSection_t1525901209 * __this, const RuntimeMethod* method);
 // System.Object System.Configuration.ConfigurationManager::GetSection(System.String)
-extern "C" IL2CPP_METHOD_ATTR RuntimeObject * ConfigurationManager_GetSection_m2104119567 (RuntimeObject * __this /* static, unused */, String_t* ___sectionName0, const RuntimeMethod* method);
+extern "C" IL2CPP_METHOD_ATTR RuntimeObject * ConfigurationManager_GetSection_m3606555405 (RuntimeObject * __this /* static, unused */, String_t* ___sectionName0, const RuntimeMethod* method);
 // System.Configuration.ProtectedConfigurationProviderCollection System.Configuration.ProtectedConfiguration::get_Providers()
 extern "C" IL2CPP_METHOD_ATTR ProtectedConfigurationProviderCollection_t729952796 * ProtectedConfiguration_get_Providers_m3345641087 (RuntimeObject * __this /* static, unused */, const RuntimeMethod* method);
 // System.Configuration.ProtectedConfigurationProvider System.Configuration.ProtectedConfigurationProviderCollection::get_Item(System.String)
@@ -15292,7 +15292,7 @@ IL_001a:
 			NullCheck(L_10);
 			String_t* L_14 = ConfigurationProperty_ConvertToString_m2431256523(L_10, L_13, /*hidden argument*/NULL);
 			NullCheck(L_7);
-			XmlWriter_WriteAttributeString_m3906092358(L_7, L_9, L_14, /*hidden argument*/NULL);
+			XmlWriter_WriteAttributeString_m4004822363(L_7, L_9, L_14, /*hidden argument*/NULL);
 		}
 
 IL_0044:
@@ -15426,7 +15426,7 @@ IL_00b4:
 			NullCheck(L_37);
 			String_t* L_38 = PropertyInformation_GetStringValue_m1329427389(L_37, /*hidden argument*/NULL);
 			NullCheck(L_34);
-			XmlWriter_WriteAttributeString_m3906092358(L_34, L_36, L_38, /*hidden argument*/NULL);
+			XmlWriter_WriteAttributeString_m4004822363(L_34, L_36, L_38, /*hidden argument*/NULL);
 			V_0 = (bool)1;
 		}
 
@@ -20835,12 +20835,12 @@ extern "C" IL2CPP_METHOD_ATTR RuntimeObject* ConfigurationManager_get_Configurat
 	}
 }
 // System.Object System.Configuration.ConfigurationManager::GetSection(System.String)
-extern "C" IL2CPP_METHOD_ATTR RuntimeObject * ConfigurationManager_GetSection_m2104119567 (RuntimeObject * __this /* static, unused */, String_t* ___sectionName0, const RuntimeMethod* method)
+extern "C" IL2CPP_METHOD_ATTR RuntimeObject * ConfigurationManager_GetSection_m3606555405 (RuntimeObject * __this /* static, unused */, String_t* ___sectionName0, const RuntimeMethod* method)
 {
 	static bool s_Il2CppMethodInitialized;
 	if (!s_Il2CppMethodInitialized)
 	{
-		il2cpp_codegen_initialize_method (ConfigurationManager_GetSection_m2104119567_MetadataUsageId);
+		il2cpp_codegen_initialize_method (ConfigurationManager_GetSection_m3606555405_MetadataUsageId);
 		s_Il2CppMethodInitialized = true;
 	}
 	RuntimeObject * V_0 = NULL;
@@ -22675,7 +22675,7 @@ IL_00e5:
 				XmlTextWriter_t2114213153 * L_48 = V_8;
 				String_t* L_49 = V_3;
 				NullCheck(L_48);
-				XmlWriter_WriteAttributeString_m3906092358(L_48, _stringLiteral2099242711, L_49, /*hidden argument*/NULL);
+				XmlWriter_WriteAttributeString_m4004822363(L_48, _stringLiteral2099242711, L_49, /*hidden argument*/NULL);
 				bool L_50 = V_7;
 				if (!L_50)
 				{
@@ -26049,7 +26049,7 @@ extern "C" IL2CPP_METHOD_ATTR ProtectedConfigurationSection_t1525901209 * Protec
 	}
 	{
 		IL2CPP_RUNTIME_CLASS_INIT(ConfigurationManager_t386529156_il2cpp_TypeInfo_var);
-		RuntimeObject * L_0 = ConfigurationManager_GetSection_m2104119567(NULL /*static, unused*/, _stringLiteral2671887318, /*hidden argument*/NULL);
+		RuntimeObject * L_0 = ConfigurationManager_GetSection_m3606555405(NULL /*static, unused*/, _stringLiteral2671887318, /*hidden argument*/NULL);
 		return ((ProtectedConfigurationSection_t1525901209 *)CastclassSealed((RuntimeObject*)L_0, ProtectedConfigurationSection_t1525901209_il2cpp_TypeInfo_var));
 	}
 }

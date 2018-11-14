@@ -156,8 +156,8 @@ struct Object_t631007953_marshaled_pinvoke;;
 struct DelegateU5BU5D_t1703627840;
 
 
-#ifndef U3CMODULEU3E_T692745542_H
-#define U3CMODULEU3E_T692745542_H
+#ifndef U3CMODULEU3E_T692745547_H
+#define U3CMODULEU3E_T692745547_H
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
@@ -165,7 +165,7 @@ struct DelegateU5BU5D_t1703627840;
 #endif
 
 // <Module>
-struct  U3CModuleU3E_t692745542 
+struct  U3CModuleU3E_t692745547 
 {
 public:
 
@@ -175,7 +175,7 @@ public:
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-#endif // U3CMODULEU3E_T692745542_H
+#endif // U3CMODULEU3E_T692745547_H
 #ifndef RUNTIMEOBJECT_H
 #define RUNTIMEOBJECT_H
 #ifdef __clang__

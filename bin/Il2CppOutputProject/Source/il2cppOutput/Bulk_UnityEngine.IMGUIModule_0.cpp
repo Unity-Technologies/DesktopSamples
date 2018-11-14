@@ -433,8 +433,8 @@ struct GUILayoutOptionU5BU5D_t2510215842;
 struct GUIStyleU5BU5D_t2383250302;
 
 
-#ifndef U3CMODULEU3E_T692745536_H
-#define U3CMODULEU3E_T692745536_H
+#ifndef U3CMODULEU3E_T692745541_H
+#define U3CMODULEU3E_T692745541_H
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-offsetof"
@@ -442,7 +442,7 @@ struct GUIStyleU5BU5D_t2383250302;
 #endif
 
 // <Module>
-struct  U3CModuleU3E_t692745536 
+struct  U3CModuleU3E_t692745541 
 {
 public:
 
@@ -452,7 +452,7 @@ public:
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-#endif // U3CMODULEU3E_T692745536_H
+#endif // U3CMODULEU3E_T692745541_H
 #ifndef RUNTIMEOBJECT_H
 #define RUNTIMEOBJECT_H
 #ifdef __clang__
