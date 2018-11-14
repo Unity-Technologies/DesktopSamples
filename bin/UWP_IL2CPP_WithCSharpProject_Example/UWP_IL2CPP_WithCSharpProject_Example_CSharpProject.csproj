@@ -180,6 +180,8 @@
     </Compile>
     <Content Include="Properties\Default.rd.xml">
     </Content>
+    <Content Include="$(SolutionDir)\build\bin\$(Platform)\$(Configuration)\SymbolMap">
+    </Content>
     <Content Include="Data\**">
       <ExcludeFromResourceIndex>true</ExcludeFromResourceIndex>
     </Content>
