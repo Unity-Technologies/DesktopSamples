@@ -3,6 +3,7 @@
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
+Logs/
 Assets/AssetStoreTools*
 
 # Visual Studio cache directory
@@ -13,7 +14,7 @@ ExportedObj/
 .consulo/
 *.csproj
 *.unityproj
-*.sln
+Unity Project/*.sln
 *.suo
 *.tmp
 *.user
