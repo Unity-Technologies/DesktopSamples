@@ -25,6 +25,9 @@ Unity Project/*.sln
 *.pdb
 *.opendb
 
+# Xcode user data
+xcuserdata/
+
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
