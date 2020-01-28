@@ -7,6 +7,7 @@
 #include <codecvt>
 #include <dxgi.h>
 #include <dxgi1_2.h>
+#include <fstream>
 #include <math.h>
 #include <set>
 #include <sstream>
@@ -25,12 +26,12 @@ static Preferences s_preferences;
 static std::vector<ComPtr<IDXGIOutput>> s_outputs;
 static const wchar_t* kDefaultQualityLevelNames[] =
 {
-    L"Fastest",
-    L"Fast",
-    L"Simple",
-    L"Good",
-    L"Beautiful",
-    L"Fantastic"
+    L"Very Low",
+    L"Low",
+    L"Medium",
+    L"High",
+    L"Very High",
+    L"Ultra"
 };
 static bool s_stereo3d = true;
 static std::vector<Resolution> s_resolutions;
@@ -430,7 +431,7 @@ std::wstring ConstructCommandLine()
     command.append(L" -screen-height ");
     command.append(std::to_wstring(s_preferences.GetHeight()));
     command.append(L" -screen-quality ");
-    command.append(kDefaultQualityLevelNames[s_preferences.GetGraphicsQualityIndex()]);
+    command.append(std::to_wstring(s_preferences.GetGraphicsQualityIndex()));
     command.append(L" -screen-fullscreen ");
     if (s_preferences.GetFullscreen())
         command.append(std::to_wstring(1));
@@ -445,8 +446,43 @@ std::wstring ConstructCommandLine()
     return command;
 }
 
+void ReadPreferences()
+{
+    // Open, read, and close file
+    std::ifstream file("ScreenSelectorPrefs.txt");
+    const int numPrefs = 6;
+    int values[numPrefs] = { 0 };
+
+    if (!file.is_open())
+        return;
+
+    std::string line;
+    std::getline(file, line);
+
+    int i = 0;
+    while (file.good() && i < numPrefs)
+    {
+        values[i] = std::stoi(line);
+        std::getline(file, line);
+        i++;
+    }
+
+    file.close();
+
+    // Set values from file
+    const int windowed = 3; // Windowed in Unity
+    s_preferences.SetWidth(values[0]);
+    s_preferences.SetHeight(values[1]);
+    s_preferences.SetFullscreen(values[2] != windowed);
+    s_preferences.SetStereo3d(values[3] != 0);
+    s_preferences.SetGraphicsQualityIndex(values[4]);
+    s_preferences.SetMonitorSelection(values[5]);
+}
+
 bool DisplayScreenSelector(std::wstring& commandline)
 {
+    ReadPreferences();
+
     bool cont = (IDCANCEL != DialogBox(NULL, MAKEINTRESOURCE(IDD_SCEENSEL), NULL, screenSelDialogProc));
 
     commandline = ConstructCommandLine();
