@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class ClosingScript : MonoBehaviour
+public class ClosingScript
 {
-    private void OnApplicationQuit()
+    private static void Quit()
     {
         List<string> settings = new List<string>
             {
@@ -24,5 +24,11 @@ public class ClosingScript : MonoBehaviour
                 file.WriteLine(PlayerPrefs.GetInt(key, 0).ToString());
             }
         }
+    }
+
+    [RuntimeInitializeOnLoadMethod]
+    static void RunOnStart()
+    {
+        Application.quitting += Quit;
     }
 }
