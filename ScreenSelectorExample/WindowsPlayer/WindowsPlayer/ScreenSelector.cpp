@@ -446,10 +446,39 @@ std::wstring ConstructCommandLine()
     return command;
 }
 
+std::string GetDataPath()
+{
+    std::string path;
+    std::wstring dir;
+
+    // When run from VS or other debugging places, current working directory can be set to something else.
+    dir.resize(MAX_PATH);
+    GetModuleFileName(NULL, LPWSTR(dir.data()), MAX_PATH);
+
+    size_t pathCharLocation = dir.find_last_of(L"\\");
+    if (pathCharLocation == std::string::npos)
+        return path;
+
+    dir.replace(pathCharLocation + 1, dir.length(), L"PersistentDataPath.txt");
+
+    // Get data path
+    std::ifstream pathFile(dir);
+
+    if (!pathFile.is_open())
+        return std::string();
+
+    std::getline(pathFile, path);
+
+    pathFile.close();
+
+    return path;
+}
+
+
 void ReadPreferences()
 {
     // Open, read, and close file
-    std::ifstream file("ScreenSelectorPrefs.txt");
+    std::ifstream file(GetDataPath());
     const int numPrefs = 6;
     int values[numPrefs] = { 0 };
 

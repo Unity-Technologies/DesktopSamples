@@ -17,15 +17,12 @@ public class ClosingScript : MonoBehaviour
                 "UnitySelectMonitor"
             };
 
-        using (StreamWriter file = new StreamWriter("ScreenSelectorPrefs.txt"))
+        using (StreamWriter file = new StreamWriter(Path.Combine(Application.persistentDataPath, "ScreenSelectorPrefs.txt")))
         {
-            foreach(string key in settings)
+            foreach (string key in settings)
             {
                 file.WriteLine(PlayerPrefs.GetInt(key, 0).ToString());
             }
-
-            file.Flush();
-            file.Close();
         }
     }
 }
