@@ -1,0 +1,11 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectName>WindowsPlayer</ProjectName>
+    <ScriptingBackend>mono</ScriptingBackend>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <StripPrivateSymbols>$(OutDir)$(TargetName)_$(PlatformShortName)_$(Configuration)_$(ScriptingBackend)_s.pdb</StripPrivateSymbols>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>
