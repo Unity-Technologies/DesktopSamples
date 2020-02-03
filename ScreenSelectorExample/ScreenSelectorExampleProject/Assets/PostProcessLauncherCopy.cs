@@ -13,7 +13,7 @@ public class PostProcessLauncherCopy
         string dataPath = Path.Combine(Path.GetDirectoryName(pathToBuiltProject), "PersistentDataPath.txt");
         using (StreamWriter file = new StreamWriter(dataPath))
         {
-            file.WriteLine(Path.Combine(Application.persistentDataPath, "ScreenSelectorPrefs.txt"));
+            file.WriteLine(Path.Combine(Application.companyName, Application.productName));
         }
 
         switch (target)

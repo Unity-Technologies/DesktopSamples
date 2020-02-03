@@ -10,6 +10,7 @@
 #include <fstream>
 #include <math.h>
 #include <set>
+#include <ShlObj.h>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -446,9 +447,9 @@ std::wstring ConstructCommandLine()
     return command;
 }
 
-std::string GetDataPath()
+std::wstring GetDataPath()
 {
-    std::string path;
+    std::wstring path;
     std::wstring dir;
 
     // When run from VS or other debugging places, current working directory can be set to something else.
@@ -461,15 +462,32 @@ std::string GetDataPath()
 
     dir.replace(pathCharLocation + 1, dir.length(), L"PersistentDataPath.txt");
 
+
+    // Get AppData path
+    PWSTR appDataLocalLow = NULL;
+    HRESULT result = SHGetKnownFolderPath(FOLDERID_LocalAppDataLow, 0, NULL, &appDataLocalLow);
+
+    if (result != S_OK)
+    {
+        return std::wstring();
+    }
+
+    path.append(appDataLocalLow);
+    CoTaskMemFree(appDataLocalLow);
+    appDataLocalLow = NULL;
+
+
     // Get data path
-    std::ifstream pathFile(dir);
+    std::wifstream pathFile(dir);
 
     if (!pathFile.is_open())
-        return std::string();
+        return std::wstring();
 
-    std::getline(pathFile, path);
-
+    std::wstring pathInfo;
+    std::getline(pathFile, pathInfo);
     pathFile.close();
+
+    path.append(L"\\" + pathInfo + L"\\ScreenSelectorPrefs.txt");
 
     return path;
 }
