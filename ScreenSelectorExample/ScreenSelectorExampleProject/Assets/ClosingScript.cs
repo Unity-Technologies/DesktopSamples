@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class ClosingScript : MonoBehaviour
+public class ClosingScript
 {
-    private void OnApplicationQuit()
+    private static void Quit()
     {
         List<string> settings = new List<string>
             {
@@ -17,15 +17,18 @@ public class ClosingScript : MonoBehaviour
                 "UnitySelectMonitor"
             };
 
-        using (StreamWriter file = new StreamWriter("ScreenSelectorPrefs.txt"))
+        using (StreamWriter file = new StreamWriter(Path.Combine(Application.persistentDataPath, "ScreenSelectorPrefs.txt")))
         {
-            foreach(string key in settings)
+            foreach (string key in settings)
             {
                 file.WriteLine(PlayerPrefs.GetInt(key, 0).ToString());
             }
-
-            file.Flush();
-            file.Close();
         }
+    }
+
+    [RuntimeInitializeOnLoadMethod]
+    static void RunOnStart()
+    {
+        Application.quitting += Quit;
     }
 }
