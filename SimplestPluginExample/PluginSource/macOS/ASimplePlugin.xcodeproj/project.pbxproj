@@ -12,6 +12,8 @@
 
 /* Begin PBXFileReference section */
 		751E8CC02368EE3F0015D357 /* ASimplePlugin.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ASimplePlugin.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		75BF2C7D23EA038D00C48203 /* ASimplePlugin.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASimplePlugin.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		75BF2C7F23EA038D00C48203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75EC0B582368FA8400157809 /* Plugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Plugin.cpp; path = ../Plugin.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -30,6 +32,7 @@
 			isa = PBXGroup;
 			children = (
 				75EC0B582368FA8400157809 /* Plugin.cpp */,
+				75BF2C7E23EA038D00C48203 /* ASimplePlugin */,
 				751E8CC12368EE3F0015D357 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -38,8 +41,17 @@
 			isa = PBXGroup;
 			children = (
 				751E8CC02368EE3F0015D357 /* ASimplePlugin.dylib */,
+				75BF2C7D23EA038D00C48203 /* ASimplePlugin.bundle */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		75BF2C7E23EA038D00C48203 /* ASimplePlugin */ = {
+			isa = PBXGroup;
+			children = (
+				75BF2C7F23EA038D00C48203 /* Info.plist */,
+			);
+			path = ASimplePlugin;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -72,6 +84,23 @@
 			productReference = 751E8CC02368EE3F0015D357 /* ASimplePlugin.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
+		75BF2C7C23EA038D00C48203 /* ASimplePlugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 75BF2C8223EA038D00C48203 /* Build configuration list for PBXNativeTarget "ASimplePlugin" */;
+			buildPhases = (
+				751E8CBD2368EE3F0015D357 /* Sources */,
+				751E8CBE2368EE3F0015D357 /* Frameworks */,
+				75BF2C7B23EA038D00C48203 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ASimplePlugin;
+			productName = ASimplePlugin;
+			productReference = 75BF2C7D23EA038D00C48203 /* ASimplePlugin.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -83,6 +112,9 @@
 				TargetAttributes = {
 					751E8CBF2368EE3F0015D357 = {
 						CreatedOnToolsVersion = 11.0;
+					};
+					75BF2C7C23EA038D00C48203 = {
+						CreatedOnToolsVersion = 11.3.1;
 					};
 				};
 			};
@@ -100,9 +132,20 @@
 			projectRoot = "";
 			targets = (
 				751E8CBF2368EE3F0015D357 /* ASimplePlugin */,
+				75BF2C7C23EA038D00C48203 /* ASimplePlugin */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		75BF2C7B23EA038D00C48203 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		751E8CBD2368EE3F0015D357 /* Sources */ = {
@@ -245,6 +288,34 @@
 			};
 			name = Release;
 		};
+		75BF2C8023EA038D00C48203 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ASimplePlugin/Info.plist;
+				INSTALL_PATH = /Library/Bundles;
+				PRODUCT_BUNDLE_IDENTIFIER = com.unity3d.ASimplePlugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		75BF2C8123EA038D00C48203 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ASimplePlugin/Info.plist;
+				INSTALL_PATH = /Library/Bundles;
+				PRODUCT_BUNDLE_IDENTIFIER = com.unity3d.ASimplePlugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -262,6 +333,15 @@
 			buildConfigurations = (
 				751E8CC52368EE3F0015D357 /* Debug */,
 				751E8CC62368EE3F0015D357 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		75BF2C8223EA038D00C48203 /* Build configuration list for PBXNativeTarget "ASimplePlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				75BF2C8023EA038D00C48203 /* Debug */,
+				75BF2C8123EA038D00C48203 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
