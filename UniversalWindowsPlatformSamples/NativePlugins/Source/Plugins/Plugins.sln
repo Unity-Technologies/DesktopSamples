@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DesktopPlugins", "DesktopPlugins\DesktopPlugins.vcxproj", "{CAB529A5-96F2-4539-9E06-315F66BCDE96}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WSAPlugins", "WSAPlugins\WSAPlugins.vcxproj", "{709C79BB-2BC4-4B06-AC95-F07446953863}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|ARM = Release|ARM
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CAB529A5-96F2-4539-9E06-315F66BCDE96}.Debug|ARM.ActiveCfg = Debug|Win32
+		{CAB529A5-96F2-4539-9E06-315F66BCDE96}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CAB529A5-96F2-4539-9E06-315F66BCDE96}.Debug|Win32.Build.0 = Debug|Win32
+		{CAB529A5-96F2-4539-9E06-315F66BCDE96}.Debug|x64.ActiveCfg = Debug|Win32
+		{CAB529A5-96F2-4539-9E06-315F66BCDE96}.Release|ARM.ActiveCfg = Release|Win32
+		{CAB529A5-96F2-4539-9E06-315F66BCDE96}.Release|Win32.ActiveCfg = Release|Win32
+		{CAB529A5-96F2-4539-9E06-315F66BCDE96}.Release|Win32.Build.0 = Release|Win32
+		{CAB529A5-96F2-4539-9E06-315F66BCDE96}.Release|x64.ActiveCfg = Release|x64
+		{CAB529A5-96F2-4539-9E06-315F66BCDE96}.Release|x64.Build.0 = Release|x64
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|ARM.ActiveCfg = Debug|ARM
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|ARM.Build.0 = Debug|ARM
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|Win32.ActiveCfg = Debug|Win32
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|Win32.Build.0 = Debug|Win32
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Debug|x64.ActiveCfg = Debug|Win32
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Release|ARM.ActiveCfg = Release|ARM
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Release|ARM.Build.0 = Release|ARM
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Release|Win32.ActiveCfg = Release|Win32
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Release|Win32.Build.0 = Release|Win32
+		{709C79BB-2BC4-4B06-AC95-F07446953863}.Release|x64.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
