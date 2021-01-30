@@ -1,4 +1,4 @@
-# Windows Store Samples
+# Universal Windows Platform Samples
 
 The samples are compatible with Unity 5.3 or higher. 
 
@@ -15,7 +15,7 @@ The samples are compatible with Unity 5.3 or higher.
 * **XAML Unity Connection**
     * Shows how to communicate between your Unity game and host XAML application. The sample uses InvokeOnAppThread and InvokeOnUIThread functions to transfer data between your application thread and UI thread.
 
-# What license is Windows Store samples shipped under?
+# What license is Universal Windows Platform samples shipped under?
 
 This is released under the [MIT/X11 license](LICENSE).
 
