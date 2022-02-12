@@ -126,22 +126,27 @@ public class SettingsMenuScript : MonoBehaviour
     {
         var resolutions = Screen.resolutions;
 
-        // Filter out non-unique resolutions
-        Array.Sort(resolutions, s_ResolutionComparer);
-
-        int uniqueResolutionCount = 0;
-        for (int i = 1; i < resolutions.Length; i++)
+        int uniqueResolutionCount;
+        if (resolutions.Length > 0)
         {
-            if (s_ResolutionComparer.Compare(resolutions[i], resolutions[uniqueResolutionCount]) != 0)
+            // Filter out non-unique resolutions
+            Array.Sort(resolutions, s_ResolutionComparer);
+
+            int lastUniqueResolution = 0;
+            for (int i = 1; i < resolutions.Length; i++)
             {
-                uniqueResolutionCount++;
-                if (uniqueResolutionCount != i)
-                    resolutions[uniqueResolutionCount] = resolutions[i];
+                if (s_ResolutionComparer.Compare(resolutions[i], resolutions[lastUniqueResolution]) != 0)
+                {
+                    lastUniqueResolution++;
+                    if (lastUniqueResolution != i)
+                        resolutions[lastUniqueResolution] = resolutions[i];
+                }
             }
-        }
 
-        if (uniqueResolutionCount == 0)
-        {
+            uniqueResolutionCount = lastUniqueResolution + 1;
+        }
+        else
+        {           
             uniqueResolutionCount = 1;
             m_EmptyResolution[0] = Screen.currentResolution;
             resolutions = m_EmptyResolution;
