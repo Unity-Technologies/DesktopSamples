@@ -271,7 +271,8 @@ public class SettingsMenuScript : MonoBehaviour
     }
 
     private IEnumerator MoveToDisplay(int index)
-    {        
+    {
+        m_MoveWindowInProgress = true;
         m_SettingsCanvas.SetActive(false);
         m_LoadingCanvas.SetActive(true);
 
@@ -298,6 +299,7 @@ public class SettingsMenuScript : MonoBehaviour
         {
             m_LoadingCanvas.SetActive(false);
             m_SettingsCanvas.SetActive(true);
+            m_MoveWindowInProgress = false;
         }
     }
 
@@ -309,6 +311,7 @@ public class SettingsMenuScript : MonoBehaviour
             yield break;
         }
 
+        m_MoveWindowInProgress = true;
         m_SettingsCanvas.SetActive(false);
         m_LoadingCanvas.SetActive(true);
 
@@ -325,6 +328,7 @@ public class SettingsMenuScript : MonoBehaviour
         {
             m_LoadingCanvas.SetActive(false);
             m_SettingsCanvas.SetActive(true);
+            m_MoveWindowInProgress = false;
         }
     }
 
