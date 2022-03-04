@@ -73,6 +73,7 @@ SUITE(File)
     {
         CHECK_EQUAL((int32_t)il2cpp::os::File::Isatty(handle), UnityPalIsatty(handle));
     }
+
 #endif
 
     TEST(FileOpenNoError_ReturnsNonNullHandle)
@@ -316,7 +317,6 @@ SUITE(File)
         CHECK_NOT_EQUAL(il2cpp::os::kErrorCodeSuccess, error);
     }
 
-
     TEST_FIXTURE(FileFixture, GetFileStatNormalName)
     {
         int error;
@@ -503,7 +503,6 @@ SUITE(File)
         CHECK_EQUAL(il2cpp::os::kErrorCodeSuccess, error);
     }
 
-
     TEST(CopyFileBadResult_ReturnsFalse)
     {
         int error;
@@ -650,7 +649,6 @@ SUITE(File)
 
         CHECK_EQUAL(il2cpp::os::kErrorCodeSuccess, error);
     }
-
 
     TEST(DeleteFileBadResult_ReturnsFalse)
     {
@@ -799,9 +797,7 @@ SUITE(File)
         il2cpp::os::File::GetFileStat(TEST_FILE_NAME, &class_fileStat, &error);
         il2cpp::os::File::Close(handle, &error);
 
-
-        // They dont have to be exact, just in the ballpark
-        CHECK_EQUAL(class_fileStat.last_write_time / 1000000L, api_fileStat.last_write_time / 1000000L);
+        CHECK_EQUAL(class_fileStat.attributes, api_fileStat.attributes);
     }
 
 #if !IL2CPP_USE_GENERIC_FILE
@@ -1377,7 +1373,7 @@ SUITE(File)
         int32_t result = UnityPalWrite(handle, buffer, 14, &error);
 
 
-        CHECK_EQUAL(0, result);
+        CHECK_EQUAL(-1, result);
     }
 
     TEST(WriteNormalResultMatchesClass)
@@ -1674,6 +1670,7 @@ SUITE(File)
     {
         CHECK_MSG(!UnityPalIsExecutable(nonexecutableFilename), "A file not ending in the .exe extension is reported as executable, which is not expected.");
     }
+
 #else
     TEST_FIXTURE(ExecutableFileFixture, IsExecutable_ReturnsTrueForFileWithExecutablePermissions)
     {
@@ -1684,6 +1681,7 @@ SUITE(File)
     {
         CHECK_MSG(!UnityPalIsExecutable(nonexecutableFilename), "A file without executable permissions is reported as executable, which is not expected.");
     }
+
 #endif
 
 #endif // IL2CPP_CAN_CHECK_EXECUTABLE

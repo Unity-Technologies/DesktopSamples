@@ -10,8 +10,8 @@
 	<dllmap dll="i:odbc32.dll" target="libiodbc.dylib" os="osx"/>
 	<dllmap dll="oci" target="libclntsh.dylib" os="!windows"/>
 	<dllmap dll="db2cli" target="libdb2_36.dylib" os="!windows"/>
-	<dllmap dll="MonoPosixHelper" target="$mono_libdir/libMonoPosixHelper.dylib" os="!windows" />
-	<dllmap dll="libmono-btls-shared" target="$mono_libdir/libmono-btls-shared.dylib" os="!windows" />
+	<dllmap dll="MonoPosixHelper" target="libMonoPosixHelper.dylib" os="!windows" />
+	<dllmap dll="libmono-btls-shared" target="libmono-btls-shared.dylib" os="!windows" />
 	<dllmap dll="i:msvcrt" target="libc.dylib" os="!windows"/>
 	<dllmap dll="i:msvcrt.dll" target="libc.dylib" os="!windows"/>
 	<dllmap dll="sqlite" target="libsqlite.0.dylib" os="!windows"/>
@@ -36,8 +36,8 @@
 		<dllentry dll="__Internal" name="MoveMemory" target="mono_win32_compat_MoveMemory"/>
 		<dllentry dll="__Internal" name="ZeroMemory" target="mono_win32_compat_ZeroMemory"/>
 	</dllmap>
-	<dllmap dll="gdiplus" target="/Users/builduser/buildslave/mono/build/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib" os="!windows"/>
-	<dllmap dll="gdiplus.dll" target="/Users/builduser/buildslave/mono/build/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib"  os="!windows"/>
-	<dllmap dll="gdi32" target="/Users/builduser/buildslave/mono/build/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib" os="!windows"/>
-	<dllmap dll="gdi32.dll" target="/Users/builduser/buildslave/mono/build/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib" os="!windows"/>
+	<dllmap dll="gdiplus" target="/Users/bokken/build/output/Unity-Technologies/mono/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib" os="!windows"/>
+	<dllmap dll="gdiplus.dll" target="/Users/bokken/build/output/Unity-Technologies/mono/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib"  os="!windows"/>
+	<dllmap dll="gdi32" target="/Users/bokken/build/output/Unity-Technologies/mono/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib" os="!windows"/>
+	<dllmap dll="gdi32.dll" target="/Users/bokken/build/output/Unity-Technologies/mono/external/buildscripts/add_to_build_results/monodistribution/lib/libgdiplus.dylib" os="!windows"/>
 </configuration>

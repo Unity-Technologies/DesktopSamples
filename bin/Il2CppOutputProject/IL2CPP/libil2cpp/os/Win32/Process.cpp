@@ -1,6 +1,7 @@
 #include "il2cpp-config.h"
+#include "il2cpp-vm-support.h"
 
-#if IL2CPP_TARGET_WINDOWS_DESKTOP
+#if IL2CPP_TARGET_WINDOWS_DESKTOP || IL2CPP_TARGET_WINDOWS_GAMES
 
 #include "WindowsHelpers.h"
 #include <Psapi.h>
@@ -52,4 +53,4 @@ namespace os
 }
 }
 
-#endif
+#endif // IL2CPP_TARGET_WINDOWS_DESKTOP || IL2CPP_TARGET_WINDOWS_GAMES

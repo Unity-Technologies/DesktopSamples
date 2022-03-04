@@ -1096,6 +1096,9 @@ ves_icall_System_ValueType_InternalGetHashCode (MonoObject *this_obj, MonoArray 
 		case MONO_TYPE_I4:
 			result ^= *(gint32*)((guint8*)this_obj + field->offset);
 			break;
+		case MONO_TYPE_PTR:
+			result ^= mono_aligned_addr_hash (*(gpointer*)((guint8*)this_obj + field->offset));
+			break;
 		case MONO_TYPE_STRING: {
 			MonoString *s;
 			s = *(MonoString**)((guint8*)this_obj + field->offset);
@@ -1193,6 +1196,10 @@ ves_icall_System_ValueType_Equals (MonoObject *this_obj, MonoObject *that, MonoA
 			break;
 		case MONO_TYPE_R8:
 			if (*(double*)((guint8*)this_obj + field->offset) != *(double*)((guint8*)that + field->offset))
+				return FALSE;
+			break;
+		case MONO_TYPE_PTR:
+			if (*(gpointer*)((guint8*)this_obj + field->offset) != *(gpointer*)((guint8*)that + field->offset))
 				return FALSE;
 			break;
 
@@ -2472,6 +2479,7 @@ ves_icall_RuntimeType_GetInterfaces (MonoReflectionTypeHandle ref_type, MonoErro
 		g_hash_table_destroy (iface_hash);
 		if (!domain->empty_types) {
 			domain->empty_types = mono_array_new_cached (domain, mono_defaults.runtimetype_class, 0, error);
+            mono_gc_wbarrier_generic_nostore (&domain->empty_types);			
 			goto_if_nok (error, fail);
 		}
 		return MONO_HANDLE_NEW (MonoArray, domain->empty_types);
@@ -3942,7 +3950,7 @@ mono_class_get_methods_by_name (MonoClass *klass, const char *name, guint32 bfla
 		compare_func = (ignore_case) ? mono_utf8_strcasecmp : strcmp;
 
 	/* An optimization for calls made from Delegate:CreateDelegate () */
-	if (klass->delegate && name && !strcmp (name, "Invoke") && (bflags == (BFLAGS_Public | BFLAGS_Static | BFLAGS_Instance))) {
+	if (klass->delegate && klass != mono_defaults.delegate_class && klass != mono_defaults.multicastdelegate_class&& name && !strcmp (name, "Invoke") && (bflags == (BFLAGS_Public | BFLAGS_Static | BFLAGS_Instance))) {
 		method = mono_get_delegate_invoke (klass);
 		g_assert (method);
 
@@ -8743,3 +8751,15 @@ mono_register_jit_icall (gconstpointer func, const char *name, MonoMethodSignatu
 	return mono_register_jit_icall_full (func, name, sig, no_wrapper, NULL);
 }
 
+MonoObjectHandle
+ves_icall_System_Threading_OSSpecificSynchronizationContext_GetOSContext ()
+{
+	return NULL_HANDLE;
+}
+
+void
+ves_icall_System_Threading_OSSpecificSynchronizationContext_PostInternal (gpointer callback, gpointer arg)
+{
+	/* This isn't actually reachable since ves_icall_System_Threading_OSSpecificSynchronizationContext_GetOSContext always returns NULL */
+	mono_set_pending_exception (mono_get_exception_not_implemented ("System.Threading.InteropServices.OSSpecificSynchronizationContext.PostInternal internal call is not implemented."));
+}

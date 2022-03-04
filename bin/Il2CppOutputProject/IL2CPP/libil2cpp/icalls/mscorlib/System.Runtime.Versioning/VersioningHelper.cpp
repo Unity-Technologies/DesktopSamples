@@ -1,4 +1,3 @@
-#if NET_4_0
 #include "il2cpp-config.h"
 #include "VersioningHelper.h"
 
@@ -26,4 +25,3 @@ namespace Versioning
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

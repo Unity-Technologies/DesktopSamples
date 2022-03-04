@@ -2,6 +2,8 @@
 
 #if IL2CPP_TARGET_DARWIN
 
+#include "os/Image.h"
+
 #include <mach-o/dyld.h>
 #include <mach-o/getsect.h>
 #include <mach-o/ldsyms.h>
@@ -14,8 +16,6 @@ namespace os
 namespace Image
 {
     static void* s_ImageBase = NULL;
-    static void* s_ManagedSectionStart = NULL;
-    static void* s_ManagedSectionEnd = NULL;
 
     static int GetImageIndex()
     {
@@ -42,10 +42,15 @@ namespace Image
         for (uint32_t i = 0; i < numberOfImages; i++)
         {
             const char* imageName = _dyld_get_image_name(i);
-            if (strstr(imageName, "GameAssembly.dylib") != NULL)
+            if (strstr(imageName, "GameAssembly.dylib") != NULL || strstr(imageName, "UnityFramework.framework/UnityFramework") != NULL)
+            {
                 gameAssemblyImageIndex = i;
+                break;
+            }
             else if (strcmp(imageName, &path[0]) == 0)
+            {
                 executableImageIndex = i;
+            }
         }
 
         if (gameAssemblyImageIndex != -1)
@@ -106,16 +111,19 @@ namespace Image
             }
         }
 
-        s_ManagedSectionStart = (void*)((intptr_t)sectionData->addr + (intptr_t)s_ImageBase);
-        s_ManagedSectionEnd = (uint8_t*)s_ManagedSectionStart + sectionData->size;
+        if (sectionData != NULL)
+        {
+            void* start = (void*)((intptr_t)sectionData->addr + (intptr_t)s_ImageBase);
+            void* end = (uint8_t*)start + sectionData->size;
+
+            SetManagedSectionStartAndEnd(start, end);
+        }
     }
 
     void Initialize()
     {
         InitializeImageBase();
-#if IL2CPP_PLATFORM_SUPPORTS_CUSTOM_SECTIONS
         InitializeManagedSection();
-#endif
     }
 
     void* GetImageBase()
@@ -123,11 +131,29 @@ namespace Image
         return s_ImageBase;
     }
 
-#if IL2CPP_PLATFORM_SUPPORTS_CUSTOM_SECTIONS
-    bool IsInManagedSection(void* ip)
+#if IL2CPP_ENABLE_NATIVE_INSTRUCTION_POINTER_EMISSION
+    void GetImageUUID(char* uuid)
     {
-        IL2CPP_ASSERT(s_ManagedSectionStart != NULL && s_ManagedSectionEnd != NULL);
-        return s_ManagedSectionStart <= ip && ip <= s_ManagedSectionEnd;
+        const struct mach_header_64* header = (mach_header_64*)_dyld_get_image_header(GetImageIndex());
+        const uint8_t *command = (const uint8_t *)(header + 1);
+
+        for (uint32_t idx = 0; idx < header->ncmds; ++idx)
+        {
+            if (((const struct load_command *)command)->cmd == LC_UUID)
+            {
+                command += sizeof(struct load_command);
+                snprintf(uuid, 33, "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+                    command[0], command[1], command[2], command[3],
+                    command[4], command[5], command[6], command[7],
+                    command[8], command[9], command[10], command[11],
+                    command[12], command[13], command[14], command[15]);
+                return;
+            }
+            else
+            {
+                command += ((const struct load_command *)command)->cmdsize;
+            }
+        }
     }
 
 #endif

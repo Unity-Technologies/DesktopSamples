@@ -1,5 +1,4 @@
 #pragma once
-#if NET_4_0
 
 namespace il2cpp
 {
@@ -14,9 +13,9 @@ namespace System
     public:
         static bool nIsTransient(int32_t hr);
         static Il2CppObject* GetMethodFromStackTrace(Il2CppObject* stackTrace);
+        static void ReportUnhandledException(Il2CppException* exception);
     };
 } // namespace System
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

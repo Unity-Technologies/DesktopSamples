@@ -21,9 +21,7 @@ namespace Reflection
         static void* /* System.Reflection.Emit.UnmanagedMarshal */ get_retval_marshal(intptr_t handle);
         static Il2CppArray* get_parameter_info(intptr_t methodPtr, Il2CppReflectionMethod* member);
 
-#if NET_4_0
         static int32_t get_method_attributes(intptr_t methodPtr);
-#endif
     };
 } /* namespace Reflection */
 } /* namespace System */

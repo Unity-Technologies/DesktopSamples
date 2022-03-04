@@ -62,8 +62,6 @@ namespace Reflection
         return 0;
     }
 
-#if NET_4_0
-
     static const MethodInfo* il2cpp_method_get_equivalent_method(const MethodInfo *method, Il2CppClass *klass)
     {
         int offset = -1, i;
@@ -84,14 +82,14 @@ namespace Reflection
                 {
                     newCtx.class_inst = klass->generic_class->context.class_inst;
                 }
-                else if (klass->genericContainerIndex != kGenericContainerIndexInvalid)
+                else if (klass->genericContainerHandle != NULL)
                 {
                     IL2CPP_NOT_IMPLEMENTED(il2cpp_method_get_equivalent_method: generic_container_case);
                     //const Il2CppGenericContainer *genericContainer = il2cpp::vm::MetadataCache::GetGenericContainerFromIndex(klass->genericContainerIndex);
                     //newCtx.class_inst = genericContainer->context.class_inst;
                 }
 
-                result = il2cpp::metadata::GenericMetadata::Inflate(method, klass, &newCtx);
+                result = il2cpp::metadata::GenericMetadata::Inflate(method, &newCtx);
                 return result;
             }
         }
@@ -139,8 +137,6 @@ namespace Reflection
         res = il2cpp_method_get_object(method, klass);
         return res;
     }
-
-#endif
 } /* namespace Reflection */
 } /* namespace System */
 } /* namespace mscorlib */

@@ -1,9 +1,7 @@
 #pragma once
 
 struct Il2CppWaitHandle;
-namespace il2cpp
-{ namespace os
-{ class Handle; } }
+namespace il2cpp { namespace os { class Handle; } }
 
 namespace il2cpp
 {

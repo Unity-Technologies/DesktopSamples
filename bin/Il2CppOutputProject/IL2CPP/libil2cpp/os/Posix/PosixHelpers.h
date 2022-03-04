@@ -1,6 +1,6 @@
 #pragma once
 
-#if IL2CPP_TARGET_POSIX
+#if IL2CPP_TARGET_POSIX && !RUNTIME_TINY
 
 #include <pthread.h>
 #include <time.h>

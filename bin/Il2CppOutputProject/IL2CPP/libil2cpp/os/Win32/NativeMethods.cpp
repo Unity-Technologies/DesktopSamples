@@ -6,7 +6,6 @@
 
 #include "il2cpp-vm-support.h"
 #include "os/NativeMethods.h"
-#include "vm/Exception.h"
 
 namespace il2cpp
 {

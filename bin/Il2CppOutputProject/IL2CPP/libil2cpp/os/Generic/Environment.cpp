@@ -52,7 +52,6 @@ namespace os
 
     std::vector<std::string> Environment::GetLogicalDrives()
     {
-        IL2CPP_NOT_IMPLEMENTED_ICALL(Environment::GetLogicalDrives);
         return std::vector<std::string>();
     }
 
@@ -66,14 +65,10 @@ namespace os
         abort();
     }
 
-#if NET_4_0
-
     bool Environment::Is64BitOs()
     {
         return false;
     }
-
-#endif
 }
 }
 #endif

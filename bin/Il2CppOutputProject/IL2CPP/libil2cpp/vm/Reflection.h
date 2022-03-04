@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include "il2cpp-config.h"
+#include "il2cpp-metadata.h"
 
 struct Il2CppString;
 struct Il2CppArray;
@@ -28,7 +29,6 @@ struct Il2CppImage;
 struct Il2CppType;
 struct Il2CppObject;
 struct MonoGenericParameterInfo;
-struct Il2CppGenericParameter;
 struct Il2CppMonoAssemblyName;
 
 namespace il2cpp
@@ -50,8 +50,8 @@ namespace vm
         static Il2CppReflectionType* GetTypeObject(const Il2CppType *type);
         static Il2CppArray* GetParamObjects(const MethodInfo *method, Il2CppClass *refclass);
         static CustomAttributesCache* GetCustomAttrsInfo(Il2CppObject *obj);
-        static const MonoGenericParameterInfo* GetMonoGenericParameterInfo(const Il2CppGenericParameter *param);
-        static void SetMonoGenericParameterInfo(const Il2CppGenericParameter *param, const MonoGenericParameterInfo *monoParam);
+        static const MonoGenericParameterInfo* GetMonoGenericParameterInfo(Il2CppMetadataGenericParameterHandle param);
+        static void SetMonoGenericParameterInfo(Il2CppMetadataGenericParameterHandle param, const MonoGenericParameterInfo *monoParam);
         static const Il2CppMonoAssemblyName* GetMonoAssemblyName(const Il2CppAssembly *assembly);
         static void SetMonoAssemblyName(const Il2CppAssembly *assembly, const Il2CppMonoAssemblyName *aname);
 
@@ -66,18 +66,23 @@ namespace vm
         static bool IsProperty(Il2CppObject *obj);
         static bool IsEvent(Il2CppObject *obj);
 
+        static void ClearStatics();
+
 // internal
     public:
         static void Initialize();
-        static bool CustomAttrsHasAttr(CustomAttributeTypeCache *ainfo, Il2CppClass *attr_klass);
         static Il2CppClass* TypeGetHandle(Il2CppReflectionType* ref);
         static Il2CppObject* GetDBNullObject();
+        static Il2CppClass* GetConstructorInfo();
 
-    private:
-        static CustomAttributeTypeCache* GetCustomAttrsTypeInfo(Il2CppObject *obj);
-        static CustomAttributeTypeCache* GetCustomAttributeTypeCacheFor(Il2CppReflectionParameter *parameter);
+        static Il2CppObject* GetCustomAttribute(Il2CppMetadataCustomAttributeHandle token, Il2CppClass* attribute);
+        static Il2CppArray* ConstructCustomAttributes(Il2CppMetadataCustomAttributeHandle token);
+
         static CustomAttributesCache* GetCustomAttributesCacheFor(Il2CppClass *klass);
         static CustomAttributesCache* GetCustomAttributesCacheFor(const MethodInfo *method);
+
+    private:
+        static bool HasAttribute(Il2CppReflectionParameter *parameter, Il2CppClass* attribute);
         static CustomAttributesCache* GetCustomAttributesCacheFor(const PropertyInfo *property);
         static CustomAttributesCache* GetCustomAttributesCacheFor(FieldInfo *field);
         static CustomAttributesCache* GetCustomAttributesCacheFor(const EventInfo *event);

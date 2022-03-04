@@ -51,9 +51,7 @@ namespace System
         static Il2CppString * getFriendlyName(Il2CppAppDomain* ad);
         static Il2CppAppDomainSetup* getSetup(Il2CppAppDomain* domain);
         static Il2CppArray* GetAssemblies(Il2CppAppDomain* ad, bool refonly);
-#if NET_4_0
         static void DoUnhandledException(Il2CppObject* _this, Il2CppException* e);
-#endif
     };
 } /* namespace System */
 } /* namespace mscorlib */

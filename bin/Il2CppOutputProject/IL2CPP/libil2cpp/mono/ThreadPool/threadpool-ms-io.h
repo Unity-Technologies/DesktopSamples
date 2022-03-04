@@ -1,5 +1,4 @@
 #pragma once
-#if NET_4_0
 
 #include "il2cpp-config.h"
 #include "il2cpp-object-internals.h"
@@ -12,5 +11,3 @@ void threadpool_ms_io_cleanup(void);
 
 LIBIL2CPP_CODEGEN_API void ves_icall_System_IOSelector_Add(intptr_t handle, Il2CppIOSelectorJob *job);
 LIBIL2CPP_CODEGEN_API void ves_icall_System_IOSelector_Remove(intptr_t handle);
-
-#endif

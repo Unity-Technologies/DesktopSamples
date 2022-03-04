@@ -1,5 +1,4 @@
 #if ENABLE_UNIT_TESTS
-#if NET_4_0
 
 #include "UnitTest++.h"
 
@@ -35,5 +34,4 @@ SUITE(ConditionVariable)
     }
 }
 
-#endif // NET_4_0
 #endif // ENABLE_UNIT_TESTS

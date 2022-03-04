@@ -16,31 +16,53 @@ namespace gc
         static int32_t CollectALittle();
         static int32_t GetCollectionCount(int32_t generation);
         static int64_t GetUsedHeapSize();
+#if IL2CPP_ENABLE_WRITE_BARRIERS
+        static void SetWriteBarrier(void **ptr);
+        static void SetWriteBarrier(void **ptr, size_t numBytes);
+#else
+        static inline void SetWriteBarrier(void **ptr) {}
+        static inline void SetWriteBarrier(void **ptr, size_t numBytes) {}
+#endif
 
     public:
         // internal
         typedef void (*FinalizerCallback)(void* object, void* client_data);
 
         // functions implemented in a GC agnostic manner
+        static void UninitializeGC();
+        static void AddMemoryPressure(int64_t value);
+        static int32_t GetMaxGeneration();
+        static int32_t GetGeneration(void* addr);
+#if !RUNTIME_TINY
         static void InitializeFinalizer();
         static bool IsFinalizerThread(Il2CppThread* thread);
-        static int32_t GetGeneration(void* addr);
         static void UninitializeFinalizers();
-        static void UninitializeGC();
         static void NotifyFinalizers();
         static void RunFinalizer(void *obj, void *data);
         static void RegisterFinalizerForNewObject(Il2CppObject* obj);
         static void RegisterFinalizer(Il2CppObject* obj);
         static void SuppressFinalizer(Il2CppObject* obj);
         static void WaitForPendingFinalizers();
-        static int32_t GetMaxGeneration();
-        static void AddMemoryPressure(int64_t value);
         static Il2CppIUnknown* GetOrCreateCCW(Il2CppObject* obj, const Il2CppGuid& iid);
+#endif
 
         // functions implemented in a GC specific manner
         static void Initialize();
+
+        // Deprecated. Remove when Unity has switched to mono_unity_gc_set_mode
         static void Enable();
+        // Deprecated. Remove when Unity has switched to mono_unity_gc_set_mode
         static void Disable();
+        // Deprecated. Remove when Unity has switched to mono_unity_gc_set_mode
+        static bool IsDisabled();
+
+        static void SetMode(Il2CppGCMode mode);
+
+        static bool IsIncremental();
+        static void StartIncrementalCollection();
+
+        static int64_t GetMaxTimeSliceNs();
+        static void SetMaxTimeSliceNs(int64_t maxTimeSlice);
 
         static FinalizerCallback RegisterFinalizerWithCallback(Il2CppObject* obj, FinalizerCallback callback);
 
@@ -50,14 +72,20 @@ namespace gc
         static void* MakeDescriptorForString();
         static void* MakeDescriptorForArray();
 
+#if RUNTIME_TINY
+        static void* Allocate(size_t size);
+#endif
+
         static void* AllocateFixed(size_t size, void *descr);
         static void FreeFixed(void* addr);
 
         static bool RegisterThread(void *baseptr);
         static bool UnregisterThread();
 
+#if !RUNTIME_TINY
         static bool HasPendingFinalizers();
         static int32_t InvokeFinalizers();
+#endif
 
         static void AddWeakLink(void **link_addr, Il2CppObject *obj, bool track);
         static void RemoveWeakLink(void **link_addr);
@@ -77,9 +105,7 @@ namespace gc
         static void RegisterRoot(char *start, size_t size);
         static void UnregisterRoot(char* start);
 
-#if NET_4_0
         static void SetSkipThread(bool skip);
-#endif
     };
 } /* namespace vm */
 } /* namespace il2cpp */

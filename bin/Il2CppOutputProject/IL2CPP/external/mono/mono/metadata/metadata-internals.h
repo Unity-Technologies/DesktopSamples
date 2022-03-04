@@ -195,6 +195,9 @@ struct _MonoImage {
 	/* If the raw data was allocated from a source such as mmap, the allocator may store resource tracking information here. */
 	void *raw_data_handle;
 	char *raw_data;
+#ifdef IL2CPP_ON_MONO
+	void* il2cpp_codegen_handle;
+#endif
 	guint32 raw_data_len;
 	guint8 raw_buffer_used    : 1;
 	guint8 raw_data_allocated : 1;
@@ -621,6 +624,8 @@ typedef struct {
 	char *aot_options;
 } MonoAotCacheConfig;
 
+typedef void(*MonoImageSetFunc) (MonoImageSet *imageSet, void* user_data);
+
 #define MONO_SIZEOF_METHOD_SIGNATURE (sizeof (struct _MonoMethodSignature) - MONO_ZERO_LEN_ARRAY * SIZEOF_VOID_P)
 
 static inline gboolean
@@ -721,6 +726,8 @@ mono_image_set_unlock (MonoImageSet *set);
 
 char*
 mono_image_set_strdup (MonoImageSet *set, const char *s);
+
+void mono_metadata_image_set_foreach(MonoImageSetFunc func, gpointer user_data);
 
 #define mono_image_set_new0(image,type,size) ((type *) mono_image_set_alloc0 (image, sizeof (type)* (size)))
 

@@ -62,6 +62,7 @@ SUITE(Console)
         UnityPalConsoleTtySetup("", "", controlChars, &size);
         CHECK_EQUAL(*classSize, *size);
     }
+
 #endif
 }
 

@@ -18,25 +18,16 @@ namespace Globalization
 {
     static bool ConstructRegion(Il2CppRegionInfo* regionInfo, const RegionInfoEntry* ri)
     {
-#if NET_4_0
         regionInfo->geo_id = ri->geo_id;
-#else
-        regionInfo->lcid = ri->lcid;
-        regionInfo->region_id = ri->region_id;
-#endif
         IL2CPP_OBJECT_SETREF(regionInfo, iso2name, vm::String::New(idx2string(ri->iso2name)));
         IL2CPP_OBJECT_SETREF(regionInfo, iso3name, vm::String::New(idx2string(ri->iso3name)));
         IL2CPP_OBJECT_SETREF(regionInfo, win3name, vm::String::New(idx2string(ri->win3name)));
         IL2CPP_OBJECT_SETREF(regionInfo, english_name, vm::String::New(idx2string(ri->english_name)));
-#if NET_4_0
         IL2CPP_OBJECT_SETREF(regionInfo, native_name, vm::String::New(idx2string(ri->native_name)));
-#endif
         IL2CPP_OBJECT_SETREF(regionInfo, currency_symbol, vm::String::New(idx2string(ri->currency_symbol)));
         IL2CPP_OBJECT_SETREF(regionInfo, iso_currency_symbol, vm::String::New(idx2string(ri->iso_currency_symbol)));
         IL2CPP_OBJECT_SETREF(regionInfo, currency_english_name, vm::String::New(idx2string(ri->currency_english_name)));
-#if NET_4_0
         IL2CPP_OBJECT_SETREF(regionInfo, currency_native_name, vm::String::New(idx2string(ri->currency_native_name)));
-#endif
 
         return true;
     }
@@ -53,7 +44,7 @@ namespace Globalization
     {
         std::string n = utils::StringUtils::Utf16ToUtf8(utils::StringUtils::GetChars(name));
         RegionInfoNameEntry* nameEntry = (RegionInfoNameEntry*)bsearch(n.c_str(), region_name_entries, NUM_REGION_ENTRIES,
-                sizeof(RegionInfoNameEntry), RegionNameLocator);
+            sizeof(RegionInfoNameEntry), RegionNameLocator);
 
         if (nameEntry == NULL)
             return false;

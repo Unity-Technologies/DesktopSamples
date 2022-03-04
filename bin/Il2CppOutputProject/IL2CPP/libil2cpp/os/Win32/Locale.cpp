@@ -4,6 +4,7 @@
 
 #include "os/Locale.h"
 #include "WindowsHelpers.h"
+#include <locale.h>
 #include <vector>
 
 namespace il2cpp

@@ -30,6 +30,10 @@
 #include <mono/metadata/tokentype.h>
 #include <mono/utils/mono-string.h>
 
+#if HAVE_BDWGC_GC
+#include <mono/utils/gc_wrapper.h>
+#endif
+
 #include <glib.h>
 
 #ifdef WIN32
@@ -78,7 +82,7 @@ mono_unity_socket_security_enabled_set (gboolean enabled)
 
 void mono_unity_set_vprintf_func (vprintf_func func)
 {
-	//set_vprintf_func (func);
+	set_vprintf_func (func);
 }
 
 MONO_API gboolean
@@ -732,6 +736,13 @@ void mono_unity_domain_install_capture_context_method(MonoDomain* domain, gpoint
 	domain->capture_context_method = callback;
 }
 
+
+void mono_unity_domain_unload (MonoDomain* domain, MonoUnityExceptionFunc callback)
+{
+	MonoObject *exc = NULL;
+	mono_domain_try_unload (domain, &exc, callback);
+}
+
 //array
 
 int mono_unity_array_get_element_size(MonoArray *arr)
@@ -900,6 +911,35 @@ mono_unity_get_unitytls_interface()
 	return gUnitytlsInterface;
 }
 
+// gc
+MONO_API void mono_unity_gc_enable()
+{
+#if HAVE_BDWGC_GC
+	GC_enable();
+#else
+	g_assert_not_reached ();
+#endif
+}
+
+MONO_API void mono_unity_gc_disable()
+{
+#if HAVE_BDWGC_GC
+	GC_disable();
+#else
+	g_assert_not_reached ();
+#endif
+}
+
+MONO_API int mono_unity_gc_is_disabled()
+{
+#if HAVE_BDWGC_GC
+	return GC_is_disabled ();
+#else
+	g_assert_not_reached ();
+	return 0;
+#endif	
+}
+
 MONO_API void 
 mono_unity_install_unitytls_interface(unitytls_interface_struct* callbacks)
 {
@@ -924,7 +964,7 @@ MonoClass* mono_unity_generic_container_get_parameter_class(MonoGenericContainer
 	return mono_class_from_generic_parameter_internal(param);
 }
 
-MonoString* mono_unity_string_append_assembly_name_if_necessary(MonoString* typeName, const char* assemblyName)
+MonoString* mono_unity_string_append_assembly_name_if_necessary(MonoString* typeName, MonoMethod* callingMethod)
 {
 	if (typeName != NULL)
 	{
@@ -939,7 +979,7 @@ MonoString* mono_unity_string_append_assembly_name_if_necessary(MonoString* type
 			{
 				GString* assemblyQualifiedName = g_string_new(0);
 				char* name = mono_string_to_utf8_checked(typeName, &unused);
-				g_string_append_printf(assemblyQualifiedName, "%s, %s", name, assemblyName);
+				g_string_append_printf(assemblyQualifiedName, "%s, %s", name, callingMethod->klass->image->name);
 
 				typeName = mono_string_new(mono_domain_get(), assemblyQualifiedName->str);
 
@@ -1065,13 +1105,6 @@ mono_unity_domain_set_config (MonoDomain *domain, const char *base_dir, const ch
 	mono_domain_set_config (domain, base_dir, config_file_name);
 }
 
-// only needed on OSX
-MONO_API int
-mono_unity_backtrace_from_context (void* context, void* array[], int count)
-{
-	return 0;
-}
-
 MONO_API MonoException*
 mono_unity_loader_get_last_error_and_error_prepare_exception ()
 {
@@ -1127,6 +1160,31 @@ mono_unity_class_get_generic_parameter_count (MonoClass* klass)
 		return 0;
 
 	return generic_container->type_argc;
+}
+
+MONO_API MonoClass*
+mono_unity_class_get_generic_argument_at (MonoClass* klass, guint32 index)
+{
+	if (!mono_class_is_ginst (klass))
+		return NULL;
+
+	MonoGenericClass* generic_class = mono_class_get_generic_class (klass);
+
+	if (index >= generic_class->context.class_inst->type_argc)
+		return NULL;
+
+	return mono_class_from_mono_type (generic_class->context.class_inst->type_argv[index]);
+}
+
+MONO_API guint32
+mono_unity_class_get_generic_argument_count (MonoClass* klass)
+{
+	if (!mono_class_is_ginst (klass))
+		return NULL;
+
+	MonoGenericClass* generic_class = mono_class_get_generic_class (klass);
+
+	return generic_class->context.class_inst->type_argc;
 }
 
 MONO_API MonoClass*

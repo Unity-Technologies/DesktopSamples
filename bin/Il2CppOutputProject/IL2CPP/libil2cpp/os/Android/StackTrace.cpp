@@ -41,20 +41,18 @@ namespace
         if (!dladdr(reinterpret_cast<void*>(addr), &info))
             return false;
 
-        const char* const slash = strrchr(info.dli_fname, '/');
-        return slash && strcmp(slash + 1, "libunity.so") == 0;
+        // dli_name can have different values depending on Android OS:
+        // Google Pixel 2 Android 10, dli_name will be "/data/app/com.unity.stopaskingforpackagename-uRHSDLXYA4cnHxyTNT30-g==/lib/arm/libunity.so"
+        // Samsung GT-I9505 Android 5, dli_name will be "libunity.so"
+        return info.dli_fname != NULL && strstr(info.dli_fname, "libunity.so") != NULL;
     }
-
-    // Disable optimizations for a few methods to work around what seems to be a
-    // linker bug in the r13b NDK. See https://fogbugz.unity3d.com/f/cases/1052529/
-    // for complete details.
 
     struct AndroidStackTrace
     {
         size_t size;
         Il2CppMethodPointer addrs[kMaxStackFrames];
 
-        bool PushStackFrameAddress(const uintptr_t addr) __attribute__((optnone))
+        bool PushStackFrameAddress(const uintptr_t addr)
         {
             if (size >= kMaxStackFrames)
                 return false;
@@ -63,7 +61,7 @@ namespace
             return true;
         }
 
-        static _Unwind_Reason_Code Callback(struct _Unwind_Context* context, void* self) __attribute__((optnone))
+        static _Unwind_Reason_Code Callback(struct _Unwind_Context* context, void* self)
         {
             const uintptr_t addr = _Unwind_GetIP(context);
 
@@ -79,7 +77,7 @@ namespace
     };
 }
 
-    void StackTrace::WalkStack(WalkStackCallback callback, void* context, WalkOrder walkOrder) __attribute__((optnone))
+    void StackTrace::WalkStackNative(WalkStackCallback callback, void* context, WalkOrder walkOrder)
     {
         AndroidStackTrace callstack = {};
         _Unwind_Backtrace(AndroidStackTrace::Callback, &callstack);
@@ -89,6 +87,16 @@ namespace
             if (!callback(callstack.addrs[index], context))
                 break;
         }
+    }
+
+    std::string StackTrace::NativeStackTrace()
+    {
+        return std::string();
+    }
+
+    const void* StackTrace::GetStackPointer()
+    {
+        return __builtin_frame_address(0);
     }
 }
 }

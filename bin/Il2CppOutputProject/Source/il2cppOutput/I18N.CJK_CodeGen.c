@@ -1,0 +1,870 @@
+﻿#include "pch-c.h"
+#ifndef _MSC_VER
+# include <alloca.h>
+#else
+# include <malloc.h>
+#endif
+
+
+#include "codegen/il2cpp-codegen-metadata.h"
+
+
+
+
+
+// 0x00000001 System.Void I18N.CJK.CP51932::.ctor()
+extern void CP51932__ctor_mD0A6A28B396703C5ACFF23FE77C34E0097033A93 (void);
+// 0x00000002 System.Int32 I18N.CJK.CP51932::GetByteCount(System.Char[],System.Int32,System.Int32)
+extern void CP51932_GetByteCount_mF2BE755212D8391B28F86F724D86F0FC12272F53 (void);
+// 0x00000003 System.Int32 I18N.CJK.CP51932::GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)
+extern void CP51932_GetBytes_m4EE37DE11AA330B538D185522A25E5652E68890C (void);
+// 0x00000004 System.Int32 I18N.CJK.CP51932::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void CP51932_GetCharCount_m9F15B69F95A3578F6B99A16F9836CFB887EA0ED8 (void);
+// 0x00000005 System.Int32 I18N.CJK.CP51932::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void CP51932_GetChars_m7C3C48F2C11FF0A572A6F2BC29ECE12865D56B6A (void);
+// 0x00000006 System.Int32 I18N.CJK.CP51932::GetMaxByteCount(System.Int32)
+extern void CP51932_GetMaxByteCount_mDEE60866680934EDB3C88DFC6E2B11B075ED2982 (void);
+// 0x00000007 System.Int32 I18N.CJK.CP51932::GetMaxCharCount(System.Int32)
+extern void CP51932_GetMaxCharCount_m72D0162B5F72B9D85A80682A227A04292DFAEDA7 (void);
+// 0x00000008 System.Text.Encoder I18N.CJK.CP51932::GetEncoder()
+extern void CP51932_GetEncoder_m5DE425541590FEB48534A03641991DDB8738DC8D (void);
+// 0x00000009 System.Text.Decoder I18N.CJK.CP51932::GetDecoder()
+extern void CP51932_GetDecoder_mBC66D68D391C0F5433C806E1BD2F50636C85BA2F (void);
+// 0x0000000A System.String I18N.CJK.CP51932::get_BodyName()
+extern void CP51932_get_BodyName_m92F6AE37D16886CDF86D38F93B0551EED7A36164 (void);
+// 0x0000000B System.String I18N.CJK.CP51932::get_EncodingName()
+extern void CP51932_get_EncodingName_m629DA0EB93CB5993C20DE64D73C66F2ACDB67939 (void);
+// 0x0000000C System.String I18N.CJK.CP51932::get_HeaderName()
+extern void CP51932_get_HeaderName_m2D793CC8DA1CBBCBF8286DFD5E87708BBFA1EF0E (void);
+// 0x0000000D System.Boolean I18N.CJK.CP51932::get_IsBrowserDisplay()
+extern void CP51932_get_IsBrowserDisplay_m8ED54E930CBF8C14CE262ACD6A3382FC06FE6957 (void);
+// 0x0000000E System.Boolean I18N.CJK.CP51932::get_IsBrowserSave()
+extern void CP51932_get_IsBrowserSave_mE2EADD239CC9E275F53523F0A53E7552AD3221C2 (void);
+// 0x0000000F System.Boolean I18N.CJK.CP51932::get_IsMailNewsDisplay()
+extern void CP51932_get_IsMailNewsDisplay_mF4AE9C602A6E8B8EB24F40EDF4C3EA08D4B8AA16 (void);
+// 0x00000010 System.Boolean I18N.CJK.CP51932::get_IsMailNewsSave()
+extern void CP51932_get_IsMailNewsSave_m1C17FA0374FAB185F08D31481070E3260B107D1B (void);
+// 0x00000011 System.String I18N.CJK.CP51932::get_WebName()
+extern void CP51932_get_WebName_m6B240BA9A3EC68212618C13059014F67FE88DCE9 (void);
+// 0x00000012 System.Void I18N.CJK.CP51932Encoder::.ctor(I18N.Common.MonoSafeEncoding)
+extern void CP51932Encoder__ctor_m600876953D7C9E4EA8F35A7D26D3B582D0C47DD0 (void);
+// 0x00000013 System.Int32 I18N.CJK.CP51932Encoder::GetByteCount(System.Char[],System.Int32,System.Int32,System.Boolean)
+extern void CP51932Encoder_GetByteCount_mBDBC8720EE4CBC3D18C7AB9DECFA43F80DEBEE88 (void);
+// 0x00000014 System.Int32 I18N.CJK.CP51932Encoder::GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Boolean)
+extern void CP51932Encoder_GetBytes_m3E70966E8D0C26BA892580784DFCFFB0EC75919F (void);
+// 0x00000015 System.Void I18N.CJK.CP51932Decoder::.ctor()
+extern void CP51932Decoder__ctor_mCD7EBA0866E141275F6F86C7EA0910BCFDB33517 (void);
+// 0x00000016 System.Int32 I18N.CJK.CP51932Decoder::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void CP51932Decoder_GetCharCount_m9362F8F9E84D0016ABBDB16AF586A7E4AE335EF0 (void);
+// 0x00000017 System.Int32 I18N.CJK.CP51932Decoder::GetCharCount(System.Byte[],System.Int32,System.Int32,System.Boolean)
+extern void CP51932Decoder_GetCharCount_mA3111DA797390A00C17A073E96CD881747F62DB7 (void);
+// 0x00000018 System.Int32 I18N.CJK.CP51932Decoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void CP51932Decoder_GetChars_m88B3D0F567E78DE7E94A447BBFF29898A0F8C731 (void);
+// 0x00000019 System.Int32 I18N.CJK.CP51932Decoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Boolean)
+extern void CP51932Decoder_GetChars_mA872441B6B21D566930093F4C087420701424399 (void);
+// 0x0000001A System.Exception I18N.CJK.CP51932Decoder::Insufficient()
+extern void CP51932Decoder_Insufficient_mFCA10A6AA231A94C862BA6E466F5E809E965B3EC (void);
+// 0x0000001B System.Void I18N.CJK.ENCeuc_jp::.ctor()
+extern void ENCeuc_jp__ctor_mA22C887383992052A5F39ED1B74CF9D393937190 (void);
+// 0x0000001C System.Void I18N.CJK.CP932::.ctor()
+extern void CP932__ctor_mF6EAF20EA953762EB68498458C370ABC7C5EF676 (void);
+// 0x0000001D System.Int32 I18N.CJK.CP932::GetByteCount(System.Char[],System.Int32,System.Int32)
+extern void CP932_GetByteCount_m6552D0233925FB0D664536DB7E4FC033D72D72E0 (void);
+// 0x0000001E System.Int32 I18N.CJK.CP932::GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)
+extern void CP932_GetBytes_m354228380718F75597603F07ABA3490BB2760002 (void);
+// 0x0000001F System.Int32 I18N.CJK.CP932::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void CP932_GetCharCount_m1DF2EFFC1F3104622C61D47A9E3C1904E30EAC1B (void);
+// 0x00000020 System.Int32 I18N.CJK.CP932::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void CP932_GetChars_m6AEDFFA3E082929A2B4E18FEE6494B989521CB6F (void);
+// 0x00000021 System.Int32 I18N.CJK.CP932::GetMaxByteCount(System.Int32)
+extern void CP932_GetMaxByteCount_m2E8F495AFEEC48712F987F69E73B0262CBF9875B (void);
+// 0x00000022 System.Int32 I18N.CJK.CP932::GetMaxCharCount(System.Int32)
+extern void CP932_GetMaxCharCount_m95248406D2C112E87B9251F79E63E583716753FF (void);
+// 0x00000023 System.Text.Decoder I18N.CJK.CP932::GetDecoder()
+extern void CP932_GetDecoder_m4B6817C94D28B9529D03C7E8CD8FE05D46587AAB (void);
+// 0x00000024 System.String I18N.CJK.CP932::get_BodyName()
+extern void CP932_get_BodyName_m91CC99014396E10BFB8BBDC2975214F69E0102D4 (void);
+// 0x00000025 System.String I18N.CJK.CP932::get_EncodingName()
+extern void CP932_get_EncodingName_m85B7083D287DA9A0E9142222B210CF5D022F6F2A (void);
+// 0x00000026 System.String I18N.CJK.CP932::get_HeaderName()
+extern void CP932_get_HeaderName_m205003A11AD74B3795429D8C256D66D7CA59C315 (void);
+// 0x00000027 System.Boolean I18N.CJK.CP932::get_IsBrowserDisplay()
+extern void CP932_get_IsBrowserDisplay_m7F2DEB2BC8577D9829AC8DB8E7709F65D86595B5 (void);
+// 0x00000028 System.Boolean I18N.CJK.CP932::get_IsBrowserSave()
+extern void CP932_get_IsBrowserSave_m4140BC9D2DFEFDA1A0CE0ADC2C0073581DACDD1C (void);
+// 0x00000029 System.Boolean I18N.CJK.CP932::get_IsMailNewsDisplay()
+extern void CP932_get_IsMailNewsDisplay_m3B918E6939762D922B928678BC768B6F48DD2C7D (void);
+// 0x0000002A System.Boolean I18N.CJK.CP932::get_IsMailNewsSave()
+extern void CP932_get_IsMailNewsSave_mD288F3F35144F724BE36EBC1590DCA807F65FE36 (void);
+// 0x0000002B System.String I18N.CJK.CP932::get_WebName()
+extern void CP932_get_WebName_mE0868FB21D94F940ED032649CFDFAB72CB19C5CC (void);
+// 0x0000002C System.Int32 I18N.CJK.CP932::get_WindowsCodePage()
+extern void CP932_get_WindowsCodePage_mD772017336DA81671C60EBEF67258B4A3D23D00E (void);
+// 0x0000002D System.Text.Encoder I18N.CJK.CP932::GetEncoder()
+extern void CP932_GetEncoder_m2CCED4A7A7634B372475170CC091A31249B97D3B (void);
+// 0x0000002E System.Void I18N.CJK.CP932Decoder::.ctor(I18N.CJK.JISConvert)
+extern void CP932Decoder__ctor_mBD955394B5CB18FDB6FB8772AE3AB3DE4EBF718D (void);
+// 0x0000002F System.Int32 I18N.CJK.CP932Decoder::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void CP932Decoder_GetCharCount_m101B88FD2774C35098DC00356761E98277319B10 (void);
+// 0x00000030 System.Int32 I18N.CJK.CP932Decoder::GetCharCount(System.Byte[],System.Int32,System.Int32,System.Boolean)
+extern void CP932Decoder_GetCharCount_m77688CA44EAFFD64FA63FD3681DFA2806F73D087 (void);
+// 0x00000031 System.Int32 I18N.CJK.CP932Decoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void CP932Decoder_GetChars_mC30A6DB96F1995EAF35C0B278C84466C612FF488 (void);
+// 0x00000032 System.Int32 I18N.CJK.CP932Decoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Boolean)
+extern void CP932Decoder_GetChars_m3F2A6FD3FBBCEBF13C76C366E744DD3EA9A4152A (void);
+// 0x00000033 System.Void I18N.CJK.ENCshift_jis::.ctor()
+extern void ENCshift_jis__ctor_mD79949836B23D4559EC01E478FDFEC0E29DEBC4A (void);
+// 0x00000034 System.Void I18N.CJK.CP936::.ctor()
+extern void CP936__ctor_m53B4030D0303F4BF1C7D1DAE21DDCDCAB9327976 (void);
+// 0x00000035 I18N.CJK.DbcsConvert I18N.CJK.CP936::GetConvert()
+extern void CP936_GetConvert_mBEA9E5020902819EB1769EADE0C9A267796DD46B (void);
+// 0x00000036 System.Int32 I18N.CJK.CP936::GetBytesInternal(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)
+extern void CP936_GetBytesInternal_mDF0DE6531B280526FD86895A20B0DFB95E190063 (void);
+// 0x00000037 System.Int32 I18N.CJK.CP936::GetByteCount(System.Char[],System.Int32,System.Int32)
+extern void CP936_GetByteCount_mC633F255529F6D937ACFA126E4D6C2A90479B392 (void);
+// 0x00000038 System.Int32 I18N.CJK.CP936::GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)
+extern void CP936_GetBytes_mE529087DB7F73E4B6A25CF1E93E4D7B9391B7C57 (void);
+// 0x00000039 System.Int32 I18N.CJK.CP936::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void CP936_GetCharCount_m94511E892513B8C24C4B422BB1AA0DC449D79834 (void);
+// 0x0000003A System.Int32 I18N.CJK.CP936::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void CP936_GetChars_m74D324A9224980881498E87D445285ED8F46D404 (void);
+// 0x0000003B System.Text.Decoder I18N.CJK.CP936::GetDecoder()
+extern void CP936_GetDecoder_m85018FB8DD3D8BD8785EE4E4C8A3914D57102CA6 (void);
+// 0x0000003C System.String I18N.CJK.CP936::get_BodyName()
+extern void CP936_get_BodyName_m9AFDB95F1FC4B5A5346D152A6BB98C2BFA94E537 (void);
+// 0x0000003D System.String I18N.CJK.CP936::get_EncodingName()
+extern void CP936_get_EncodingName_m927C8641F060F56488E821A2BDDFBB7F51055C92 (void);
+// 0x0000003E System.String I18N.CJK.CP936::get_HeaderName()
+extern void CP936_get_HeaderName_mDA62FC103DF3A06506F5BB6A067997F19C6B763F (void);
+// 0x0000003F System.Boolean I18N.CJK.CP936::get_IsBrowserDisplay()
+extern void CP936_get_IsBrowserDisplay_m6265C183B1D8C420745FCAA16997937429676CB1 (void);
+// 0x00000040 System.Boolean I18N.CJK.CP936::get_IsBrowserSave()
+extern void CP936_get_IsBrowserSave_mA8254FB0E3FB6FC36DB8A7D5AE0BEEA230A28C10 (void);
+// 0x00000041 System.Boolean I18N.CJK.CP936::get_IsMailNewsDisplay()
+extern void CP936_get_IsMailNewsDisplay_m25018188B5BA8952E2E771613D4EBF8987697992 (void);
+// 0x00000042 System.Boolean I18N.CJK.CP936::get_IsMailNewsSave()
+extern void CP936_get_IsMailNewsSave_mC295E2A9869889697DD16C65E86835FC42C7F978 (void);
+// 0x00000043 System.String I18N.CJK.CP936::get_WebName()
+extern void CP936_get_WebName_m866BE219C3F6A9CAE396EE14055EDF9C1BC36496 (void);
+// 0x00000044 System.Void I18N.CJK.CP936Decoder::.ctor(I18N.CJK.DbcsConvert)
+extern void CP936Decoder__ctor_mA490711D4E387D8EC60906A161461484E68049BE (void);
+// 0x00000045 System.Int32 I18N.CJK.CP936Decoder::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void CP936Decoder_GetCharCount_m599ADD29321EA3C5965833867CC73C07C5DD4A39 (void);
+// 0x00000046 System.Int32 I18N.CJK.CP936Decoder::GetCharCount(System.Byte[],System.Int32,System.Int32,System.Boolean)
+extern void CP936Decoder_GetCharCount_mB6C5504CC4838ED27336F0AE0AE1443A2A49EB2E (void);
+// 0x00000047 System.Int32 I18N.CJK.CP936Decoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void CP936Decoder_GetChars_mBA76093E1EA991FCDB37C3A6B245F3803DF78A55 (void);
+// 0x00000048 System.Int32 I18N.CJK.CP936Decoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Boolean)
+extern void CP936Decoder_GetChars_m36DA4465A0FEC2C7CC9E7E3F8778BA6B31BA170B (void);
+// 0x00000049 System.Void I18N.CJK.ENCgb2312::.ctor()
+extern void ENCgb2312__ctor_m937C2BC829082ACA6DEC7E187A998C65B9CEC0AF (void);
+// 0x0000004A System.Void I18N.CJK.CP949::.ctor()
+extern void CP949__ctor_m64E3AE7EAB0A16194B9EEFCECF8D96189C188413 (void);
+// 0x0000004B System.String I18N.CJK.CP949::get_BodyName()
+extern void CP949_get_BodyName_m77AA2FF64B7CC6F8DC98775B3EBC8FA7EA76F3D5 (void);
+// 0x0000004C System.String I18N.CJK.CP949::get_EncodingName()
+extern void CP949_get_EncodingName_mC143484FFF97057350153FFFDE40AF18A53DD47B (void);
+// 0x0000004D System.String I18N.CJK.CP949::get_HeaderName()
+extern void CP949_get_HeaderName_m49C70BB29B8845E1A7B34BFE8A928244164F4DA1 (void);
+// 0x0000004E System.String I18N.CJK.CP949::get_WebName()
+extern void CP949_get_WebName_m323BFB20E8544E81674B06F356F7C38888014A2C (void);
+// 0x0000004F System.Void I18N.CJK.CP51949::.ctor()
+extern void CP51949__ctor_m25A8E288C93BDF4FFD60E25BFE609921A5F58C76 (void);
+// 0x00000050 System.String I18N.CJK.CP51949::get_BodyName()
+extern void CP51949_get_BodyName_mFB691ECB52BF3B729C7D4D5896CF68A67477271C (void);
+// 0x00000051 System.String I18N.CJK.CP51949::get_EncodingName()
+extern void CP51949_get_EncodingName_m5C4D3847B638C91365C38FCC5DD216984E622873 (void);
+// 0x00000052 System.String I18N.CJK.CP51949::get_HeaderName()
+extern void CP51949_get_HeaderName_m18D449E34E1DEC36385D2D3ABC872C75BB25CBF1 (void);
+// 0x00000053 System.String I18N.CJK.CP51949::get_WebName()
+extern void CP51949_get_WebName_mC3C90A8A9B88F43AF5BFFD0811D809CCDA930055 (void);
+// 0x00000054 System.Void I18N.CJK.KoreanEncoding::.ctor(System.Int32,System.Boolean)
+extern void KoreanEncoding__ctor_m5DAFC4E50A88F3B5486479614660AFEFFFADB0D1 (void);
+// 0x00000055 I18N.CJK.DbcsConvert I18N.CJK.KoreanEncoding::GetConvert()
+extern void KoreanEncoding_GetConvert_mC6F295C0BD12D33D9C67699715DA4424855576C3 (void);
+// 0x00000056 System.Int32 I18N.CJK.KoreanEncoding::GetByteCount(System.Char[],System.Int32,System.Int32)
+extern void KoreanEncoding_GetByteCount_mC8749804A0191C526116D1A261DD14C408808D97 (void);
+// 0x00000057 System.Int32 I18N.CJK.KoreanEncoding::GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)
+extern void KoreanEncoding_GetBytes_mFEE2BBE42E086EF133B68FD6C4290A172675A3DD (void);
+// 0x00000058 System.Int32 I18N.CJK.KoreanEncoding::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void KoreanEncoding_GetCharCount_mA8739D230B9629EC7A77346683A170BBB978C283 (void);
+// 0x00000059 System.Int32 I18N.CJK.KoreanEncoding::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void KoreanEncoding_GetChars_m4D8BAC2B7BD65F384BB3ED245B5784BD53FB09B1 (void);
+// 0x0000005A System.Text.Decoder I18N.CJK.KoreanEncoding::GetDecoder()
+extern void KoreanEncoding_GetDecoder_mDF5C06DF50F424A86492A2A48CD97122677FCB7E (void);
+// 0x0000005B System.Void I18N.CJK.KoreanEncoding/KoreanDecoder::.ctor(I18N.CJK.DbcsConvert,System.Boolean)
+extern void KoreanDecoder__ctor_mC22BE343B7E00518D890CFD31E7EA4CA03798042 (void);
+// 0x0000005C System.Int32 I18N.CJK.KoreanEncoding/KoreanDecoder::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void KoreanDecoder_GetCharCount_m5BFAB9E8F2DB590E3D561419D467E0AE2E9A5E2B (void);
+// 0x0000005D System.Int32 I18N.CJK.KoreanEncoding/KoreanDecoder::GetCharCount(System.Byte[],System.Int32,System.Int32,System.Boolean)
+extern void KoreanDecoder_GetCharCount_m6137F20D24E5AA1B513941AF03FE5105BA4F175E (void);
+// 0x0000005E System.Int32 I18N.CJK.KoreanEncoding/KoreanDecoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void KoreanDecoder_GetChars_m08E615CF6492E4BFC1C2E761F4B602108681E0F8 (void);
+// 0x0000005F System.Int32 I18N.CJK.KoreanEncoding/KoreanDecoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Boolean)
+extern void KoreanDecoder_GetChars_m27BCE9B72CE85E4FAFCBD7C8EC84AE6317C1E094 (void);
+// 0x00000060 System.Void I18N.CJK.ENCuhc::.ctor()
+extern void ENCuhc__ctor_m71F1498A958165D2C84366630FBAA13C1F2E2E59 (void);
+// 0x00000061 System.Void I18N.CJK.ENCeuc_kr::.ctor()
+extern void ENCeuc_kr__ctor_m0C544FF53A0C3B3933EB2F0F558588ABE764C637 (void);
+// 0x00000062 System.Void I18N.CJK.CP950::.ctor()
+extern void CP950__ctor_mC31215BAEEDD9FEB1DF2282F8E17B98C84F49118 (void);
+// 0x00000063 I18N.CJK.DbcsConvert I18N.CJK.CP950::GetConvert()
+extern void CP950_GetConvert_m937B32C1549EE298503C1D76AF0D9DBC0D080435 (void);
+// 0x00000064 System.Int32 I18N.CJK.CP950::GetByteCount(System.Char[],System.Int32,System.Int32)
+extern void CP950_GetByteCount_m6EE83DB2C0D9FD085908A6FE3364F931B514D36D (void);
+// 0x00000065 System.Int32 I18N.CJK.CP950::GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)
+extern void CP950_GetBytes_m5B217EE682128935666C69B6F6B87BD0E2D0ECFB (void);
+// 0x00000066 System.Int32 I18N.CJK.CP950::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void CP950_GetChars_m6DF73D13871F6D15F3CC7DC589E09FA1503E4A77 (void);
+// 0x00000067 System.Text.Decoder I18N.CJK.CP950::GetDecoder()
+extern void CP950_GetDecoder_m4CD63BDC4E988060A339A396C5B1EA97E13FF256 (void);
+// 0x00000068 System.String I18N.CJK.CP950::get_BodyName()
+extern void CP950_get_BodyName_m6B62982994CCB84A9CFA3BFA4B06572F8B8BC08F (void);
+// 0x00000069 System.String I18N.CJK.CP950::get_EncodingName()
+extern void CP950_get_EncodingName_m33135B20D33EA75AAE8AEAEF18EB4AA178A550BA (void);
+// 0x0000006A System.String I18N.CJK.CP950::get_HeaderName()
+extern void CP950_get_HeaderName_mAF2B326B00D6CD4B832165FD103B78042EAC32FC (void);
+// 0x0000006B System.String I18N.CJK.CP950::get_WebName()
+extern void CP950_get_WebName_mE4E96C8033871540757175C5DEB8B475C222ADC9 (void);
+// 0x0000006C System.Void I18N.CJK.CP950/CP950Decoder::.ctor(I18N.CJK.DbcsConvert)
+extern void CP950Decoder__ctor_mDBB57F0B5DA506060A9752A5B0F98BE4B28ACDEE (void);
+// 0x0000006D System.Int32 I18N.CJK.CP950/CP950Decoder::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void CP950Decoder_GetCharCount_m8D9EAF0D839900761F6A8DD51BD17FFFF970936A (void);
+// 0x0000006E System.Int32 I18N.CJK.CP950/CP950Decoder::GetCharCount(System.Byte[],System.Int32,System.Int32,System.Boolean)
+extern void CP950Decoder_GetCharCount_mDE96E1CA5BE5AF33A3A7B87EC835ED8E7F560641 (void);
+// 0x0000006F System.Int32 I18N.CJK.CP950/CP950Decoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void CP950Decoder_GetChars_mC9E99C1CB2799338BDB848EF3C476E1FF454B436 (void);
+// 0x00000070 System.Int32 I18N.CJK.CP950/CP950Decoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32,System.Boolean)
+extern void CP950Decoder_GetChars_m335BCFECD6928D69AB3DDCCA0DDB978F27531352 (void);
+// 0x00000071 System.Void I18N.CJK.ENCbig5::.ctor()
+extern void ENCbig5__ctor_m34A5F6A932AAAE26A08BD0391FC888EAEF021B60 (void);
+// 0x00000072 System.Void I18N.CJK.CodeTable::.ctor(System.String)
+extern void CodeTable__ctor_m05F6BC60339A17BD8A883304FB3D0B6D9431D2DA (void);
+// 0x00000073 System.Void I18N.CJK.CodeTable::Dispose()
+extern void CodeTable_Dispose_m5E9943D7B65098A6907576DC0E0E6E2C0CEF7C52 (void);
+// 0x00000074 System.Byte[] I18N.CJK.CodeTable::GetSection(System.Int32)
+extern void CodeTable_GetSection_m575390C701E870B69912F6591BBF407FD35AC88C (void);
+// 0x00000075 System.Void I18N.CJK.DbcsConvert::.ctor(System.String)
+extern void DbcsConvert__ctor_m3A4BCB371E1D98A0D7BBEE2AB6B305A3D528C772 (void);
+// 0x00000076 System.Void I18N.CJK.DbcsConvert::.cctor()
+extern void DbcsConvert__cctor_m8C2D4DC8183C566AADEFA6D6EA6A505FD7566196 (void);
+// 0x00000077 System.Void I18N.CJK.DbcsEncoding::.ctor(System.Int32)
+extern void DbcsEncoding__ctor_mCEC14C007554B842ADFCEC58E0F316C9531AD0B5 (void);
+// 0x00000078 System.Void I18N.CJK.DbcsEncoding::.ctor(System.Int32,System.Int32)
+extern void DbcsEncoding__ctor_m102798630D97C8E241105DE95BDC0885BF7E7173 (void);
+// 0x00000079 I18N.CJK.DbcsConvert I18N.CJK.DbcsEncoding::GetConvert()
+// 0x0000007A System.Int32 I18N.CJK.DbcsEncoding::GetByteCount(System.Char[],System.Int32,System.Int32)
+extern void DbcsEncoding_GetByteCount_m1D2BC9C01A1119C437D3A7199466AD1E1B59CFB2 (void);
+// 0x0000007B System.Int32 I18N.CJK.DbcsEncoding::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void DbcsEncoding_GetCharCount_m8F68D1584B577284D84D8AD2A6702CB8F8A76A3E (void);
+// 0x0000007C System.Int32 I18N.CJK.DbcsEncoding::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void DbcsEncoding_GetChars_m147E9CBC56AD542FA72C5C5520CE914B5A7AA7F4 (void);
+// 0x0000007D System.Int32 I18N.CJK.DbcsEncoding::GetMaxByteCount(System.Int32)
+extern void DbcsEncoding_GetMaxByteCount_m32F3C108A1CEC5D22632DE5C68BC12EE195E5958 (void);
+// 0x0000007E System.Int32 I18N.CJK.DbcsEncoding::GetMaxCharCount(System.Int32)
+extern void DbcsEncoding_GetMaxCharCount_mDD5D9C30A50065EF57A12CD1843231AFBF9509E7 (void);
+// 0x0000007F System.Boolean I18N.CJK.DbcsEncoding::get_IsBrowserDisplay()
+extern void DbcsEncoding_get_IsBrowserDisplay_mD84FFD6DD02CBCC672297CFD240B2D8F801ADB4C (void);
+// 0x00000080 System.Boolean I18N.CJK.DbcsEncoding::get_IsBrowserSave()
+extern void DbcsEncoding_get_IsBrowserSave_mD5FB111836A49133EB52F151EBF30938541202C1 (void);
+// 0x00000081 System.Boolean I18N.CJK.DbcsEncoding::get_IsMailNewsDisplay()
+extern void DbcsEncoding_get_IsMailNewsDisplay_m6CD3FCB35E485BFCD2E913D1D5F41805873A739B (void);
+// 0x00000082 System.Boolean I18N.CJK.DbcsEncoding::get_IsMailNewsSave()
+extern void DbcsEncoding_get_IsMailNewsSave_mFE40AE4B4A39405E160790719153804BD77B7B97 (void);
+// 0x00000083 System.Void I18N.CJK.DbcsEncoding/DbcsDecoder::.ctor(I18N.CJK.DbcsConvert)
+extern void DbcsDecoder__ctor_mFF26DCA3EA24AA43C4CF5D8191E25D73AFDA41F4 (void);
+// 0x00000084 System.Void I18N.CJK.DbcsEncoding/DbcsDecoder::CheckRange(System.Byte[],System.Int32,System.Int32)
+extern void DbcsDecoder_CheckRange_mA1765EE1ED3A33C1A7FDA2E0C6E12B64ABBDBBCA (void);
+// 0x00000085 System.Void I18N.CJK.DbcsEncoding/DbcsDecoder::CheckRange(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void DbcsDecoder_CheckRange_m7E0B5C58A934289C66DEDDB0C93B3B33E0F9F38C (void);
+// 0x00000086 System.Void I18N.CJK.ENCgb18030::.ctor()
+extern void ENCgb18030__ctor_m5EE4DDB099EC8C4C770D8DB3D7C5F4892A06B5BB (void);
+// 0x00000087 System.Void I18N.CJK.CP54936::.ctor()
+extern void CP54936__ctor_mA9FEAE2527CF43A94A409085560D3A658F504D39 (void);
+// 0x00000088 System.Void I18N.CJK.GB18030Encoding::.ctor()
+extern void GB18030Encoding__ctor_m68BF70D37FE8B805524F8F1FE8258770640B265B (void);
+// 0x00000089 System.String I18N.CJK.GB18030Encoding::get_EncodingName()
+extern void GB18030Encoding_get_EncodingName_m2BEB5CB3DD2A5F3652CAD9738DC49B11EA785C0A (void);
+// 0x0000008A System.String I18N.CJK.GB18030Encoding::get_HeaderName()
+extern void GB18030Encoding_get_HeaderName_mB84F1E0742E250BDCB52464E148F3DA2BA301F24 (void);
+// 0x0000008B System.String I18N.CJK.GB18030Encoding::get_BodyName()
+extern void GB18030Encoding_get_BodyName_m0107FDABFF07FDCA261A2E192932B8CAC4F4AACC (void);
+// 0x0000008C System.String I18N.CJK.GB18030Encoding::get_WebName()
+extern void GB18030Encoding_get_WebName_m3175B8B992D173C0DA79436C3C0192726F3F6A72 (void);
+// 0x0000008D System.Boolean I18N.CJK.GB18030Encoding::get_IsMailNewsDisplay()
+extern void GB18030Encoding_get_IsMailNewsDisplay_m4A671EB97513D1729C2BCFC9E5C9CFB90524106E (void);
+// 0x0000008E System.Boolean I18N.CJK.GB18030Encoding::get_IsMailNewsSave()
+extern void GB18030Encoding_get_IsMailNewsSave_mD10708C4FB76C4D2AA92FA9511322048D6B8CAAC (void);
+// 0x0000008F System.Boolean I18N.CJK.GB18030Encoding::get_IsBrowserDisplay()
+extern void GB18030Encoding_get_IsBrowserDisplay_m225ECC30066A27DDB23E63E4194AFC041304A1DD (void);
+// 0x00000090 System.Boolean I18N.CJK.GB18030Encoding::get_IsBrowserSave()
+extern void GB18030Encoding_get_IsBrowserSave_mD2F97E96BD38C6E3C1F79FE4842EDAD032368897 (void);
+// 0x00000091 System.Int32 I18N.CJK.GB18030Encoding::GetMaxByteCount(System.Int32)
+extern void GB18030Encoding_GetMaxByteCount_m6E4698EA278967B438E6BDF2EB78249C4012EF6D (void);
+// 0x00000092 System.Int32 I18N.CJK.GB18030Encoding::GetMaxCharCount(System.Int32)
+extern void GB18030Encoding_GetMaxCharCount_mDCED5041E2FDB1B53CF9904F4BD69E3995B1626A (void);
+// 0x00000093 System.Int32 I18N.CJK.GB18030Encoding::GetByteCount(System.Char[],System.Int32,System.Int32)
+extern void GB18030Encoding_GetByteCount_m6A068C7219AB60C666D7F8070BAE7F888570F1C7 (void);
+// 0x00000094 System.Int32 I18N.CJK.GB18030Encoding::GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)
+extern void GB18030Encoding_GetBytes_mE5A3862BE6FD7BC4E763BDA2A242E2F4D633182B (void);
+// 0x00000095 System.Int32 I18N.CJK.GB18030Encoding::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void GB18030Encoding_GetCharCount_mAD963D5AE64121FB6DF5312F646B7BEE3D3EC48D (void);
+// 0x00000096 System.Int32 I18N.CJK.GB18030Encoding::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void GB18030Encoding_GetChars_mD445927C7E58F3418857CD3EE6A838C3083BF772 (void);
+// 0x00000097 System.Text.Encoder I18N.CJK.GB18030Encoding::GetEncoder()
+extern void GB18030Encoding_GetEncoder_m5719EBB1D36C6F50CCAED9F6604FD8A77110F461 (void);
+// 0x00000098 System.Text.Decoder I18N.CJK.GB18030Encoding::GetDecoder()
+extern void GB18030Encoding_GetDecoder_m8296FC6D8685FD085A673AA7E0D160866089F338 (void);
+// 0x00000099 System.Void I18N.CJK.GB18030Decoder::.ctor()
+extern void GB18030Decoder__ctor_m3220E4F3D5301803A7D9B9824C051EFEBDBCB0D4 (void);
+// 0x0000009A System.Int32 I18N.CJK.GB18030Decoder::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void GB18030Decoder_GetCharCount_mB855C39B0CC5C28EFCEB796DB4CE724D3732E9CE (void);
+// 0x0000009B System.Int32 I18N.CJK.GB18030Decoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void GB18030Decoder_GetChars_mB299443B10CBC20949BF207953BAA1B3A426F874 (void);
+// 0x0000009C System.Void I18N.CJK.GB18030Decoder::.cctor()
+extern void GB18030Decoder__cctor_m9B97396171614D42AFE51267E08D972CF6FB556A (void);
+// 0x0000009D System.Void I18N.CJK.GB18030Encoder::.ctor(I18N.Common.MonoSafeEncoding)
+extern void GB18030Encoder__ctor_m92309D16A98AA6B9E9B72D0A9AB666853B116BD0 (void);
+// 0x0000009E System.Int32 I18N.CJK.GB18030Encoder::GetByteCount(System.Char[],System.Int32,System.Int32,System.Boolean)
+extern void GB18030Encoder_GetByteCount_mBA1D3F26A596EF0908FBE2C512A815A8EB3CE8BC (void);
+// 0x0000009F System.Int32 I18N.CJK.GB18030Encoder::GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Boolean)
+extern void GB18030Encoder_GetBytes_mBDD4F073AFEE14EF666379407F9D2DF76686CBF5 (void);
+// 0x000000A0 System.Void I18N.CJK.GB18030Encoder::.cctor()
+extern void GB18030Encoder__cctor_mA53CB2D414FE9BA57263B627A0C673FCC532FAE4 (void);
+// 0x000000A1 System.Void I18N.CJK.GB18030Source::.ctor()
+extern void GB18030Source__ctor_m2813CCAC9DBB131802B8DDBECD77FE0F3767D457 (void);
+// 0x000000A2 System.Void I18N.CJK.GB18030Source::.cctor()
+extern void GB18030Source__cctor_m7AA25B50318D5FB80545EC2787D4B8340DCF8AA8 (void);
+// 0x000000A3 System.Void I18N.CJK.GB18030Source::Unlinear(System.Byte[],System.Int32,System.Int64)
+extern void GB18030Source_Unlinear_mE038EE5FD05C759F17B71D238291FCF8222FED66 (void);
+// 0x000000A4 System.Void I18N.CJK.GB18030Source::Unlinear(System.Byte*,System.Int64)
+extern void GB18030Source_Unlinear_m7955171E3C4047720D582F17EF7412FCD7997957 (void);
+// 0x000000A5 System.Int64 I18N.CJK.GB18030Source::FromGBX(System.Byte[],System.Int32)
+extern void GB18030Source_FromGBX_m2B43470C984D7B7EFA2F2B4FEEB82616CAEBC44E (void);
+// 0x000000A6 System.Int64 I18N.CJK.GB18030Source::FromUCSSurrogate(System.Int32)
+extern void GB18030Source_FromUCSSurrogate_m6FF91BBA759FC7091471313FDD695A9BFEF995E2 (void);
+// 0x000000A7 System.Int64 I18N.CJK.GB18030Source::FromUCS(System.Int32)
+extern void GB18030Source_FromUCS_mBC86622A6A7E470D0044A34801A526E758940258 (void);
+// 0x000000A8 System.Int64 I18N.CJK.GB18030Source::FromGBXRaw(System.Byte,System.Byte,System.Byte,System.Byte,System.Boolean)
+extern void GB18030Source_FromGBXRaw_m8AF7E2EC3A688EF593B8A44713CC5F29FF0CC62E (void);
+// 0x000000A9 System.Int32 I18N.CJK.GB18030Source::ToUcsRaw(System.Int32)
+extern void GB18030Source_ToUcsRaw_m6AA82C27AE64348504006215D6EBF6DF5DDC7E04 (void);
+// 0x000000AA System.Int64 I18N.CJK.GB18030Source::ToGbxRaw(System.Int32)
+extern void GB18030Source_ToGbxRaw_mDDFAFA00009FA3DCF9BF7E5714C0129A726FE198 (void);
+// 0x000000AB System.Void I18N.CJK.GB18030Source/GB18030Map::.ctor(System.Int32,System.Int32,System.Int64,System.Int64,System.Boolean)
+extern void GB18030Map__ctor_m42B294C7DC4CF0F69CEAB68091553ED7FDEEE113 (void);
+// 0x000000AC System.Void I18N.CJK.CP50220::.ctor()
+extern void CP50220__ctor_mDC4B4AF84BBABB5C99990CB4E83E3166A61793B2 (void);
+// 0x000000AD System.String I18N.CJK.CP50220::get_EncodingName()
+extern void CP50220_get_EncodingName_m0A2E89DAFB6BFA92105F3C35151A36693AD804A9 (void);
+// 0x000000AE System.Void I18N.CJK.CP50221::.ctor()
+extern void CP50221__ctor_m198D26C343D215FBCB0F4056F15F7EF93365F586 (void);
+// 0x000000AF System.String I18N.CJK.CP50221::get_EncodingName()
+extern void CP50221_get_EncodingName_m4363FB30419A82CD96B0F09929066D3C882996A5 (void);
+// 0x000000B0 System.Void I18N.CJK.CP50222::.ctor()
+extern void CP50222__ctor_m82E5E6C6B791D5AA2367142C132A92E5C342C537 (void);
+// 0x000000B1 System.String I18N.CJK.CP50222::get_EncodingName()
+extern void CP50222_get_EncodingName_mF44F02660930422B8FCB355C507B3D670B4FAB0F (void);
+// 0x000000B2 System.Void I18N.CJK.ISO2022JPEncoding::.ctor(System.Int32,System.Boolean,System.Boolean)
+extern void ISO2022JPEncoding__ctor_m17D09D6D0284611A8A37CF415816EFBA202DF7EC (void);
+// 0x000000B3 System.String I18N.CJK.ISO2022JPEncoding::get_BodyName()
+extern void ISO2022JPEncoding_get_BodyName_mB9E033650FD142FC6C26B270A0C102EE9E00B4BF (void);
+// 0x000000B4 System.String I18N.CJK.ISO2022JPEncoding::get_HeaderName()
+extern void ISO2022JPEncoding_get_HeaderName_mAF7A5CAE87F9B49095B0AC9940D5EB3A83329A80 (void);
+// 0x000000B5 System.String I18N.CJK.ISO2022JPEncoding::get_WebName()
+extern void ISO2022JPEncoding_get_WebName_m618A09B097E1CD0698C92D99C146D193FDEC988E (void);
+// 0x000000B6 System.Int32 I18N.CJK.ISO2022JPEncoding::GetMaxByteCount(System.Int32)
+extern void ISO2022JPEncoding_GetMaxByteCount_mD58B30043EAB8F05B029E91704040DD436223F48 (void);
+// 0x000000B7 System.Int32 I18N.CJK.ISO2022JPEncoding::GetMaxCharCount(System.Int32)
+extern void ISO2022JPEncoding_GetMaxCharCount_m899C030CBCB136C47B19E8951631A48EA46E8837 (void);
+// 0x000000B8 System.Int32 I18N.CJK.ISO2022JPEncoding::GetBytesInternal(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Boolean,System.Object)
+extern void ISO2022JPEncoding_GetBytesInternal_mB5D489FC3E407B18F3C438C6E48FC02AE963130D (void);
+// 0x000000B9 System.Int32 I18N.CJK.ISO2022JPEncoding::GetByteCount(System.Char[],System.Int32,System.Int32)
+extern void ISO2022JPEncoding_GetByteCount_m4CAA2ADA965A7E6003B2FA10E1ED0E244DC35DA3 (void);
+// 0x000000BA System.Int32 I18N.CJK.ISO2022JPEncoding::GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32)
+extern void ISO2022JPEncoding_GetBytes_m1AE5B62069856411356776FA348B74DF880B2F1E (void);
+// 0x000000BB System.Int32 I18N.CJK.ISO2022JPEncoding::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void ISO2022JPEncoding_GetCharCount_m89F9C809C50E5C5510C5B42CCD0499217150D234 (void);
+// 0x000000BC System.Int32 I18N.CJK.ISO2022JPEncoding::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void ISO2022JPEncoding_GetChars_m97BA8FD6A76277A22149105BC1385032622B7A50 (void);
+// 0x000000BD System.Void I18N.CJK.ISO2022JPEncoder::.ctor(I18N.Common.MonoSafeEncoding,System.Boolean,System.Boolean)
+extern void ISO2022JPEncoder__ctor_m073DCB645A4884B69F76CA85B0E822305AECB7DE (void);
+// 0x000000BE System.Int32 I18N.CJK.ISO2022JPEncoder::GetByteCount(System.Char[],System.Int32,System.Int32,System.Boolean)
+extern void ISO2022JPEncoder_GetByteCount_m909A122C2D2A1DB3782BAA864D85FD637552F431 (void);
+// 0x000000BF System.Boolean I18N.CJK.ISO2022JPEncoder::IsShifted(System.Byte[])
+extern void ISO2022JPEncoder_IsShifted_m67C4494F77A8E0B9D934DC17AC96C4293882095B (void);
+// 0x000000C0 System.Void I18N.CJK.ISO2022JPEncoder::SetShifted(System.Byte[],System.Boolean)
+extern void ISO2022JPEncoder_SetShifted_m7508E9E80582B5BD32FD5118042E756B100FD3E7 (void);
+// 0x000000C1 System.Void I18N.CJK.ISO2022JPEncoder::SwitchMode(System.Byte[],System.Int32&,System.Int32&,I18N.CJK.ISO2022JPMode&,I18N.CJK.ISO2022JPMode)
+extern void ISO2022JPEncoder_SwitchMode_mC061C595999EB3847AA86F761E11549ED9B31F3C (void);
+// 0x000000C2 System.Int32 I18N.CJK.ISO2022JPEncoder::GetBytesInternal(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Boolean)
+extern void ISO2022JPEncoder_GetBytesInternal_mEC43FC6C78F367623434CDE57B60D1037048C5C2 (void);
+// 0x000000C3 System.Int32 I18N.CJK.ISO2022JPEncoder::GetBytes(System.Char[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Boolean)
+extern void ISO2022JPEncoder_GetBytes_m67D4FC89D35BE19346D1289CBDB66738E9501A16 (void);
+// 0x000000C4 System.Void I18N.CJK.ISO2022JPEncoder::Reset()
+extern void ISO2022JPEncoder_Reset_m7A60C3A8A0AFD8501F080A2444692879FC95F528 (void);
+// 0x000000C5 System.Void I18N.CJK.ISO2022JPEncoder::.cctor()
+extern void ISO2022JPEncoder__cctor_m25389DE95E190BFE52017936CBFF15E6BA3832DB (void);
+// 0x000000C6 System.Void I18N.CJK.ISO2022JPDecoder::.ctor(System.Boolean,System.Boolean)
+extern void ISO2022JPDecoder__ctor_m06543AB01B9F9E76ED987464319AB8C8750174B9 (void);
+// 0x000000C7 System.Int32 I18N.CJK.ISO2022JPDecoder::GetCharCount(System.Byte[],System.Int32,System.Int32)
+extern void ISO2022JPDecoder_GetCharCount_m592EEF23A381113BF30DF2E283E503DCA4212E91 (void);
+// 0x000000C8 System.Int32 I18N.CJK.ISO2022JPDecoder::ToChar(System.Int32)
+extern void ISO2022JPDecoder_ToChar_m4F85A5DB20D231D4470B7B63B5E037752496E03D (void);
+// 0x000000C9 System.Int32 I18N.CJK.ISO2022JPDecoder::GetChars(System.Byte[],System.Int32,System.Int32,System.Char[],System.Int32)
+extern void ISO2022JPDecoder_GetChars_m16CFB52E90679F1ABF4ED276029D093FC433BD5F (void);
+// 0x000000CA System.Void I18N.CJK.ISO2022JPDecoder::Reset()
+extern void ISO2022JPDecoder_Reset_mDFAF5AC8765D2DCAE320575DA3D737E094E9C89D (void);
+// 0x000000CB System.Void I18N.CJK.ISO2022JPDecoder::.cctor()
+extern void ISO2022JPDecoder__cctor_mE7051CBC3E34EC478EFBDE8A811181B41152D518 (void);
+// 0x000000CC System.Void I18N.CJK.ENCiso_2022_jp::.ctor()
+extern void ENCiso_2022_jp__ctor_mECDB9EA895CAD2F96A359B86F73CAA6023066B55 (void);
+// 0x000000CD System.Void I18N.CJK.JISConvert::.ctor()
+extern void JISConvert__ctor_m6C21F3382EB70847EF1C17C2D2D59AC33F691967 (void);
+// 0x000000CE I18N.CJK.JISConvert I18N.CJK.JISConvert::get_Convert()
+extern void JISConvert_get_Convert_m2294F43F984013F908B15172EAB6EBABFA13C774 (void);
+// 0x000000CF System.Void I18N.CJK.JISConvert::.cctor()
+extern void JISConvert__cctor_m0B105B55232DDD130EC0E5337752B74A2DFF768C (void);
+static Il2CppMethodPointer s_methodPointers[207] = 
+{
+	CP51932__ctor_mD0A6A28B396703C5ACFF23FE77C34E0097033A93,
+	CP51932_GetByteCount_mF2BE755212D8391B28F86F724D86F0FC12272F53,
+	CP51932_GetBytes_m4EE37DE11AA330B538D185522A25E5652E68890C,
+	CP51932_GetCharCount_m9F15B69F95A3578F6B99A16F9836CFB887EA0ED8,
+	CP51932_GetChars_m7C3C48F2C11FF0A572A6F2BC29ECE12865D56B6A,
+	CP51932_GetMaxByteCount_mDEE60866680934EDB3C88DFC6E2B11B075ED2982,
+	CP51932_GetMaxCharCount_m72D0162B5F72B9D85A80682A227A04292DFAEDA7,
+	CP51932_GetEncoder_m5DE425541590FEB48534A03641991DDB8738DC8D,
+	CP51932_GetDecoder_mBC66D68D391C0F5433C806E1BD2F50636C85BA2F,
+	CP51932_get_BodyName_m92F6AE37D16886CDF86D38F93B0551EED7A36164,
+	CP51932_get_EncodingName_m629DA0EB93CB5993C20DE64D73C66F2ACDB67939,
+	CP51932_get_HeaderName_m2D793CC8DA1CBBCBF8286DFD5E87708BBFA1EF0E,
+	CP51932_get_IsBrowserDisplay_m8ED54E930CBF8C14CE262ACD6A3382FC06FE6957,
+	CP51932_get_IsBrowserSave_mE2EADD239CC9E275F53523F0A53E7552AD3221C2,
+	CP51932_get_IsMailNewsDisplay_mF4AE9C602A6E8B8EB24F40EDF4C3EA08D4B8AA16,
+	CP51932_get_IsMailNewsSave_m1C17FA0374FAB185F08D31481070E3260B107D1B,
+	CP51932_get_WebName_m6B240BA9A3EC68212618C13059014F67FE88DCE9,
+	CP51932Encoder__ctor_m600876953D7C9E4EA8F35A7D26D3B582D0C47DD0,
+	CP51932Encoder_GetByteCount_mBDBC8720EE4CBC3D18C7AB9DECFA43F80DEBEE88,
+	CP51932Encoder_GetBytes_m3E70966E8D0C26BA892580784DFCFFB0EC75919F,
+	CP51932Decoder__ctor_mCD7EBA0866E141275F6F86C7EA0910BCFDB33517,
+	CP51932Decoder_GetCharCount_m9362F8F9E84D0016ABBDB16AF586A7E4AE335EF0,
+	CP51932Decoder_GetCharCount_mA3111DA797390A00C17A073E96CD881747F62DB7,
+	CP51932Decoder_GetChars_m88B3D0F567E78DE7E94A447BBFF29898A0F8C731,
+	CP51932Decoder_GetChars_mA872441B6B21D566930093F4C087420701424399,
+	CP51932Decoder_Insufficient_mFCA10A6AA231A94C862BA6E466F5E809E965B3EC,
+	ENCeuc_jp__ctor_mA22C887383992052A5F39ED1B74CF9D393937190,
+	CP932__ctor_mF6EAF20EA953762EB68498458C370ABC7C5EF676,
+	CP932_GetByteCount_m6552D0233925FB0D664536DB7E4FC033D72D72E0,
+	CP932_GetBytes_m354228380718F75597603F07ABA3490BB2760002,
+	CP932_GetCharCount_m1DF2EFFC1F3104622C61D47A9E3C1904E30EAC1B,
+	CP932_GetChars_m6AEDFFA3E082929A2B4E18FEE6494B989521CB6F,
+	CP932_GetMaxByteCount_m2E8F495AFEEC48712F987F69E73B0262CBF9875B,
+	CP932_GetMaxCharCount_m95248406D2C112E87B9251F79E63E583716753FF,
+	CP932_GetDecoder_m4B6817C94D28B9529D03C7E8CD8FE05D46587AAB,
+	CP932_get_BodyName_m91CC99014396E10BFB8BBDC2975214F69E0102D4,
+	CP932_get_EncodingName_m85B7083D287DA9A0E9142222B210CF5D022F6F2A,
+	CP932_get_HeaderName_m205003A11AD74B3795429D8C256D66D7CA59C315,
+	CP932_get_IsBrowserDisplay_m7F2DEB2BC8577D9829AC8DB8E7709F65D86595B5,
+	CP932_get_IsBrowserSave_m4140BC9D2DFEFDA1A0CE0ADC2C0073581DACDD1C,
+	CP932_get_IsMailNewsDisplay_m3B918E6939762D922B928678BC768B6F48DD2C7D,
+	CP932_get_IsMailNewsSave_mD288F3F35144F724BE36EBC1590DCA807F65FE36,
+	CP932_get_WebName_mE0868FB21D94F940ED032649CFDFAB72CB19C5CC,
+	CP932_get_WindowsCodePage_mD772017336DA81671C60EBEF67258B4A3D23D00E,
+	CP932_GetEncoder_m2CCED4A7A7634B372475170CC091A31249B97D3B,
+	CP932Decoder__ctor_mBD955394B5CB18FDB6FB8772AE3AB3DE4EBF718D,
+	CP932Decoder_GetCharCount_m101B88FD2774C35098DC00356761E98277319B10,
+	CP932Decoder_GetCharCount_m77688CA44EAFFD64FA63FD3681DFA2806F73D087,
+	CP932Decoder_GetChars_mC30A6DB96F1995EAF35C0B278C84466C612FF488,
+	CP932Decoder_GetChars_m3F2A6FD3FBBCEBF13C76C366E744DD3EA9A4152A,
+	ENCshift_jis__ctor_mD79949836B23D4559EC01E478FDFEC0E29DEBC4A,
+	CP936__ctor_m53B4030D0303F4BF1C7D1DAE21DDCDCAB9327976,
+	CP936_GetConvert_mBEA9E5020902819EB1769EADE0C9A267796DD46B,
+	CP936_GetBytesInternal_mDF0DE6531B280526FD86895A20B0DFB95E190063,
+	CP936_GetByteCount_mC633F255529F6D937ACFA126E4D6C2A90479B392,
+	CP936_GetBytes_mE529087DB7F73E4B6A25CF1E93E4D7B9391B7C57,
+	CP936_GetCharCount_m94511E892513B8C24C4B422BB1AA0DC449D79834,
+	CP936_GetChars_m74D324A9224980881498E87D445285ED8F46D404,
+	CP936_GetDecoder_m85018FB8DD3D8BD8785EE4E4C8A3914D57102CA6,
+	CP936_get_BodyName_m9AFDB95F1FC4B5A5346D152A6BB98C2BFA94E537,
+	CP936_get_EncodingName_m927C8641F060F56488E821A2BDDFBB7F51055C92,
+	CP936_get_HeaderName_mDA62FC103DF3A06506F5BB6A067997F19C6B763F,
+	CP936_get_IsBrowserDisplay_m6265C183B1D8C420745FCAA16997937429676CB1,
+	CP936_get_IsBrowserSave_mA8254FB0E3FB6FC36DB8A7D5AE0BEEA230A28C10,
+	CP936_get_IsMailNewsDisplay_m25018188B5BA8952E2E771613D4EBF8987697992,
+	CP936_get_IsMailNewsSave_mC295E2A9869889697DD16C65E86835FC42C7F978,
+	CP936_get_WebName_m866BE219C3F6A9CAE396EE14055EDF9C1BC36496,
+	CP936Decoder__ctor_mA490711D4E387D8EC60906A161461484E68049BE,
+	CP936Decoder_GetCharCount_m599ADD29321EA3C5965833867CC73C07C5DD4A39,
+	CP936Decoder_GetCharCount_mB6C5504CC4838ED27336F0AE0AE1443A2A49EB2E,
+	CP936Decoder_GetChars_mBA76093E1EA991FCDB37C3A6B245F3803DF78A55,
+	CP936Decoder_GetChars_m36DA4465A0FEC2C7CC9E7E3F8778BA6B31BA170B,
+	ENCgb2312__ctor_m937C2BC829082ACA6DEC7E187A998C65B9CEC0AF,
+	CP949__ctor_m64E3AE7EAB0A16194B9EEFCECF8D96189C188413,
+	CP949_get_BodyName_m77AA2FF64B7CC6F8DC98775B3EBC8FA7EA76F3D5,
+	CP949_get_EncodingName_mC143484FFF97057350153FFFDE40AF18A53DD47B,
+	CP949_get_HeaderName_m49C70BB29B8845E1A7B34BFE8A928244164F4DA1,
+	CP949_get_WebName_m323BFB20E8544E81674B06F356F7C38888014A2C,
+	CP51949__ctor_m25A8E288C93BDF4FFD60E25BFE609921A5F58C76,
+	CP51949_get_BodyName_mFB691ECB52BF3B729C7D4D5896CF68A67477271C,
+	CP51949_get_EncodingName_m5C4D3847B638C91365C38FCC5DD216984E622873,
+	CP51949_get_HeaderName_m18D449E34E1DEC36385D2D3ABC872C75BB25CBF1,
+	CP51949_get_WebName_mC3C90A8A9B88F43AF5BFFD0811D809CCDA930055,
+	KoreanEncoding__ctor_m5DAFC4E50A88F3B5486479614660AFEFFFADB0D1,
+	KoreanEncoding_GetConvert_mC6F295C0BD12D33D9C67699715DA4424855576C3,
+	KoreanEncoding_GetByteCount_mC8749804A0191C526116D1A261DD14C408808D97,
+	KoreanEncoding_GetBytes_mFEE2BBE42E086EF133B68FD6C4290A172675A3DD,
+	KoreanEncoding_GetCharCount_mA8739D230B9629EC7A77346683A170BBB978C283,
+	KoreanEncoding_GetChars_m4D8BAC2B7BD65F384BB3ED245B5784BD53FB09B1,
+	KoreanEncoding_GetDecoder_mDF5C06DF50F424A86492A2A48CD97122677FCB7E,
+	KoreanDecoder__ctor_mC22BE343B7E00518D890CFD31E7EA4CA03798042,
+	KoreanDecoder_GetCharCount_m5BFAB9E8F2DB590E3D561419D467E0AE2E9A5E2B,
+	KoreanDecoder_GetCharCount_m6137F20D24E5AA1B513941AF03FE5105BA4F175E,
+	KoreanDecoder_GetChars_m08E615CF6492E4BFC1C2E761F4B602108681E0F8,
+	KoreanDecoder_GetChars_m27BCE9B72CE85E4FAFCBD7C8EC84AE6317C1E094,
+	ENCuhc__ctor_m71F1498A958165D2C84366630FBAA13C1F2E2E59,
+	ENCeuc_kr__ctor_m0C544FF53A0C3B3933EB2F0F558588ABE764C637,
+	CP950__ctor_mC31215BAEEDD9FEB1DF2282F8E17B98C84F49118,
+	CP950_GetConvert_m937B32C1549EE298503C1D76AF0D9DBC0D080435,
+	CP950_GetByteCount_m6EE83DB2C0D9FD085908A6FE3364F931B514D36D,
+	CP950_GetBytes_m5B217EE682128935666C69B6F6B87BD0E2D0ECFB,
+	CP950_GetChars_m6DF73D13871F6D15F3CC7DC589E09FA1503E4A77,
+	CP950_GetDecoder_m4CD63BDC4E988060A339A396C5B1EA97E13FF256,
+	CP950_get_BodyName_m6B62982994CCB84A9CFA3BFA4B06572F8B8BC08F,
+	CP950_get_EncodingName_m33135B20D33EA75AAE8AEAEF18EB4AA178A550BA,
+	CP950_get_HeaderName_mAF2B326B00D6CD4B832165FD103B78042EAC32FC,
+	CP950_get_WebName_mE4E96C8033871540757175C5DEB8B475C222ADC9,
+	CP950Decoder__ctor_mDBB57F0B5DA506060A9752A5B0F98BE4B28ACDEE,
+	CP950Decoder_GetCharCount_m8D9EAF0D839900761F6A8DD51BD17FFFF970936A,
+	CP950Decoder_GetCharCount_mDE96E1CA5BE5AF33A3A7B87EC835ED8E7F560641,
+	CP950Decoder_GetChars_mC9E99C1CB2799338BDB848EF3C476E1FF454B436,
+	CP950Decoder_GetChars_m335BCFECD6928D69AB3DDCCA0DDB978F27531352,
+	ENCbig5__ctor_m34A5F6A932AAAE26A08BD0391FC888EAEF021B60,
+	CodeTable__ctor_m05F6BC60339A17BD8A883304FB3D0B6D9431D2DA,
+	CodeTable_Dispose_m5E9943D7B65098A6907576DC0E0E6E2C0CEF7C52,
+	CodeTable_GetSection_m575390C701E870B69912F6591BBF407FD35AC88C,
+	DbcsConvert__ctor_m3A4BCB371E1D98A0D7BBEE2AB6B305A3D528C772,
+	DbcsConvert__cctor_m8C2D4DC8183C566AADEFA6D6EA6A505FD7566196,
+	DbcsEncoding__ctor_mCEC14C007554B842ADFCEC58E0F316C9531AD0B5,
+	DbcsEncoding__ctor_m102798630D97C8E241105DE95BDC0885BF7E7173,
+	NULL,
+	DbcsEncoding_GetByteCount_m1D2BC9C01A1119C437D3A7199466AD1E1B59CFB2,
+	DbcsEncoding_GetCharCount_m8F68D1584B577284D84D8AD2A6702CB8F8A76A3E,
+	DbcsEncoding_GetChars_m147E9CBC56AD542FA72C5C5520CE914B5A7AA7F4,
+	DbcsEncoding_GetMaxByteCount_m32F3C108A1CEC5D22632DE5C68BC12EE195E5958,
+	DbcsEncoding_GetMaxCharCount_mDD5D9C30A50065EF57A12CD1843231AFBF9509E7,
+	DbcsEncoding_get_IsBrowserDisplay_mD84FFD6DD02CBCC672297CFD240B2D8F801ADB4C,
+	DbcsEncoding_get_IsBrowserSave_mD5FB111836A49133EB52F151EBF30938541202C1,
+	DbcsEncoding_get_IsMailNewsDisplay_m6CD3FCB35E485BFCD2E913D1D5F41805873A739B,
+	DbcsEncoding_get_IsMailNewsSave_mFE40AE4B4A39405E160790719153804BD77B7B97,
+	DbcsDecoder__ctor_mFF26DCA3EA24AA43C4CF5D8191E25D73AFDA41F4,
+	DbcsDecoder_CheckRange_mA1765EE1ED3A33C1A7FDA2E0C6E12B64ABBDBBCA,
+	DbcsDecoder_CheckRange_m7E0B5C58A934289C66DEDDB0C93B3B33E0F9F38C,
+	ENCgb18030__ctor_m5EE4DDB099EC8C4C770D8DB3D7C5F4892A06B5BB,
+	CP54936__ctor_mA9FEAE2527CF43A94A409085560D3A658F504D39,
+	GB18030Encoding__ctor_m68BF70D37FE8B805524F8F1FE8258770640B265B,
+	GB18030Encoding_get_EncodingName_m2BEB5CB3DD2A5F3652CAD9738DC49B11EA785C0A,
+	GB18030Encoding_get_HeaderName_mB84F1E0742E250BDCB52464E148F3DA2BA301F24,
+	GB18030Encoding_get_BodyName_m0107FDABFF07FDCA261A2E192932B8CAC4F4AACC,
+	GB18030Encoding_get_WebName_m3175B8B992D173C0DA79436C3C0192726F3F6A72,
+	GB18030Encoding_get_IsMailNewsDisplay_m4A671EB97513D1729C2BCFC9E5C9CFB90524106E,
+	GB18030Encoding_get_IsMailNewsSave_mD10708C4FB76C4D2AA92FA9511322048D6B8CAAC,
+	GB18030Encoding_get_IsBrowserDisplay_m225ECC30066A27DDB23E63E4194AFC041304A1DD,
+	GB18030Encoding_get_IsBrowserSave_mD2F97E96BD38C6E3C1F79FE4842EDAD032368897,
+	GB18030Encoding_GetMaxByteCount_m6E4698EA278967B438E6BDF2EB78249C4012EF6D,
+	GB18030Encoding_GetMaxCharCount_mDCED5041E2FDB1B53CF9904F4BD69E3995B1626A,
+	GB18030Encoding_GetByteCount_m6A068C7219AB60C666D7F8070BAE7F888570F1C7,
+	GB18030Encoding_GetBytes_mE5A3862BE6FD7BC4E763BDA2A242E2F4D633182B,
+	GB18030Encoding_GetCharCount_mAD963D5AE64121FB6DF5312F646B7BEE3D3EC48D,
+	GB18030Encoding_GetChars_mD445927C7E58F3418857CD3EE6A838C3083BF772,
+	GB18030Encoding_GetEncoder_m5719EBB1D36C6F50CCAED9F6604FD8A77110F461,
+	GB18030Encoding_GetDecoder_m8296FC6D8685FD085A673AA7E0D160866089F338,
+	GB18030Decoder__ctor_m3220E4F3D5301803A7D9B9824C051EFEBDBCB0D4,
+	GB18030Decoder_GetCharCount_mB855C39B0CC5C28EFCEB796DB4CE724D3732E9CE,
+	GB18030Decoder_GetChars_mB299443B10CBC20949BF207953BAA1B3A426F874,
+	GB18030Decoder__cctor_m9B97396171614D42AFE51267E08D972CF6FB556A,
+	GB18030Encoder__ctor_m92309D16A98AA6B9E9B72D0A9AB666853B116BD0,
+	GB18030Encoder_GetByteCount_mBA1D3F26A596EF0908FBE2C512A815A8EB3CE8BC,
+	GB18030Encoder_GetBytes_mBDD4F073AFEE14EF666379407F9D2DF76686CBF5,
+	GB18030Encoder__cctor_mA53CB2D414FE9BA57263B627A0C673FCC532FAE4,
+	GB18030Source__ctor_m2813CCAC9DBB131802B8DDBECD77FE0F3767D457,
+	GB18030Source__cctor_m7AA25B50318D5FB80545EC2787D4B8340DCF8AA8,
+	GB18030Source_Unlinear_mE038EE5FD05C759F17B71D238291FCF8222FED66,
+	GB18030Source_Unlinear_m7955171E3C4047720D582F17EF7412FCD7997957,
+	GB18030Source_FromGBX_m2B43470C984D7B7EFA2F2B4FEEB82616CAEBC44E,
+	GB18030Source_FromUCSSurrogate_m6FF91BBA759FC7091471313FDD695A9BFEF995E2,
+	GB18030Source_FromUCS_mBC86622A6A7E470D0044A34801A526E758940258,
+	GB18030Source_FromGBXRaw_m8AF7E2EC3A688EF593B8A44713CC5F29FF0CC62E,
+	GB18030Source_ToUcsRaw_m6AA82C27AE64348504006215D6EBF6DF5DDC7E04,
+	GB18030Source_ToGbxRaw_mDDFAFA00009FA3DCF9BF7E5714C0129A726FE198,
+	GB18030Map__ctor_m42B294C7DC4CF0F69CEAB68091553ED7FDEEE113,
+	CP50220__ctor_mDC4B4AF84BBABB5C99990CB4E83E3166A61793B2,
+	CP50220_get_EncodingName_m0A2E89DAFB6BFA92105F3C35151A36693AD804A9,
+	CP50221__ctor_m198D26C343D215FBCB0F4056F15F7EF93365F586,
+	CP50221_get_EncodingName_m4363FB30419A82CD96B0F09929066D3C882996A5,
+	CP50222__ctor_m82E5E6C6B791D5AA2367142C132A92E5C342C537,
+	CP50222_get_EncodingName_mF44F02660930422B8FCB355C507B3D670B4FAB0F,
+	ISO2022JPEncoding__ctor_m17D09D6D0284611A8A37CF415816EFBA202DF7EC,
+	ISO2022JPEncoding_get_BodyName_mB9E033650FD142FC6C26B270A0C102EE9E00B4BF,
+	ISO2022JPEncoding_get_HeaderName_mAF7A5CAE87F9B49095B0AC9940D5EB3A83329A80,
+	ISO2022JPEncoding_get_WebName_m618A09B097E1CD0698C92D99C146D193FDEC988E,
+	ISO2022JPEncoding_GetMaxByteCount_mD58B30043EAB8F05B029E91704040DD436223F48,
+	ISO2022JPEncoding_GetMaxCharCount_m899C030CBCB136C47B19E8951631A48EA46E8837,
+	ISO2022JPEncoding_GetBytesInternal_mB5D489FC3E407B18F3C438C6E48FC02AE963130D,
+	ISO2022JPEncoding_GetByteCount_m4CAA2ADA965A7E6003B2FA10E1ED0E244DC35DA3,
+	ISO2022JPEncoding_GetBytes_m1AE5B62069856411356776FA348B74DF880B2F1E,
+	ISO2022JPEncoding_GetCharCount_m89F9C809C50E5C5510C5B42CCD0499217150D234,
+	ISO2022JPEncoding_GetChars_m97BA8FD6A76277A22149105BC1385032622B7A50,
+	ISO2022JPEncoder__ctor_m073DCB645A4884B69F76CA85B0E822305AECB7DE,
+	ISO2022JPEncoder_GetByteCount_m909A122C2D2A1DB3782BAA864D85FD637552F431,
+	ISO2022JPEncoder_IsShifted_m67C4494F77A8E0B9D934DC17AC96C4293882095B,
+	ISO2022JPEncoder_SetShifted_m7508E9E80582B5BD32FD5118042E756B100FD3E7,
+	ISO2022JPEncoder_SwitchMode_mC061C595999EB3847AA86F761E11549ED9B31F3C,
+	ISO2022JPEncoder_GetBytesInternal_mEC43FC6C78F367623434CDE57B60D1037048C5C2,
+	ISO2022JPEncoder_GetBytes_m67D4FC89D35BE19346D1289CBDB66738E9501A16,
+	ISO2022JPEncoder_Reset_m7A60C3A8A0AFD8501F080A2444692879FC95F528,
+	ISO2022JPEncoder__cctor_m25389DE95E190BFE52017936CBFF15E6BA3832DB,
+	ISO2022JPDecoder__ctor_m06543AB01B9F9E76ED987464319AB8C8750174B9,
+	ISO2022JPDecoder_GetCharCount_m592EEF23A381113BF30DF2E283E503DCA4212E91,
+	ISO2022JPDecoder_ToChar_m4F85A5DB20D231D4470B7B63B5E037752496E03D,
+	ISO2022JPDecoder_GetChars_m16CFB52E90679F1ABF4ED276029D093FC433BD5F,
+	ISO2022JPDecoder_Reset_mDFAF5AC8765D2DCAE320575DA3D737E094E9C89D,
+	ISO2022JPDecoder__cctor_mE7051CBC3E34EC478EFBDE8A811181B41152D518,
+	ENCiso_2022_jp__ctor_mECDB9EA895CAD2F96A359B86F73CAA6023066B55,
+	JISConvert__ctor_m6C21F3382EB70847EF1C17C2D2D59AC33F691967,
+	JISConvert_get_Convert_m2294F43F984013F908B15172EAB6EBABFA13C774,
+	JISConvert__cctor_m0B105B55232DDD130EC0E5337752B74A2DFF768C,
+};
+static const int32_t s_InvokerIndices[207] = 
+{
+	1384,
+	346,
+	113,
+	346,
+	113,
+	882,
+	882,
+	1351,
+	1351,
+	1351,
+	1351,
+	1351,
+	1372,
+	1372,
+	1372,
+	1372,
+	1351,
+	1186,
+	193,
+	63,
+	1384,
+	346,
+	193,
+	113,
+	63,
+	1351,
+	1384,
+	1384,
+	346,
+	113,
+	346,
+	113,
+	882,
+	882,
+	1351,
+	1351,
+	1351,
+	1351,
+	1372,
+	1372,
+	1372,
+	1372,
+	1351,
+	1341,
+	1351,
+	1186,
+	346,
+	193,
+	113,
+	63,
+	1384,
+	1384,
+	1351,
+	113,
+	346,
+	113,
+	346,
+	113,
+	1351,
+	1351,
+	1351,
+	1351,
+	1372,
+	1372,
+	1372,
+	1372,
+	1351,
+	1186,
+	346,
+	193,
+	113,
+	63,
+	1384,
+	1384,
+	1351,
+	1351,
+	1351,
+	1351,
+	1384,
+	1351,
+	1351,
+	1351,
+	1351,
+	715,
+	1351,
+	346,
+	113,
+	346,
+	113,
+	1351,
+	757,
+	346,
+	193,
+	113,
+	63,
+	1384,
+	1384,
+	1384,
+	1351,
+	346,
+	113,
+	113,
+	1351,
+	1351,
+	1351,
+	1351,
+	1351,
+	1186,
+	346,
+	193,
+	113,
+	63,
+	1384,
+	1186,
+	1384,
+	956,
+	1186,
+	2193,
+	1176,
+	696,
+	1351,
+	346,
+	346,
+	113,
+	882,
+	882,
+	1372,
+	1372,
+	1372,
+	1372,
+	1186,
+	473,
+	154,
+	1384,
+	1384,
+	1384,
+	1351,
+	1351,
+	1351,
+	1351,
+	1372,
+	1372,
+	1372,
+	1372,
+	882,
+	882,
+	346,
+	113,
+	346,
+	113,
+	1351,
+	1351,
+	1384,
+	346,
+	113,
+	2193,
+	1186,
+	193,
+	63,
+	2193,
+	1384,
+	2193,
+	1832,
+	1980,
+	1892,
+	2078,
+	2078,
+	1515,
+	2061,
+	2078,
+	143,
+	1384,
+	1351,
+	1384,
+	1351,
+	1384,
+	1351,
+	459,
+	1351,
+	1351,
+	1351,
+	882,
+	882,
+	37,
+	346,
+	113,
+	346,
+	113,
+	491,
+	193,
+	1056,
+	757,
+	149,
+	63,
+	63,
+	1384,
+	2193,
+	764,
+	346,
+	882,
+	113,
+	1384,
+	2193,
+	1384,
+	1384,
+	2181,
+	2193,
+};
+extern const CustomAttributesCacheGenerator g_I18N_CJK_AttributeGenerators[];
+IL2CPP_EXTERN_C const Il2CppCodeGenModule g_I18N_CJK_CodeGenModule;
+const Il2CppCodeGenModule g_I18N_CJK_CodeGenModule = 
+{
+	"I18N.CJK.dll",
+	207,
+	s_methodPointers,
+	0,
+	NULL,
+	s_InvokerIndices,
+	0,
+	NULL,
+	0,
+	NULL,
+	0,
+	NULL,
+	NULL,
+	g_I18N_CJK_AttributeGenerators,
+	NULL, // module initializer,
+	NULL,
+	NULL,
+	NULL,
+};

@@ -21,9 +21,9 @@ namespace os
         ThreadImpl();
         ~ThreadImpl();
 
-        uint64_t Id();
-        ErrorCode Run(Thread::StartFunc func, void* arg);
-        void SetName(const std::string& name);
+        size_t Id();
+        ErrorCode Run(Thread::StartFunc func, void* arg, int64_t affinityMask);
+        void SetName(const char* name);
         void SetPriority(ThreadPriority priority);
         ThreadPriority GetPriority();
 
@@ -39,6 +39,8 @@ namespace os
             m_StackSize = newsize;
         }
 
+        static int GetMaxStackSize();
+
         void QueueUserAPC(Thread::APCFunc func, void* context);
 
         ApartmentState GetApartment();
@@ -47,12 +49,10 @@ namespace os
         void SetExplicitApartment(ApartmentState state);
 
         static void Sleep(uint32_t ms, bool interruptible);
-        static uint64_t CurrentThreadId();
+        static size_t CurrentThreadId();
         static ThreadImpl* CreateForCurrentThread();
 
-#if NET_4_0
         static bool YieldInternal();
-#endif
 
 #if IL2CPP_HAS_NATIVE_THREAD_CLEANUP
         static void SetNativeThreadCleanup(Thread::ThreadCleanupFunc cleanupFunction);

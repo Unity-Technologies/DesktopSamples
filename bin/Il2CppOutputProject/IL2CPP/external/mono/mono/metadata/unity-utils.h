@@ -102,6 +102,7 @@ guint32 mono_unity_method_get_token(MonoMethod *method);
 void mono_unity_domain_install_finalize_runtime_invoke(MonoDomain* domain, RuntimeInvokeFunction callback);
 void mono_unity_domain_install_capture_context_runtime_invoke(MonoDomain* domain, RuntimeInvokeFunction callback);
 void mono_unity_domain_install_capture_context_method(MonoDomain* domain, void* callback);
+MONO_API void mono_unity_domain_unload (MonoDomain *domain, MonoUnityExceptionFunc callback);
 
 //array
 int mono_unity_array_get_element_size(MonoArray *arr);
@@ -150,11 +151,16 @@ typedef struct unitytls_interface_struct unitytls_interface_struct;
 MONO_API unitytls_interface_struct* mono_unity_get_unitytls_interface();
 MONO_API void mono_unity_install_unitytls_interface(unitytls_interface_struct* callbacks);
 
+// gc
+MONO_API void mono_unity_gc_enable();
+MONO_API void mono_unity_gc_disable();
+MONO_API int mono_unity_gc_is_disabled();
+
 //misc
 MonoAssembly* mono_unity_assembly_get_mscorlib();
 MonoImage* mono_unity_image_get_mscorlib();
 MonoClass* mono_unity_generic_container_get_parameter_class(MonoGenericContainer* generic_container, gint index);
-MonoString* mono_unity_string_append_assembly_name_if_necessary(MonoString* typeName, const char* assemblyName);
+MonoString* mono_unity_string_append_assembly_name_if_necessary(MonoString* typeName, MonoMethod* callingMethod);
 void mono_unity_memory_barrier();
 MonoException* mono_unity_thread_check_exception();
 MonoObject* mono_unity_delegate_get_target(MonoDelegate *delegate);

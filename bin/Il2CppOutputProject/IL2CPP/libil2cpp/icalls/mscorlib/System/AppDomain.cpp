@@ -3,8 +3,13 @@
 #include "icalls/mscorlib/System/AppDomain.h"
 
 #include "gc/Allocator.h"
+#include "gc/GarbageCollector.h"
+#include "gc/WriteBarrier.h"
 #include "os/Mutex.h"
 #include "utils/StringUtils.h"
+
+#include "Baselib.h"
+#include "Cpp/ReentrantLock.h"
 
 #include "vm/Array.h"
 #include "vm/Assembly.h"
@@ -27,8 +32,6 @@
 #include <string>
 #include <vector>
 
-using namespace il2cpp::vm;
-
 namespace il2cpp
 {
 namespace icalls
@@ -39,7 +42,7 @@ namespace System
 {
     Il2CppAppDomain* AppDomain::getCurDomain()
     {
-        Il2CppDomain *add = Domain::GetCurrent();
+        Il2CppDomain *add = vm::Domain::GetCurrent();
 
         if (add->domain)
             return add->domain;
@@ -50,7 +53,7 @@ namespace System
 
     Il2CppAppDomain* AppDomain::getRootDomain()
     {
-        return Domain::GetRoot()->domain;
+        return vm::Domain::GetRoot()->domain;
     }
 
     Il2CppAppDomain* AppDomain::createDomain(Il2CppString*, mscorlib_System_AppDomainSetup*)
@@ -65,19 +68,15 @@ namespace System
 
         if (!System_Reflection_Assembly)
         {
-#if !NET_4_0
-            System_Reflection_Assembly = il2cpp_defaults.assembly_class;
-#else
             System_Reflection_Assembly = il2cpp_defaults.mono_assembly_class;
-#endif
         }
 
-        vm::AssemblyVector* assemblies = Assembly::GetAllAssemblies();
+        vm::AssemblyVector* assemblies = vm::Assembly::GetAllAssemblies();
 
         int c = 0;
-        Il2CppArray *res = Array::New(System_Reflection_Assembly, (il2cpp_array_size_t)assemblies->size());
+        Il2CppArray *res = vm::Array::New(System_Reflection_Assembly, (il2cpp_array_size_t)assemblies->size());
         for (vm::AssemblyVector::const_iterator assembly = assemblies->begin(); assembly != assemblies->end(); ++assembly)
-            il2cpp_array_setref(res, c++, Reflection::GetAssemblyObject(*assembly));
+            il2cpp_array_setref(res, c++, vm::Reflection::GetAssemblyObject(*assembly));
 
         return res;
     }
@@ -165,7 +164,7 @@ namespace System
         const Il2CppAssembly* assembly = vm::Assembly::GetLoadedAssembly(info.assembly_name().name.c_str());
 
         if (assembly != NULL)
-            return Reflection::GetAssemblyObject(assembly);
+            return vm::Reflection::GetAssemblyObject(assembly);
 
         return NULL;
     }
@@ -194,14 +193,14 @@ namespace System
         NOT_SUPPORTED_IL2CPP(AppDomain::InternalUnload, "This icall is not supported by il2cpp.");
     }
 
-    os::FastMutex s_DomainDataMutex;
+    baselib::ReentrantLock s_DomainDataMutex;
     typedef std::vector<std::pair<UTF16String, Il2CppObject*>, il2cpp::gc::Allocator<std::pair<UTF16String, Il2CppObject*> > > DomainDataStorage;
     DomainDataStorage* s_DomainData;
 
     static inline void InitializeDomainData()
     {
         void* memory = utils::Memory::Malloc(sizeof(DomainDataStorage));
-        s_DomainData = new(memory)DomainDataStorage;
+        s_DomainData = new(memory) DomainDataStorage;
     }
 
     Il2CppObject* AppDomain::GetData(Il2CppAppDomain* self, Il2CppString* name)
@@ -231,22 +230,20 @@ namespace System
         {
             if (it->first.compare(0, it->first.size(), name->chars, name->length) == 0)
             {
-                it->second = data;
+                gc::WriteBarrier::GenericStore(&it->second, data);
                 return;
             }
         }
 
         s_DomainData->push_back(std::make_pair(UTF16String(name->chars, name->length), data));
+        gc::GarbageCollector::SetWriteBarrier((void**)&s_DomainData->back().second);
     }
 
-#if NET_4_0
     void AppDomain::DoUnhandledException(Il2CppObject* _this, Il2CppException* e)
     {
         IL2CPP_NOT_IMPLEMENTED_ICALL(AppDomain::DoUnhandledException);
         IL2CPP_UNREACHABLE;
     }
-
-#endif
 } /* namespace System */
 } /* namespace mscorlib */
 } /* namespace icalls */

@@ -1,10 +1,9 @@
 #include "il2cpp-config.h"
 
-#if IL2CPP_THREADS_PTHREAD
+#if IL2CPP_THREADS_PTHREAD && !RUNTIME_TINY
 
 #include "EventImpl.h"
 #include "PosixHelpers.h"
-#include <errno.h>
 
 namespace il2cpp
 {

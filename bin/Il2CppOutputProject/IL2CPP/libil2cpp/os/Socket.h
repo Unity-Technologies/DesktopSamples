@@ -192,6 +192,17 @@ namespace os
 
     struct PollRequest
     {
+        PollRequest()
+            : fd(-1)
+            , events(kPollFlagsNone)
+            , revents(kPollFlagsNone)
+        {}
+
+        PollRequest(int64_t value)
+            : fd(value)
+            , events(kPollFlagsNone)
+            , revents(kPollFlagsNone)
+        {}
         int64_t fd;
         PollFlags events;
         PollFlags revents;
@@ -328,6 +339,10 @@ namespace os
 #endif
 
         WaitStatus SendFile(const char *filename, TransmitFileBuffers *buffers, TransmitFileOptions options);
+
+#if IL2CPP_SUPPORT_IPV6_SUPPORT_QUERY
+        static bool IsIPv6Supported();
+#endif
 
         static WaitStatus Poll(std::vector<PollRequest> &requests, int32_t count, int32_t timeout, int32_t *result, int32_t *error);
         static WaitStatus Poll(std::vector<PollRequest> &requests, int32_t timeout, int32_t *result, int32_t *error);

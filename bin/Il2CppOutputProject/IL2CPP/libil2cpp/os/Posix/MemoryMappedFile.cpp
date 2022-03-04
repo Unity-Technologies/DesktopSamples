@@ -1,6 +1,6 @@
 #include "il2cpp-config.h"
 
-#if !IL2CPP_USE_GENERIC_MEMORY_MAPPED_FILE && IL2CPP_TARGET_POSIX
+#if !IL2CPP_USE_GENERIC_MEMORY_MAPPED_FILE && IL2CPP_TARGET_POSIX && !RUNTIME_TINY
 
 #include <sys/mman.h>
 #include <map>
@@ -242,8 +242,10 @@ namespace os
         return handle;
     }
 
-    MemoryMappedFile::MemoryMappedFileHandle MemoryMappedFile::View(FileHandle* mappedFileHandle, int64_t* length, int64_t offset, MemoryMappedFileAccess access, MemoryMappedFileError* error)
+    MemoryMappedFile::MemoryMappedFileHandle MemoryMappedFile::View(FileHandle* mappedFileHandle, int64_t* length, int64_t offset, MemoryMappedFileAccess access, int64_t* actualOffset, MemoryMappedFileError* error)
     {
+        IL2CPP_ASSERT(actualOffset != NULL);
+
         int64_t mmap_offset = 0;
         int64_t eff_size = *length;
         struct stat buf = { 0 };
@@ -266,6 +268,7 @@ namespace os
         mmap_offset = AlignDownToPageSize(offset);
         eff_size += (offset - mmap_offset);
         *length = eff_size;
+        *actualOffset = mmap_offset;
 
         int flags = ConvertAccessToMemoryMappedFileFlags(access);
         int prot = ConvertFlagsToProt(flags);

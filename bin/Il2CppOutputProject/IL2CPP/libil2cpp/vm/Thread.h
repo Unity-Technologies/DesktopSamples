@@ -31,7 +31,21 @@ namespace vm
         kThreadStateWaitSleepJoin = 0x00000020,
         kThreadStateSuspended = 0x00000040,
         kThreadStateAbortRequested = 0x00000080,
-        kThreadStateAborted = 0x00000100
+        kThreadStateAborted = 0x00000100,
+
+        // This enum is used with the ~ operator to clear values. to avoid undefined
+        // behavior in C++, the cleared state of each value should also be present
+        // in the enum.
+        kThreadStateRunningCleared = ~kThreadStateRunning,
+        kThreadStateStopRequestedCleared = ~kThreadStateStopRequested,
+        kThreadStateSuspendRequestedCleared = ~kThreadStateSuspendRequested,
+        kThreadStateBackgroundCleared = ~kThreadStateBackground,
+        kThreadStateUnstartedCleared = ~kThreadStateUnstarted,
+        kThreadStateStoppedCleared = ~kThreadStateStopped,
+        kThreadStateWaitSleepJoinCleared = ~kThreadStateWaitSleepJoin,
+        kThreadStateSuspendedCleared = ~kThreadStateSuspended,
+        kThreadStateAbortRequestedCleared = ~kThreadStateAbortRequested,
+        kThreadStateAbortedCleared = ~kThreadStateAborted,
     };
 
 
@@ -47,9 +61,7 @@ namespace vm
     class LIBIL2CPP_CODEGEN_API Thread
     {
     public:
-#if NET_4_0
         static std::string GetName(Il2CppInternalThread* thread);
-#endif
         static void SetName(Il2CppThread* thread, Il2CppString* name);
         static void SetName(Il2CppInternalThread* thread, Il2CppString* name);
         static Il2CppThread* Current();
@@ -61,9 +73,7 @@ namespace vm
         static Il2CppThread* Main();
         static bool IsVmThread(Il2CppThread *thread);
         static uint64_t GetId(Il2CppThread *thread);
-#if NET_4_0
         static uint64_t GetId(Il2CppInternalThread* thread);
-#endif
 
         static void RequestInterrupt(Il2CppThread* thread);
         static void CheckCurrentThreadForInterruptAndThrowIfNecessary();
@@ -71,28 +81,24 @@ namespace vm
         static bool RequestAbort(Il2CppThread* thread);
         static void CheckCurrentThreadForAbortAndThrowIfNecessary();
         static void ResetAbort(Il2CppThread* thread);
-#if NET_4_0
         static bool RequestAbort(Il2CppInternalThread* thread);
         static void ResetAbort(Il2CppInternalThread* thread);
         static void SetPriority(Il2CppThread* thread, int32_t priority);
         static int32_t GetPriority(Il2CppThread* thread);
-#endif
 
         struct NativeThreadAbortException {};
 
     public:
         // internal
         static void Initialize();
-        static void UnInitialize();
+        static void Uninitialize();
 
         static void AdjustStaticData();
         static int32_t AllocThreadStaticData(int32_t size);
         static void FreeThreadStaticData(Il2CppThread *thread);
         static void* GetThreadStaticData(int32_t offset);
         static void* GetThreadStaticDataForThread(int32_t offset, Il2CppThread* thread);
-#if NET_4_0
         static void* GetThreadStaticDataForThread(int32_t offset, Il2CppInternalThread* thread);
-#endif
 
         static void Register(Il2CppThread *thread);
         static void Unregister(Il2CppThread *thread);
@@ -114,7 +120,6 @@ namespace vm
 
         static int32_t GetNewManagedId();
 
-#if NET_4_0
         static Il2CppInternalThread* CurrentInternal();
 
         static void ClrState(Il2CppInternalThread* thread, ThreadState clr);
@@ -130,7 +135,7 @@ namespace vm
 
         static bool YieldInternal();
 
-#endif
+        static void SetDefaultAffinityMask(int64_t affinityMask);
 
     private:
         static Il2CppThread* s_MainThread;

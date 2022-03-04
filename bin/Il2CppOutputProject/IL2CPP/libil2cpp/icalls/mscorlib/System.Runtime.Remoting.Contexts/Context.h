@@ -1,5 +1,4 @@
 #pragma once
-#if NET_4_0
 
 namespace il2cpp
 {
@@ -28,4 +27,3 @@ namespace Contexts
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

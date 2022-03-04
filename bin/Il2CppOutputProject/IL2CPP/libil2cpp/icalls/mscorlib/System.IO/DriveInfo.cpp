@@ -27,15 +27,12 @@ namespace IO
         return 0;
     }
 
-#if NET_4_0
     Il2CppString* DriveInfo::GetDriveFormat(Il2CppString* rootPathName)
     {
         IL2CPP_NOT_IMPLEMENTED_ICALL(DriveInfo::GetDriveFormat);
         IL2CPP_UNREACHABLE;
         return NULL;
     }
-
-#endif
 } /* namespace IO */
 } /* namespace System */
 } /* namespace mscorlib */

@@ -183,7 +183,7 @@ namespace utils
                 reserve(std::max<size_t>(capacity() * 2, 1));
             // construct
             T *ptr = &back();
-            new(ptr)T;
+            new(ptr) T;
             return *ptr;
         }
 

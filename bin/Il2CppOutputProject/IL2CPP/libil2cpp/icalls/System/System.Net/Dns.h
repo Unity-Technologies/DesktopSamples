@@ -21,10 +21,8 @@ namespace Net
     public:
         static bool GetHostByAddr(Il2CppString*, Il2CppString**, Il2CppArray**, Il2CppArray**);
         static bool GetHostByName(Il2CppString*, Il2CppString**, Il2CppArray**, Il2CppArray**);
-#if NET_4_0
         static bool GetHostByAddr40(Il2CppString*, Il2CppString**, Il2CppArray**, Il2CppArray**, int32_t hint);
         static bool GetHostByName40(Il2CppString*, Il2CppString**, Il2CppArray**, Il2CppArray**, int32_t hint);
-#endif
         static bool GetHostName(Il2CppString**);
     };
 } /* namespace Net */

@@ -3,6 +3,8 @@
 #include "il2cpp-config.h"
 #include <string>
 
+#undef GetTempPath // Get rid of windows.h #define.
+
 namespace il2cpp
 {
 namespace vm

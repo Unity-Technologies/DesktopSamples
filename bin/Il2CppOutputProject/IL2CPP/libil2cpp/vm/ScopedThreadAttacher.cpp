@@ -1,4 +1,6 @@
 #include "il2cpp-config.h"
+#include "vm/Thread.h"
+#include "vm/Domain.h"
 #include "ScopedThreadAttacher.h"
 
 il2cpp::vm::ScopedThreadAttacher::ScopedThreadAttacher()

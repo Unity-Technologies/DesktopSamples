@@ -1,5 +1,6 @@
 #include "il2cpp-config.h"
 
+#include "gc/WriteBarrier.h"
 #include "icalls/mscorlib/System/ConsoleDriver.h"
 #include "il2cpp-class-internals.h"
 #include "os/Console.h"
@@ -38,8 +39,7 @@ namespace System
 
         const bool ret = il2cpp::os::Console::TtySetup(keypadXmitString, teardownString, controlChars, size);
 
-        *control_characters = vm::Array::New(il2cpp_defaults.byte_class, 17);
-        // mono_gc_wbarrier_generic_store (data, Array::New (il2cpp_defaults.byte_class, 17));
+        gc::WriteBarrier::GenericStore(control_characters, vm::Array::New(il2cpp_defaults.byte_class, 17));
 
         if (ret)
             memcpy(il2cpp_array_addr(*control_characters, uint8_t, 0), controlChars, 17);

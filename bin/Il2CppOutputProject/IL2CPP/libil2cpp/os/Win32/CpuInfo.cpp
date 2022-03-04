@@ -1,4 +1,3 @@
-#if NET_4_0
 #include "os/c-api/il2cpp-config-platforms.h"
 #if IL2CPP_PLATFORM_SUPPORTS_CPU_INFO
 
@@ -7,8 +6,7 @@
 #include "os/CpuInfo.h"
 #include "utils/Memory.h"
 
-#define WIN32_LEAN_AND_MEAN 1
-#include <Windows.h>
+#include "WindowsHeaders.h"
 
 struct Il2CppCpuUsageState
 {
@@ -57,6 +55,5 @@ namespace os
 }
 }
 
-#endif
 #endif
 #endif

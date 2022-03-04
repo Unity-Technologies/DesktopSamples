@@ -1,8 +1,9 @@
-#if NET_4_0
-#include "os/c-api/il2cpp-config-platforms.h"
-
-#include "os/Mutex.h"
+#include "il2cpp-config.h"
 #include "os/ConditionVariable.h"
+#include "os/Mutex.h"
+
+#if IL2CPP_SUPPORT_THREADS
+
 #if IL2CPP_THREADS_WIN32
 #include "os/Win32/ConditionVariableImpl.h"
 #elif IL2CPP_THREADS_PTHREAD
@@ -47,4 +48,41 @@ namespace os
     }
 }
 }
+
+#else
+
+namespace il2cpp
+{
+namespace os
+{
+    ConditionVariable::ConditionVariable()
+    {
+    }
+
+    ConditionVariable::~ConditionVariable()
+    {
+    }
+
+    int ConditionVariable::Wait(FastMutex* lock)
+    {
+        IL2CPP_ASSERT(0 && "Threads are not enabled for this platform.");
+        return 0;
+    }
+
+    int ConditionVariable::TimedWait(FastMutex* lock, uint32_t timeout_ms)
+    {
+        IL2CPP_ASSERT(0 && "Threads are not enabled for this platform.");
+        return 0;
+    }
+
+    void ConditionVariable::Broadcast()
+    {
+    }
+
+    void ConditionVariable::Signal()
+    {
+    }
+}
+}
+
 #endif

@@ -1,9 +1,10 @@
 #pragma once
 
-#if !IL2CPP_THREADS_STD && IL2CPP_THREADS_PTHREAD
+#if !IL2CPP_THREADS_STD && IL2CPP_THREADS_PTHREAD && !RUNTIME_TINY
 
 #include <pthread.h>
 #include <vector>
+#include <atomic>
 
 #include "PosixWaitObject.h"
 #include "os/ErrorCodes.h"
@@ -39,12 +40,13 @@ namespace os
         ~ThreadImpl();
 
         uint64_t Id();
-        ErrorCode Run(Thread::StartFunc func, void* arg);
+        ErrorCode Run(Thread::StartFunc func, void* arg, int64_t affinityMask);
         void QueueUserAPC(Thread::APCFunc func, void* context);
-        void SetName(const std::string& name);
+        void SetName(const char* name);
         void SetPriority(ThreadPriority priority);
         ThreadPriority GetPriority();
         void SetStackSize(size_t newsize);
+        static int GetMaxStackSize();
 
         /// Handle any pending APCs.
         /// NOTE: Can only be called on current thread.
@@ -55,9 +57,7 @@ namespace os
         static ThreadImpl* GetCurrentThread();
         static ThreadImpl* CreateForCurrentThread();
 
-#if NET_4_0
         static bool YieldInternal();
-#endif
 
 #if IL2CPP_HAS_NATIVE_THREAD_CLEANUP
         static void SetNativeThreadCleanup(Thread::ThreadCleanupFunc cleanupFunction);
@@ -69,7 +69,7 @@ namespace os
 
         friend class posix::PosixWaitObject; // SetWaitObject(), CheckForAPCAndHandle()
 
-        pthread_t m_Handle;
+        std::atomic<pthread_t> m_Handle;
 
         /// The synchronization primitive that this thread is currently blocked on.
         ///

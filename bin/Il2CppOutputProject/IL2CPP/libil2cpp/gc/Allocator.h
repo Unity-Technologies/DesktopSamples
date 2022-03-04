@@ -37,7 +37,7 @@ namespace gc
         pointer address(reference x) const { return &x; }
         const_pointer address(const_reference x) const { return &x; }
         Allocator<T>& operator=(const Allocator&) { return *this; }
-        void construct(pointer p, const T& val) { new((T*)p)T(val); }
+        void construct(pointer p, const T& val) { new((T*)p) T(val); }
         void destroy(pointer p) { p->~T(); }
 
         size_type max_size() const { return size_t(-1); }

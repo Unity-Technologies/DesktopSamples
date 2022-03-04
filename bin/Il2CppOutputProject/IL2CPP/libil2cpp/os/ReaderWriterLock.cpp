@@ -1,6 +1,8 @@
-#include "os/c-api/il2cpp-config-platforms.h"
-
+#include "il2cpp-config.h"
 #include "os/ReaderWriterLock.h"
+
+#if IL2CPP_SUPPORT_THREADS
+
 #if IL2CPP_THREADS_WIN32
 #include "os/Win32/ReaderWriterLockImpl.h"
 #elif IL2CPP_THREADS_PTHREAD
@@ -49,3 +51,45 @@ namespace os
     }
 }
 }
+
+#else
+
+#include <stddef.h>
+
+namespace il2cpp
+{
+namespace os
+{
+    ReaderWriterLock::ReaderWriterLock()
+    {
+    }
+
+    ReaderWriterLock::~ReaderWriterLock()
+    {
+    }
+
+    void ReaderWriterLock::LockExclusive()
+    {
+    }
+
+    void ReaderWriterLock::LockShared()
+    {
+    }
+
+    void ReaderWriterLock::ReleaseExclusive()
+    {
+    }
+
+    void ReaderWriterLock::ReleaseShared()
+    {
+    }
+
+    ReaderWriterLockImpl* ReaderWriterLock::GetImpl()
+    {
+        IL2CPP_ASSERT(0 && "Threads are not enabled for this platform.");
+        return NULL;
+    }
+}
+}
+
+#endif

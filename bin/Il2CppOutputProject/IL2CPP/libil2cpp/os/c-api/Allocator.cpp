@@ -5,10 +5,10 @@ static allocate_func s_Allocator;
 
 extern "C"
 {
-void register_allocator(allocate_func allocator)
-{
-    s_Allocator = allocator;
-}
+    void register_allocator(allocate_func allocator)
+    {
+        s_Allocator = allocator;
+    }
 }
 
 void* Allocator::Allocate(size_t size)

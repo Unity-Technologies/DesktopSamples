@@ -1,23 +1,88 @@
 #include "il2cpp-config.h"
 
 #if IL2CPP_USE_GENERIC_MEMORY_MAPPED_FILE
-#include <map>
 #include "os/File.h"
 #include "os/MemoryMappedFile.h"
 #include "os/Mutex.h"
+#include "utils/dynamic_array.h"
 #include "utils/Memory.h"
+
+#include "Baselib.h"
+#include "Cpp/ReentrantLock.h"
 
 namespace il2cpp
 {
 namespace os
 {
-    static os::FastMutex s_Mutex;
-    static std::map<void*, int64_t> s_MemoryFiles;
+    struct MemoryFileData
+    {
+        MemoryFileData(const char* name, int64_t dataSize)
+            : size(dataSize)
+        {
+            size_t nameSize = strlen(name);
+            mapName = (char*)IL2CPP_MALLOC(nameSize  + 1);
+            strcpy(mapName, name);
+
+            handle = IL2CPP_MALLOC_ZERO((size_t)dataSize);
+        }
+
+        ~MemoryFileData()
+        {
+            IL2CPP_FREE(mapName);
+            IL2CPP_FREE(handle);
+        }
+
+        char* mapName;
+        void* handle;
+        int64_t size;
+    };
+
+    static baselib::ReentrantLock s_Mutex;
+    static il2cpp::utils::dynamic_array<MemoryFileData*> s_MemoryFiles;
+    static il2cpp::utils::dynamic_array<void*> s_MemoryFileViews;
 
     static bool IsMemoryFile(void* possibleMemoryFile)
     {
         os::FastAutoLock lock(&s_Mutex);
-        return s_MemoryFiles.find(possibleMemoryFile) != s_MemoryFiles.end();
+        for (il2cpp::utils::dynamic_array<MemoryFileData*>::const_iterator it = s_MemoryFiles.begin(); it != s_MemoryFiles.end(); ++it)
+        {
+            if ((*it)->handle == possibleMemoryFile)
+                return true;
+        }
+
+        return false;
+    }
+
+    static MemoryFileData* FindMemoryFile(void* possibleMemoryFile)
+    {
+        for (il2cpp::utils::dynamic_array<MemoryFileData*>::iterator it = s_MemoryFiles.begin(); it != s_MemoryFiles.end(); ++it)
+        {
+            if ((*it)->handle == possibleMemoryFile)
+            {
+                return *it;
+            }
+        }
+
+        return NULL;
+    }
+
+    static MemoryFileData* FindMemoryFile(const char* mapName)
+    {
+        for (il2cpp::utils::dynamic_array<MemoryFileData*>::iterator it = s_MemoryFiles.begin(); it != s_MemoryFiles.end(); ++it)
+        {
+            if (strcmp((*it)->mapName, mapName) == 0)
+            {
+                return *it;
+            }
+        }
+
+        return NULL;
+    }
+
+    static bool IsMemoryFileView(void* possibleMemoryFile)
+    {
+        os::FastAutoLock lock(&s_Mutex);
+        return std::find(s_MemoryFileViews.begin(), s_MemoryFileViews.end(), possibleMemoryFile) != s_MemoryFileViews.end();
     }
 
     FileHandle* MemoryMappedFile::Create(FileHandle* file, const char* mapName, int32_t mode, int64_t *capacity, MemoryMappedFileAccess access, int32_t options, MemoryMappedFileError* error)
@@ -27,9 +92,20 @@ namespace os
             if (mapName != NULL)
             {
                 os::FastAutoLock lock(&s_Mutex);
-                void* memoryFile = IL2CPP_MALLOC_ZERO((size_t)*capacity);
-                s_MemoryFiles[memoryFile] = *capacity;
-                file = (FileHandle*)memoryFile;
+
+                const MemoryFileData* memoryFileData = FindMemoryFile(mapName);
+
+                if (memoryFileData != NULL)
+                {
+                    file = (FileHandle*)memoryFileData->handle;
+                }
+                else
+                {
+                    MemoryFileData* memoryFileData = new MemoryFileData(mapName, *capacity);
+                    s_MemoryFiles.push_back(memoryFileData);
+
+                    file = (FileHandle*)memoryFileData->handle;
+                }
             }
         }
 
@@ -76,23 +152,31 @@ namespace os
     static MemoryMappedFile::MemoryMappedFileHandle ViewMemoryFile(void* mappedFileHandle, int64_t* length, int64_t offset, MemoryMappedFileAccess access, MemoryMappedFileError* error)
     {
         os::FastAutoLock lock(&s_Mutex);
-        std::map<void*, int64_t>::iterator entry = s_MemoryFiles.find((void*)mappedFileHandle);
-        IL2CPP_ASSERT(entry != s_MemoryFiles.end());
+        const MemoryFileData* memoryFileData = FindMemoryFile(mappedFileHandle);
+        IL2CPP_ASSERT(memoryFileData != NULL);
 
         if (*length == 0)
-            *length = entry->second;
+            *length = memoryFileData->size;
 
-        if (*length > entry->second)
+        if (*length > memoryFileData->size)
         {
             if (error != NULL)
                 *error = COULD_NOT_MAP_MEMORY;
             return NULL;
         }
-        return entry->first;
+
+        void* memoryMappedFileView = (uint8_t*)memoryFileData->handle + offset;
+
+        s_MemoryFileViews.push_back(memoryMappedFileView);
+
+        return memoryMappedFileView;
     }
 
-    MemoryMappedFile::MemoryMappedFileHandle MemoryMappedFile::View(FileHandle* mappedFileHandle, int64_t* length, int64_t offset, MemoryMappedFileAccess access, MemoryMappedFileError* error)
+    MemoryMappedFile::MemoryMappedFileHandle MemoryMappedFile::View(FileHandle* mappedFileHandle, int64_t* length, int64_t offset, MemoryMappedFileAccess access, int64_t* actualOffset, MemoryMappedFileError* error)
     {
+        IL2CPP_ASSERT(actualOffset != NULL);
+
+        *actualOffset = offset;
         if (IsMemoryFile((void*)mappedFileHandle))
             return ViewMemoryFile((void*)mappedFileHandle, length, offset, access, error);
         else
@@ -105,7 +189,9 @@ namespace os
 
     bool MemoryMappedFile::UnmapView(MemoryMappedFileHandle memoryMappedFileData, int64_t length)
     {
-        if (!IsMemoryFile(memoryMappedFileData))
+        if (IsMemoryFileView(memoryMappedFileData))
+            s_MemoryFileViews.erase_swap_back(&memoryMappedFileData);
+        else if (!IsMemoryFile(memoryMappedFileData))
             IL2CPP_FREE(memoryMappedFileData);
         return true;
     }
@@ -113,11 +199,11 @@ namespace os
     bool MemoryMappedFile::Close(FileHandle* file)
     {
         os::FastAutoLock lock(&s_Mutex);
-        std::map<void*, int64_t>::iterator entry = s_MemoryFiles.find((void*)file);
-        if (entry != s_MemoryFiles.end())
+        MemoryFileData* memoryFileData = FindMemoryFile((void*)file);
+        if (memoryFileData != NULL)
         {
-            IL2CPP_FREE(entry->first);
-            s_MemoryFiles.erase(entry);
+            delete memoryFileData;
+            s_MemoryFiles.erase_swap_back(&memoryFileData);
         }
         return true;
     }

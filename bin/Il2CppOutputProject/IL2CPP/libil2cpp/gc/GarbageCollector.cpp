@@ -8,6 +8,11 @@
 #include "os/Thread.h"
 #include "utils/Il2CppHashMap.h"
 #include "utils/HashUtils.h"
+
+#include "Baselib.h"
+#include "Cpp/ReentrantLock.h"
+
+#if !RUNTIME_TINY
 #include "vm/CCW.h"
 #include "vm/Class.h"
 #include "vm/Domain.h"
@@ -15,6 +20,7 @@
 #include "vm/RCW.h"
 #include "vm/Runtime.h"
 #include "vm/Thread.h"
+#endif
 
 using namespace il2cpp::os;
 using namespace il2cpp::vm;
@@ -23,6 +29,7 @@ namespace il2cpp
 {
 namespace gc
 {
+#if !RUNTIME_TINY
 // So COM Callable Wrapper can be created for any kind of managed object,
 // whether it has finalizer or not. If it doesn't then it's an easy case:
 // when creating the CCW, we just register our cleanup method to be the
@@ -69,7 +76,7 @@ namespace gc
 
     typedef Il2CppHashMap<Il2CppObject*, CachedCCW, utils::PointerHash<Il2CppObject> > CCWCache;
 
-    static FastMutex s_CCWCacheMutex;
+    static baselib::ReentrantLock s_CCWCacheMutex;
     static CCWCache s_CCWCache;
 
 #if IL2CPP_SUPPORT_THREADS
@@ -132,6 +139,8 @@ namespace gc
         s_FinalizerThread->Join();
         delete s_FinalizerThread;
         s_FinalizerThread = NULL;
+        s_StopFinalizer = false;
+        s_FinalizerThreadObject = NULL;
 #endif
     }
 
@@ -219,15 +228,6 @@ namespace gc
 #endif
     }
 
-    int32_t GarbageCollector::GetGeneration(void* addr)
-    {
-        return 0;
-    }
-
-    void GarbageCollector::AddMemoryPressure(int64_t value)
-    {
-    }
-
     static void CleanupCCW(void* obj, void* data)
     {
         bool hasFinalizer;
@@ -276,7 +276,11 @@ namespace gc
 
         // check for rcw object. COM interface can be extracted from it and there's no need to create ccw
         if (obj->klass->is_import_or_windows_runtime)
-            return RCW::QueryInterface<true>(static_cast<Il2CppComObject*>(obj), iid);
+        {
+            Il2CppIUnknown* result = RCW::QueryInterfaceNoAddRef<true>(static_cast<Il2CppComObject*>(obj), iid);
+            result->AddRef();
+            return result;
+        }
 
         os::FastAutoLock lock(&s_CCWCacheMutex);
         CCWCache::iterator it = s_CCWCache.find(obj);
@@ -315,11 +319,32 @@ namespace gc
         return result;
     }
 
-#if NET_4_0
-    void il2cpp::gc::GarbageCollector::SetSkipThread(bool skip)
+#endif // !RUNTIME_TINY
+
+    int32_t GarbageCollector::GetGeneration(void* addr)
+    {
+        return 0;
+    }
+
+    void GarbageCollector::AddMemoryPressure(int64_t value)
     {
     }
 
+#if IL2CPP_ENABLE_WRITE_BARRIERS
+    void il2cpp::gc::GarbageCollector::SetWriteBarrier(void **ptr, size_t size)
+    {
+#if IL2CPP_ENABLE_STRICT_WRITE_BARRIERS
+        for (size_t i = 0; i < size / sizeof(void**); i++)
+            SetWriteBarrier(ptr + i);
+#else
+        SetWriteBarrier(ptr);
 #endif
+    }
+
+#endif
+
+    void il2cpp::gc::GarbageCollector::SetSkipThread(bool skip)
+    {
+    }
 } // namespace gc
 } // namespace il2cpp

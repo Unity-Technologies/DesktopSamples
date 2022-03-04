@@ -36,11 +36,9 @@ namespace Emit
         static int32_t getUSIndex(Il2CppReflectionModuleBuilder*, Il2CppString*);
         static void set_wrappers_type(Il2CppReflectionModuleBuilder*, Il2CppReflectionType*);
         static int32_t getMethodToken(Il2CppReflectionModuleBuilder*, Il2CppReflectionMethod*, Il2CppArray*);
-#if NET_4_0
         static int32_t getMethodToken40(Il2CppObject* mb, Il2CppObject* method, Il2CppArray* opt_param_types);
         static int32_t getToken40(Il2CppObject* mb, Il2CppObject* obj, bool create_open_instance);
         static Il2CppObject* GetRegisteredToken(Il2CppObject* _this, int32_t token);
-#endif
     };
 } /* namespace Emit */
 } /* namespace Reflection */

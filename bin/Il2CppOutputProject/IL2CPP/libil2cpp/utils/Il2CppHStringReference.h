@@ -2,8 +2,6 @@
 
 #include <il2cpp-object-internals.h>
 #include "StringView.h"
-#include "vm/Exception.h"
-#include "vm/WindowsRuntime.h"
 
 namespace il2cpp
 {
@@ -16,10 +14,7 @@ namespace utils
         Il2CppHStringHeader m_Header;
 
     public:
-        inline Il2CppHStringReference(const StringView<Il2CppNativeChar>& str)
-        {
-            il2cpp::vm::WindowsRuntime::CreateHStringReference(str, &m_Header, &m_String);
-        }
+        Il2CppHStringReference(const StringView<Il2CppNativeChar>& str);
 
         inline operator Il2CppHString() const
         {

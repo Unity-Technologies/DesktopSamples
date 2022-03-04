@@ -1,7 +1,5 @@
 #pragma once
 
-#if NET_4_0
-
 #include "il2cpp-object-internals.h"
 
 namespace il2cpp
@@ -35,5 +33,3 @@ namespace WindowsRuntime
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-
-#endif

@@ -7,6 +7,14 @@
 #include "os/ErrorCodes.h"
 #include "os/c-api/OSGlobalEnums.h"
 
+#undef CopyFile
+#undef DeleteFile
+#undef MoveFile
+#undef ReplaceFile
+#undef GetFileAttributes
+#undef SetFileAttributes
+#undef CreatePipe
+
 namespace il2cpp
 {
 namespace os

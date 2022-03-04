@@ -15,10 +15,7 @@ struct Il2CppReflectionModule;
 struct Il2CppAssembly;
 struct Il2CppAssemblyName;
 struct Il2CppAppDomain;
-
-#if NET_4_0
 struct Il2CppNativeOverlapped;
-#endif
 
 namespace il2cpp
 {

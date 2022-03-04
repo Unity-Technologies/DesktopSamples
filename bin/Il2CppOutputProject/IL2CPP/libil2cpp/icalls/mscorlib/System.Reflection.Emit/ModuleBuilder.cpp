@@ -63,7 +63,6 @@ namespace Emit
         NOT_SUPPORTED_SRE(ModuleBuilder::WriteToFile);
     }
 
-#if NET_4_0
     int32_t ModuleBuilder::getMethodToken40(Il2CppObject* mb, Il2CppObject* method, Il2CppArray* opt_param_types)
     {
         IL2CPP_NOT_IMPLEMENTED_ICALL(ModuleBuilder::getMethodToken40);
@@ -84,8 +83,6 @@ namespace Emit
         IL2CPP_UNREACHABLE;
         return NULL;
     }
-
-#endif
 } /* namespace Emit */
 } /* namespace Reflection */
 } /* namespace System */

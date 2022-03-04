@@ -1,23 +1,28 @@
 #pragma once
 
 #include "gc/GCHandle.h"
-#include "vm/ComObjectBase.h"
+#include "vm/CCWBase.h"
+#include "vm/Exception.h"
 #include "utils/TemplateUtils.h"
+#include "utils/Memory.h"
+
+#include "Baselib.h"
+#include "Cpp/Atomic.h"
 
 namespace il2cpp
 {
 namespace vm
 {
     template<typename TDerived>
-    struct NOVTABLE NonCachedCCWBase : ComObjectBase
+    struct NOVTABLE NonCachedCCWBase : CCWBase
     {
     private:
-        volatile uint32_t m_RefCount;
+        baselib::atomic<uint32_t> m_RefCount;
         uint32_t m_GCHandle;
 
     public:
         inline NonCachedCCWBase(Il2CppObject* obj) :
-            ComObjectBase(obj),
+            CCWBase(obj),
             m_RefCount(1) // We start with a ref count of 1
         {
             m_GCHandle = gc::GCHandle::New(GetManagedObjectInline(), false);
@@ -32,26 +37,26 @@ namespace vm
             m_GCHandle = 0;
         }
 
-        FORCE_INLINE uint32_t AddRefImpl()
+        IL2CPP_FORCE_INLINE uint32_t AddRefImpl()
         {
-            return Atomic::Increment(&m_RefCount);
+            return ++m_RefCount;
         }
 
-        FORCE_INLINE uint32_t ReleaseImpl()
+        IL2CPP_FORCE_INLINE uint32_t ReleaseImpl()
         {
-            const uint32_t count = Atomic::Decrement(&m_RefCount);
+            const uint32_t count = --m_RefCount;
             if (count == 0)
                 Destroy();
 
             return count;
         }
 
-        FORCE_INLINE static TDerived* __CreateInstance(Il2CppObject* obj)
+        IL2CPP_FORCE_INLINE static TDerived* __CreateInstance(Il2CppObject* obj)
         {
             void* memory = utils::Memory::Malloc(sizeof(TDerived));
             if (memory == NULL)
                 Exception::RaiseOutOfMemoryException();
-            return new(memory)TDerived(obj);
+            return new(memory) TDerived(obj);
         }
 
         virtual void STDCALL Destroy() IL2CPP_FINAL IL2CPP_OVERRIDE

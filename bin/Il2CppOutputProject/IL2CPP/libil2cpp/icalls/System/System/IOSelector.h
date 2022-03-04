@@ -1,6 +1,5 @@
 #pragma once
 
-#if NET_4_0
 #include "il2cpp-object-internals.h"
 
 namespace il2cpp
@@ -21,4 +20,3 @@ namespace System
 } // namespace System
 } // namespace icalls
 } // namespace il2cpp
-#endif

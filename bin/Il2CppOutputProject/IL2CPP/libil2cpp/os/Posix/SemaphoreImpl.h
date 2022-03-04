@@ -1,13 +1,12 @@
 #pragma once
 
-#if IL2CPP_THREADS_PTHREAD
+#if IL2CPP_THREADS_PTHREAD && !RUNTIME_TINY
 
 #include "PosixWaitObject.h"
 #include "os/ErrorCodes.h"
 #include "os/WaitStatus.h"
 
 #include <stdint.h>
-#include <semaphore.h>
 
 namespace il2cpp
 {

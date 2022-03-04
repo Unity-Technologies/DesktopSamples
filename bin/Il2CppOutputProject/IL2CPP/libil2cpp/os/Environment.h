@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <vector>
 
+#undef SetEnvironmentVariable // Get rid of windows.h #define.
+#undef GetEnvironmentVariable // Get rid of windows.h #define.
+
 struct Il2CppArray;
 
 namespace il2cpp
@@ -26,9 +29,7 @@ namespace os
         static NORETURN void Abort();
         static std::string GetWindowsFolderPath(int32_t folder);
 
-#if NET_4_0
         static bool Is64BitOs();
-#endif
     };
 }
 }

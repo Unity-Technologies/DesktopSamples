@@ -16,11 +16,10 @@ namespace vm
     {
 // exported
     public:
+        static void AssemblyNameReportChunked(const Il2CppAssemblyName & aname, void(*chunkReportFunction)(void *data, void *userData), void * userData);
         static std::string AssemblyNameToString(const Il2CppAssemblyName& aname);
         static bool ParseName(Il2CppReflectionAssemblyName* aname, std::string assemblyName);
-#if NET_4_0
         static void FillNativeAssemblyName(const Il2CppAssemblyName& aname, Il2CppMonoAssemblyName* nativeName);
-#endif
     private:
     };
 } /* namespace vm */

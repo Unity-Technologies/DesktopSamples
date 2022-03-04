@@ -38,9 +38,7 @@ namespace Reflection
         static Il2CppArray* GetNamespaces(Il2CppAssembly* self);
         static Il2CppArray* GetReferencedAssemblies(Il2CppReflectionAssembly* self);
         static void InternalGetAssemblyName(Il2CppString* assemblyFile, Il2CppAssemblyName* aname);
-#if NET_4_0
         static void InternalGetAssemblyName40(Il2CppString* assemblyFile, Il2CppMonoAssemblyName* aname, Il2CppString** codebase);
-#endif
         static Il2CppReflectionType* InternalGetType(Il2CppReflectionAssembly* , mscorlib_System_Reflection_Module* , Il2CppString* , bool, bool);
         static Il2CppString* InternalImageRuntimeVersion(Il2CppAssembly* self);
         static Il2CppReflectionAssembly* LoadFrom(Il2CppString* assemblyFile, bool refonly);
@@ -55,13 +53,9 @@ namespace Reflection
         static Il2CppReflectionAssembly* load_with_partial_name(Il2CppString* name, mscorlib_System_Security_Policy_Evidence* evidence);
         static Il2CppArray* GetTypes(Il2CppReflectionAssembly* thisPtr, bool exportedOnly);
 
-#if NET_4_0
         static Il2CppString* GetAotId();
-#endif
 
-#if NET_4_0
         static intptr_t InternalGetReferencedAssemblies(Il2CppReflectionAssembly* module);
-#endif
     };
 } /* namespace Reflection */
 } /* namespace System */

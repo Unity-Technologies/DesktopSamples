@@ -1,6 +1,6 @@
 #pragma once
 
-#if IL2CPP_TARGET_POSIX
+#if IL2CPP_TARGET_POSIX && !RUNTIME_TINY
 
 #include <string>
 #include <vector>
@@ -91,6 +91,10 @@ namespace os
         WaitStatus SetSocketOptionMembership(SocketOptionLevel level, SocketOptionName name, uint32_t group_address, uint32_t local_address);
 #if IL2CPP_SUPPORT_IPV6
         WaitStatus SetSocketOptionMembership(SocketOptionLevel level, SocketOptionName name, IPv6Address ipv6, uint64_t interfaceOffset);
+#endif
+
+#if IL2CPP_SUPPORT_IPV6_SUPPORT_QUERY
+        static bool IsIPv6Supported();
 #endif
 
         WaitStatus SendFile(const char *filename, TransmitFileBuffers *buffers, TransmitFileOptions options);

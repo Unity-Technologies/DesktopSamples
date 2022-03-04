@@ -10,7 +10,6 @@
 #include <stdlib.h>
 
 #include "os/Process.h"
-#include "vm/Exception.h"
 #include "il2cpp-vm-support.h"
 
 struct ProcessHandle

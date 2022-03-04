@@ -1,6 +1,5 @@
 #pragma once
 
-#if NET_4_0
 
 #include "il2cpp-config.h"
 #include "il2cpp-object-internals.h"
@@ -21,5 +20,3 @@ namespace vm
     };
 } /* namespace vm */
 } /* namespace il2cpp */
-
-#endif

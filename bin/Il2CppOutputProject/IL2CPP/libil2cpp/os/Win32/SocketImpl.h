@@ -121,6 +121,8 @@ namespace os
         void StoreLastError(int32_t error_no);
 
         WaitStatus ConnectInternal(struct sockaddr *sa, int32_t sa_size);
+        WaitStatus SendToInternal(struct sockaddr *sa, int32_t sa_size, const uint8_t *data, int32_t count, os::SocketFlags flags, int32_t *len);
+        WaitStatus RecvFromInternal(struct sockaddr* sa, int32_t sa_size, const uint8_t* data, int32_t count, os::SocketFlags flags, int32_t* len, os::EndPointInfo& ep);
         WaitStatus SetSocketOptionInternal(int32_t level, int32_t name, const void *value, int32_t len);
     };
 }

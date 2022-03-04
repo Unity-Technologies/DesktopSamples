@@ -1,5 +1,4 @@
 #pragma once
-#if NET_4_0
 #include <stdint.h>
 
 namespace il2cpp
@@ -24,4 +23,3 @@ namespace os
     };
 }
 }
-#endif  // NET_4_0

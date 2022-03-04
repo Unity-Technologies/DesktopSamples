@@ -91,6 +91,28 @@ mono_gc_get_heap_size (void)
 	return 2*1024*1024;
 }
 
+int64_t
+mono_gc_get_max_time_slice_ns()
+{
+	return 0;
+}
+
+void
+mono_gc_set_max_time_slice_ns(int64_t maxTimeSlice)
+{
+}
+
+MonoBoolean 
+mono_gc_is_incremental()
+{
+    return FALSE;
+}
+
+void
+mono_gc_set_incremental(MonoBoolean value)
+{
+}
+
 gboolean
 mono_gc_is_gc_thread (void)
 {
@@ -456,16 +478,6 @@ FILE *
 mono_gc_get_logfile (void)
 {
 	return NULL;
-}
-
-void
-mono_gc_params_set (const char* options)
-{
-}
-
-void
-mono_gc_debug_set (const char* options)
-{
 }
 
 void

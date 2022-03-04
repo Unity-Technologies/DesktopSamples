@@ -1,6 +1,5 @@
 #pragma once
 
-#if NET_4_0
 #include "il2cpp-object-internals.h"
 
 namespace il2cpp
@@ -24,5 +23,3 @@ namespace Globalization
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-
-#endif

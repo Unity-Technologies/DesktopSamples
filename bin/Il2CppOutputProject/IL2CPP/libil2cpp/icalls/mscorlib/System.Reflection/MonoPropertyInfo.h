@@ -31,9 +31,7 @@ namespace Reflection
         static Il2CppArray* GetTypeModifiers(void* /* System.Reflection.MonoProperty */ prop, bool optional);
         static void get_property_info(Il2CppReflectionProperty *property, Il2CppPropertyInfo *info, PInfo req_info);
 
-#if NET_4_0
         static Il2CppObject* get_default_value(Il2CppReflectionProperty* prop);
-#endif
     };
 } /* namespace Reflection */
 } /* namespace System */

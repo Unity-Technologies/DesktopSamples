@@ -11,18 +11,13 @@
 #include "vm/String.h"
 #include "utils/StringView.h"
 
+#include <vector>
+#include <string>
+
 struct Il2CppString;
 struct Il2CppStringBuilder;
 
-struct PInvokeArguments
-{
-    const il2cpp::utils::StringView<Il2CppNativeChar> moduleName;
-    const il2cpp::utils::StringView<char> entryPoint;
-    Il2CppCallConvention callingConvention;
-    Il2CppCharSet charSet;
-    int parameterSize;
-    bool isNoMangle;    // Says whether P/Invoke should append to function name 'A'/'W' according to charSet.
-};
+struct PInvokeArguments;
 
 namespace il2cpp
 {
@@ -49,6 +44,9 @@ namespace vm
 
         static void MarshalFreeBString(Il2CppChar* value);
 
+        static char* MarshalEmptyStringBuilder(Il2CppStringBuilder* stringBuilder);
+        static Il2CppChar* MarshalEmptyWStringBuilder(Il2CppStringBuilder* stringBuilder);
+
         static char* MarshalStringBuilder(Il2CppStringBuilder* stringBuilder);
         static Il2CppChar* MarshalWStringBuilder(Il2CppStringBuilder* stringBuilder);
 
@@ -63,6 +61,10 @@ namespace vm
         {
             return (T*)MarshalAlloc::Allocate(numberOfCharacters * sizeof(T));
         }
+
+    private:
+        static char* MarshalEmptyStringBuilder(Il2CppStringBuilder* stringBuilder, size_t& stringLength, std::vector<std::string>& utf8Chunks, std::vector<Il2CppStringBuilder*>& builders);
+        static Il2CppChar* MarshalEmptyWStringBuilder(Il2CppStringBuilder* stringBuilder, size_t& stringLength);
     };
 } /* namespace vm */
 } /* namespace il2cpp */

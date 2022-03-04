@@ -6,8 +6,6 @@
 #include "vm/Reflection.h"
 #include "vm/Exception.h"
 
-using namespace il2cpp::vm;
-
 namespace il2cpp
 {
 namespace icalls
@@ -50,7 +48,7 @@ namespace Reflection
     Il2CppArray * MonoMethodInfo::get_parameter_info(intptr_t methodPtr, Il2CppReflectionMethod *member)
     {
         MethodInfo* method = (MethodInfo*)methodPtr;
-        return il2cpp::vm::Reflection::GetParamObjects(method, member->reftype ? Class::FromIl2CppType(member->reftype->type) : NULL);
+        return il2cpp::vm::Reflection::GetParamObjects(method, member->reftype ? vm::Class::FromIl2CppType(member->reftype->type) : NULL);
     }
 
     void* /* System.Reflection.Emit.UnmanagedMarshal */ MonoMethodInfo::get_retval_marshal(intptr_t handle)
@@ -60,14 +58,11 @@ namespace Reflection
         return NULL;
     }
 
-#if NET_4_0
     int32_t MonoMethodInfo::get_method_attributes(intptr_t methodPtr)
     {
         MethodInfo* method = (MethodInfo*)methodPtr;
         return method->flags;
     }
-
-#endif
 } /* namespace Reflection */
 } /* namespace System */
 } /* namespace mscorlib */

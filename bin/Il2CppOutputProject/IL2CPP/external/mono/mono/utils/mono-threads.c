@@ -739,6 +739,13 @@ thread_info_key_dtor (void *arg)
 #endif
 
 void
+mono_thread_info_cleanup ()
+{
+	mono_native_tls_free (thread_info_key);
+	mono_native_tls_free (thread_exited_key);
+}
+
+void
 mono_thread_info_init (size_t info_size)
 {
 	gboolean res;
@@ -780,7 +787,7 @@ mono_thread_info_init (size_t info_size)
 	mono_threads_coop_init ();
 	mono_threads_platform_init ();
 
-#if defined(__MACH__)
+#if defined(__MACH__) && !defined(HOST_IOS)
 	mono_mach_init (thread_info_key);
 #endif
 

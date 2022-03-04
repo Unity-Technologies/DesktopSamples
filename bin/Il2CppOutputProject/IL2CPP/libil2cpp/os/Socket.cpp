@@ -1,13 +1,17 @@
 #include "il2cpp-config.h"
 
+#if IL2CPP_SUPPORT_SOCKETS
+
 #include <map>
 
 #include "os/Socket.h"
 #include "os/Atomic.h"
 #include "os/Mutex.h"
 
-#if IL2CPP_TARGET_POSIX && !IL2CPP_TARGET_JAVASCRIPT
-// Note: sockets are not supported when targetting WebGL, even if it is considered a POSIX platform.
+#include "Baselib.h"
+#include "Cpp/ReentrantLock.h"
+
+#if IL2CPP_TARGET_POSIX
 # include "os/Posix/SocketImpl.h"
 #elif IL2CPP_TARGET_WINDOWS
 # include "os/Win32/SocketImpl.h"
@@ -31,7 +35,7 @@ namespace os
     typedef std::map<SocketHandle, SocketHandleEntry> SocketHandleTable;
 
     SocketHandle g_LastSocketHandle;
-    FastMutex g_SocketHandleTableMutex;
+    baselib::ReentrantLock g_SocketHandleTableMutex;
     SocketHandleTable g_SocketHandleTable;
 
     SocketHandle CreateSocketHandle(Socket* socket)
@@ -364,9 +368,19 @@ namespace os
 
 #endif
 
+#if IL2CPP_SUPPORT_IPV6_SUPPORT_QUERY
+    bool Socket::IsIPv6Supported()
+    {
+        return SocketImpl::IsIPv6Supported();
+    }
+
+#endif
+
     WaitStatus Socket::SendFile(const char *filename, TransmitFileBuffers *buffers, TransmitFileOptions options)
     {
         return m_Socket->SendFile(filename, buffers, options);
     }
 }
 }
+
+#endif

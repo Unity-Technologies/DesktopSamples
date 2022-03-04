@@ -668,8 +668,8 @@ namespace vm
 
             case IL2CPP_TYPE_VAR:
             case IL2CPP_TYPE_MVAR:
-                str += MetadataCache::GetStringFromIndex(Type::GetGenericParameter(type)->nameIndex);
 
+                str += MetadataCache::GetGenericParameterName(Type::GetGenericParameterHandle(type));
                 if (type->byref)
                     str += '&';
                 break;
@@ -732,15 +732,19 @@ namespace vm
                 }
                 else if (Class::IsGeneric(klass) && (format != IL2CPP_TYPE_NAME_FORMAT_FULL_NAME) && (format != IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED))
                 {
-                    const Il2CppGenericContainer* container = Class::GetGenericContainer(klass);
+                    Il2CppMetadataGenericContainerHandle containerHandle = Class::GetGenericContainer(klass);
 
                     str += (format == IL2CPP_TYPE_NAME_FORMAT_IL ? '<' : '[');
 
-                    for (int32_t i = 0; i < container->type_argc; i++)
+                    uint32_t type_argc = MetadataCache::GetGenericContainerCount(containerHandle);
+                    for (uint32_t i = 0; i < type_argc; i++)
                     {
                         if (i)
                             str += ',';
-                        str += MetadataCache::GetStringFromIndex(GenericContainer::GetGenericParameter(container, i)->nameIndex);
+
+                        Il2CppMetadataGenericParameterHandle handle = MetadataCache::GetGenericParameterFromIndex(containerHandle, i);
+                        const char* name = MetadataCache::GetGenericParameterName(handle);
+                        str += name;
                     }
 
                     str += (format == IL2CPP_TYPE_NAME_FORMAT_IL ? '>' : ']');
@@ -766,6 +770,253 @@ namespace vm
         return str;
     }
 
+    enum
+    {
+        //max digits on uint16 is 5(used to convert the number of generic args) + max 3 other slots taken;
+        kNameChunkBufferSize = 8
+    };
+
+    static inline char* flushChunkBuffer(char* buffer, void(*chunkReportFunc)(void*data, void* userData), void* userData)
+    {
+        chunkReportFunc(buffer, userData);
+        memset(buffer, 0x00, kNameChunkBufferSize);
+
+        return buffer;
+    }
+
+    void Type::GetNameChunkedRecurseInternal(const Il2CppType *type, Il2CppTypeNameFormat format, bool is_nested, void(*chunkReportFunc)(void*data, void* userData), void* userData)
+    {
+        char buffer[kNameChunkBufferSize + 1]; //null terminate the buffer
+        memset(buffer, 0x00, kNameChunkBufferSize + 1);
+        char* bufferPtr = buffer;
+        char* bufferIter = bufferPtr;
+
+        switch (type->type)
+        {
+            case IL2CPP_TYPE_ARRAY:
+            {
+                Il2CppClass* arrayClass = Class::FromIl2CppType(type);
+                Il2CppClass* elementClass = Class::GetElementClass(arrayClass);
+                Type::GetNameChunkedRecurseInternal(
+                    &elementClass->byval_arg,
+                    format == IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED ? IL2CPP_TYPE_NAME_FORMAT_FULL_NAME : format,
+                    false, chunkReportFunc, userData);
+
+                *bufferIter++ = '[';
+
+                if (arrayClass->rank == 1)
+                    *bufferIter++ = '*';
+
+                for (int32_t i = 1; i < arrayClass->rank; i++)
+                {
+                    *bufferIter++ = ',';
+                    if (kNameChunkBufferSize - (bufferIter - bufferPtr) < 2)
+                    {
+                        bufferIter = flushChunkBuffer(bufferPtr, chunkReportFunc, userData);
+                    }
+                }
+
+                *bufferIter++ = ']';
+
+                if (type->byref)
+                    *bufferIter++ = '&';
+
+                bufferIter = flushChunkBuffer(bufferPtr, chunkReportFunc, userData);
+                if (format == IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED)
+                {
+                    const Il2CppAssembly *ta = elementClass->image->assembly;
+                    *bufferIter++ = ',';
+                    chunkReportFunc(bufferPtr, userData);
+
+                    //change this to call the callback
+                    vm::AssemblyName::AssemblyNameReportChunked(ta->aname, chunkReportFunc, userData);
+                }
+
+                break;
+            }
+
+            case IL2CPP_TYPE_SZARRAY:
+            {
+                Il2CppClass* elementClass = Class::FromIl2CppType(type->data.type);
+                Type::GetNameChunkedRecurseInternal(
+                    &elementClass->byval_arg,
+                    format == IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED ? IL2CPP_TYPE_NAME_FORMAT_FULL_NAME : format,
+                    false, chunkReportFunc, userData);
+
+                *bufferIter++ = '[';
+                *bufferIter++ = ']';
+
+                if (type->byref)
+                    *bufferIter++ = '&';
+
+                bufferIter = flushChunkBuffer(bufferPtr, chunkReportFunc, userData);
+                if (format == IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED)
+                {
+                    const Il2CppAssembly *ta = elementClass->image->assembly;
+                    *bufferIter++ = ',';
+                    chunkReportFunc(bufferPtr, userData);
+                    //change this to call the callback
+                    vm::AssemblyName::AssemblyNameReportChunked(ta->aname, chunkReportFunc, userData);
+                }
+                break;
+            }
+
+            case IL2CPP_TYPE_PTR:
+            {
+                Type::GetNameChunkedRecurseInternal(
+                    type->data.type,
+                    format == IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED ? IL2CPP_TYPE_NAME_FORMAT_FULL_NAME : format,
+                    false, chunkReportFunc, userData);
+
+                *bufferIter++ = '*';
+
+                if (type->byref)
+                    *bufferIter++ = '&';
+
+                bufferIter = flushChunkBuffer(bufferPtr, chunkReportFunc, userData);
+                if (format == IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED)
+                {
+                    const Il2CppAssembly *ta = Class::FromIl2CppType(type->data.type)->image->assembly;
+                    *bufferIter++ = ',';
+                    chunkReportFunc(bufferPtr, userData);
+                    //change this to call the callback
+                    vm::AssemblyName::AssemblyNameReportChunked(ta->aname, chunkReportFunc, userData);
+                }
+                break;
+            }
+
+            case IL2CPP_TYPE_VAR:
+            case IL2CPP_TYPE_MVAR:
+                chunkReportFunc(const_cast<char*>(MetadataCache::GetGenericParameterName(Type::GetGenericParameterHandle(type))), userData);
+
+                if (type->byref)
+                {
+                    *bufferIter++ = '&';
+                    chunkReportFunc(bufferPtr, userData);
+                }
+                break;
+
+            default:
+            {
+                Il2CppClass *klass = Class::FromIl2CppType(type);
+                Class::Init(klass);
+
+                Il2CppClass* declaringType = Class::GetDeclaringType(klass);
+                if (declaringType)
+                {
+                    Type::GetNameChunkedRecurseInternal(&declaringType->byval_arg, format, true, chunkReportFunc, userData);
+                    *bufferIter++ = (format == IL2CPP_TYPE_NAME_FORMAT_IL ? '.' : '+');
+                }
+                else if (*klass->namespaze)
+                {
+                    chunkReportFunc(const_cast<char*>(klass->namespaze), userData);
+                    *bufferIter++ = '.';
+                }
+
+                if (format == IL2CPP_TYPE_NAME_FORMAT_IL)
+                {
+                    const char *s = strchr(klass->name, '`');
+                    size_t len = s ? s - klass->name : strlen(klass->name);
+
+                    for (size_t i = 0; i < len; ++i)
+                    {
+                        *bufferIter++ = *(klass->name + i);
+                        if (kNameChunkBufferSize - (bufferIter - bufferPtr) == 0)
+                        {
+                            bufferIter = flushChunkBuffer(bufferPtr, chunkReportFunc, userData);
+                        }
+                    }
+                }
+                else
+                    chunkReportFunc(const_cast<char*>(klass->name), userData);
+
+                if (bufferPtr != bufferIter)
+                {
+                    bufferIter = flushChunkBuffer(bufferPtr, chunkReportFunc, userData);
+                }
+
+                if (is_nested)
+                    break;
+
+                if (klass->generic_class)
+                {
+                    Il2CppGenericClass *gclass = klass->generic_class;
+                    const Il2CppGenericInst *inst = gclass->context.class_inst;
+                    Il2CppTypeNameFormat nested_format;
+
+                    nested_format = format == IL2CPP_TYPE_NAME_FORMAT_FULL_NAME ? IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED : format;
+
+                    *bufferIter++ = (format == IL2CPP_TYPE_NAME_FORMAT_IL ? '<' : '[');
+
+                    for (uint32_t i = 0; i < inst->type_argc; i++)
+                    {
+                        const Il2CppType *t = inst->type_argv[i];
+
+                        if (i)
+                            *bufferIter++ = ',';
+
+                        if ((nested_format == IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED) && (t->type != IL2CPP_TYPE_VAR) && (type->type != IL2CPP_TYPE_MVAR))
+                            *bufferIter++ = '[';
+                        bufferIter = flushChunkBuffer(bufferPtr, chunkReportFunc, userData);
+                        Type::GetNameChunkedRecurseInternal(inst->type_argv[i], nested_format, false, chunkReportFunc, userData);
+
+                        if ((nested_format == IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED) && (t->type != IL2CPP_TYPE_VAR) && (type->type != IL2CPP_TYPE_MVAR))
+                            *bufferIter++ = ']';
+                    }
+
+                    *bufferIter++ = (format == IL2CPP_TYPE_NAME_FORMAT_IL ? '>' : ']');
+                }
+                else if (Class::IsGeneric(klass) && (format != IL2CPP_TYPE_NAME_FORMAT_FULL_NAME) && (format != IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED))
+                {
+                    Il2CppMetadataGenericContainerHandle containerHandle = Class::GetGenericContainer(klass);
+
+                    *bufferIter++ = (format == IL2CPP_TYPE_NAME_FORMAT_IL ? '<' : '[');
+
+                    uint32_t type_argc = MetadataCache::GetGenericContainerCount(containerHandle);
+                    for (uint32_t i = 0; i < type_argc; ++i)
+                    {
+                        if (i)
+                            *bufferIter++ = ',';
+                        Il2CppMetadataGenericParameterHandle handle = GenericContainer::GetGenericParameter(containerHandle, i);
+                        const char* idxStr = MetadataCache::GetGenericParameterName(handle);
+                        size_t len = strlen(idxStr);
+                        for (size_t l = 0; l < len; ++l)
+                        {
+                            *bufferIter++ = *(idxStr + l);
+                            if (kNameChunkBufferSize - (bufferIter - bufferPtr) < 2)
+                            //make sure there's at least 2 slots empty to
+                            //accommodate the worst case scenario until we flush
+                            {
+                                bufferIter = flushChunkBuffer(bufferPtr, chunkReportFunc, userData);
+                            }
+                        }
+                    }
+
+                    *bufferIter++ = (format == IL2CPP_TYPE_NAME_FORMAT_IL ? '>' : ']');
+                }
+
+                if (type->byref)
+                    *bufferIter++ = '&';
+
+                bufferIter = flushChunkBuffer(bufferPtr, chunkReportFunc, userData);
+                if ((format == IL2CPP_TYPE_NAME_FORMAT_ASSEMBLY_QUALIFIED) && (type->type != IL2CPP_TYPE_VAR) && (type->type != IL2CPP_TYPE_MVAR))
+                {
+                    const Il2CppAssembly *ta = klass->image->assembly;
+                    *bufferIter++ = ',';
+                    chunkReportFunc(bufferPtr, userData);
+                    //change this to call the callback
+                    vm::AssemblyName::AssemblyNameReportChunked(ta->aname, chunkReportFunc, userData);
+                }
+                break;
+            }
+        }
+    }
+
+    void Type::GetNameChunkedRecurse(const Il2CppType *type, Il2CppTypeNameFormat format, void(*reportFunc)(void*data, void* userData), void* userData)
+    {
+        GetNameChunkedRecurseInternal(type, format, false, reportFunc, userData);
+    }
+
     Il2CppClass* Type::GetClassOrElementClass(const Il2CppType *type)
     {
         // This is a weird function to mimic old mono behaviour.
@@ -778,13 +1029,13 @@ namespace vm
             return Class::FromIl2CppType(type->data.type);
 
         // IL2CPP_TYPE_SZARRAY stores element class in klass
-        return MetadataCache::GetTypeInfoFromTypeDefinitionIndex(type->data.klassIndex);
+        return MetadataCache::GetTypeInfoFromType(type);
     }
 
     const Il2CppType* Type::GetUnderlyingType(const Il2CppType *type)
     {
-        if (type->type == IL2CPP_TYPE_VALUETYPE && MetadataCache::GetTypeInfoFromTypeDefinitionIndex(type->data.klassIndex)->enumtype && !type->byref)
-            return Class::GetEnumBaseType(MetadataCache::GetTypeInfoFromTypeDefinitionIndex(type->data.klassIndex));
+        if (type->type == IL2CPP_TYPE_VALUETYPE && !type->byref && MetadataCache::GetTypeInfoFromType(type)->enumtype)
+            return Class::GetEnumBaseType(MetadataCache::GetTypeInfoFromType(type));
         if (IsGenericInstance(type))
         {
             Il2CppClass* definition = GenericClass::GetTypeDefinition(type->data.generic_class);
@@ -807,9 +1058,7 @@ namespace vm
             return NULL;
         if (type->type == IL2CPP_TYPE_VAR || type->type == IL2CPP_TYPE_MVAR)
         {
-            const Il2CppGenericParameter* genericParameter = GetGenericParameter(type);
-            const Il2CppGenericContainer* container = MetadataCache::GetGenericContainerFromIndex(genericParameter->ownerIndex);
-            typeInfo = GenericContainer::GetDeclaringType(container);
+            typeInfo = MetadataCache::GetParameterDeclaringType(GetGenericParameterHandle(type));
         }
         else
         {
@@ -826,19 +1075,15 @@ namespace vm
 
         klass = Class::FromIl2CppType(type->type);
 
-#if NET_4_0
         Il2CppClass *arrType = runtimeArray ? il2cpp_defaults.runtimetype_class : il2cpp_defaults.systemtype_class;
-#else
-        Il2CppClass *arrType = il2cpp_defaults.systemtype_class;
-#endif
 
         if (Class::IsGeneric(klass))
         {
-            const Il2CppGenericContainer *container = MetadataCache::GetGenericContainerFromIndex(klass->genericContainerIndex);
-            res = Array::New(arrType, container->type_argc);
-            for (int32_t i = 0; i < container->type_argc; ++i)
+            uint32_t type_argc = MetadataCache::GetGenericContainerCount(klass->genericContainerHandle);
+            res = Array::New(arrType, type_argc);
+            for (uint32_t i = 0; i < type_argc; ++i)
             {
-                pklass = Class::FromGenericParameter(GenericContainer::GetGenericParameter(container, i));
+                pklass = Class::FromGenericParameter(GenericContainer::GetGenericParameter(klass->genericContainerHandle, i));
                 il2cpp_array_setref(res, i, Reflection::GetTypeObject(&pklass->byval_arg));
             }
         }
@@ -859,6 +1104,14 @@ namespace vm
     bool Type::IsEqualToType(const Il2CppType *type, const Il2CppType *otherType)
     {
         return ::il2cpp::metadata::Il2CppTypeEqualityComparer::AreEqual(type, otherType);
+    }
+
+    Il2CppReflectionType* Type::GetTypeFromHandle(intptr_t handle)
+    {
+        const Il2CppType* type = (const Il2CppType*)handle;
+        Il2CppClass *klass = vm::Class::FromIl2CppType(type);
+
+        return il2cpp::vm::Reflection::GetTypeObject(&klass->byval_arg);
     }
 
     uint32_t Type::GetToken(const Il2CppType *type)
@@ -891,7 +1144,7 @@ namespace vm
         if (type->byref)
             return false;
 
-        if (type->type == IL2CPP_TYPE_VALUETYPE && !MetadataCache::GetTypeInfoFromTypeDefinitionIndex(type->data.klassIndex)->enumtype)
+        if (type->type == IL2CPP_TYPE_VALUETYPE && !MetadataCache::GetTypeInfoFromType(type)->enumtype)
             return true;
 
         if (type->type == IL2CPP_TYPE_TYPEDBYREF)
@@ -928,7 +1181,7 @@ namespace vm
 
     bool Type::IsEmptyType(const Il2CppType *type)
     {
-        return IsGenericInstance(type) && type->data.generic_class->typeDefinitionIndex == kTypeIndexInvalid;
+        return IsGenericInstance(type) && type->data.generic_class->type == NULL;
     }
 
     bool Type::IsSystemDBNull(const Il2CppType *type)
@@ -952,13 +1205,23 @@ namespace vm
     Il2CppClass* Type::GetClass(const Il2CppType *type)
     {
         IL2CPP_ASSERT(type->type == IL2CPP_TYPE_CLASS || type->type == IL2CPP_TYPE_VALUETYPE);
-        return MetadataCache::GetTypeInfoFromTypeDefinitionIndex(type->data.klassIndex);
+        return MetadataCache::GetTypeInfoFromType(type);
     }
 
-    const Il2CppGenericParameter* Type::GetGenericParameter(const Il2CppType *type)
+    Il2CppMetadataGenericParameterHandle Type::GetGenericParameterHandle(const Il2CppType *type)
     {
-        IL2CPP_ASSERT(type->type == IL2CPP_TYPE_VAR || type->type == IL2CPP_TYPE_MVAR);
-        return MetadataCache::GetGenericParameterFromIndex(type->data.genericParameterIndex);
+        return MetadataCache::GetGenericParameterFromType(type);
+    }
+
+    Il2CppGenericParameterInfo Type::GetGenericParameterInfo(const Il2CppType *type)
+    {
+        return MetadataCache::GetGenericParameterInfo(MetadataCache::GetGenericParameterFromType(type));
+    }
+
+    const Il2CppType* Type::GetGenericTypeDefintion(const Il2CppType* type)
+    {
+        IL2CPP_ASSERT(IsGenericInstance(type));
+        return type->data.generic_class->type;
     }
 
 /**
@@ -975,6 +1238,9 @@ namespace vm
 */
     void Type::ConstructDelegate(Il2CppDelegate* delegate, Il2CppObject* target, Il2CppMethodPointer addr, const MethodInfo* method)
     {
+#if IL2CPP_TINY
+        IL2CPP_ASSERT(0 && "Type::ConstructDelegatee should not be called with the Tiny profile.");
+#else
         IL2CPP_ASSERT(delegate);
 
         if (method)
@@ -985,9 +1251,10 @@ namespace vm
             IL2CPP_OBJECT_SETREF(delegate, target, target);
 
         delegate->invoke_impl = method->invoker_method; //TODO:figure out if this is needed at all
+#endif
     }
 
-    Il2CppString* Type::AppendAssemblyNameIfNecessary(Il2CppString* typeName, const char* assemblyName)
+    Il2CppString* Type::AppendAssemblyNameIfNecessary(Il2CppString* typeName, const MethodInfo* callingMethod)
     {
         if (typeName != NULL)
         {
@@ -1001,7 +1268,7 @@ namespace vm
                 if (info.assembly_name().name.empty())
                 {
                     std::string assemblyQualifiedName;
-                    assemblyQualifiedName = name + ", " + assemblyName;
+                    assemblyQualifiedName = name + ", " + callingMethod->klass->image->name;
                     return vm::String::New(assemblyQualifiedName.c_str());
                 }
             }

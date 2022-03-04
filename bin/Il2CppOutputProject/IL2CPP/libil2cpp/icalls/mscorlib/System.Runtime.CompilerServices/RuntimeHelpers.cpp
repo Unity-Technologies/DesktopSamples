@@ -7,11 +7,10 @@
 #include "vm/Class.h"
 #include "vm/Exception.h"
 #include "vm/Field.h"
+#include "vm/Object.h"
 #include "vm/Runtime.h"
 #include "vm/Type.h"
 #include "icalls/mscorlib/System.Runtime.CompilerServices/RuntimeHelpers.h"
-
-using namespace il2cpp::vm;
 
 namespace il2cpp
 {
@@ -34,26 +33,26 @@ namespace CompilerServices
     {
         FieldInfo* field_handle = (FieldInfo*)ptr;
         Il2CppClass *klass = array->klass;
-        uint32_t size = Array::GetElementSize(klass);
-        const Il2CppType *type = Type::GetUnderlyingType(&klass->element_class->byval_arg);
+        uint32_t size = vm::Array::GetElementSize(klass);
+        const Il2CppType *type = vm::Type::GetUnderlyingType(&klass->element_class->byval_arg);
 
         const char *field_data;
 
-        if (Type::IsReference(type) || (type->type == IL2CPP_TYPE_VALUETYPE && (!Type::GetClass(type) || Type::GetClass(type)->has_references)))
+        if (vm::Type::IsReference(type) || (type->type == IL2CPP_TYPE_VALUETYPE && (!vm::Type::GetClass(type) || vm::Type::GetClass(type)->has_references)))
         {
-            Il2CppException *exc = Exception::GetArgumentException("array",
-                    "Cannot initialize array containing references");
-            Exception::Raise(exc);
+            Il2CppException *exc = vm::Exception::GetArgumentException("array",
+                "Cannot initialize array containing references");
+            vm::Exception::Raise(exc);
         }
 
         if (!(field_handle->type->attrs & FIELD_ATTRIBUTE_HAS_FIELD_RVA))
         {
-            Il2CppException *exc = Exception::GetArgumentException("field_handle", "Field doesn't have an RVA");
-            Exception::Raise(exc);
+            Il2CppException *exc = vm::Exception::GetArgumentException("field_handle", "Field doesn't have an RVA");
+            vm::Exception::Raise(exc);
         }
 
         size *= ARRAY_LENGTH_AS_INT32(array->max_length);
-        field_data = Field::GetData(field_handle);
+        field_data = vm::Field::GetData(field_handle);
 
         IL2CPP_NOT_IMPLEMENTED_ICALL_NO_ASSERT(RuntimeHelpers::InitializeArray, "Check type size");
         //int align;
@@ -69,9 +68,10 @@ namespace CompilerServices
 
     Il2CppObject* RuntimeHelpers::GetObjectValue(Il2CppObject* obj)
     {
-        NOT_SUPPORTED_IL2CPP(RuntimeHelpers::GetObjectValue, "This icall is not supported by il2cpp.");
-
-        return 0;
+        if (obj == NULL || !vm::Class::IsValuetype(obj->klass))
+            return obj;
+        else
+            return vm::Object::Clone(obj);
     }
 
     void RuntimeHelpers::RunClassConstructor(intptr_t typeIntPtr)
@@ -79,7 +79,7 @@ namespace CompilerServices
         const Il2CppType* type = reinterpret_cast<const Il2CppType*>(typeIntPtr);
         IL2CPP_CHECK_ARG_NULL(type);
 
-        Il2CppClass* klass = Class::FromIl2CppType(type);
+        Il2CppClass* klass = vm::Class::FromIl2CppType(type);
         //MONO_CHECK_ARG(handle, klass);
 
         il2cpp::vm::Runtime::ClassInit(klass);
@@ -90,13 +90,10 @@ namespace CompilerServices
         NOT_SUPPORTED_IL2CPP(RuntimeHelpers::RunModuleConstructor, "This icall is not supported by il2cpp.");
     }
 
-#if NET_4_0
     bool RuntimeHelpers::SufficientExecutionStack()
     {
         return true;
     }
-
-#endif
 } /* namespace CompilerServices */
 } /* namespace Runtime */
 } /* namespace System */

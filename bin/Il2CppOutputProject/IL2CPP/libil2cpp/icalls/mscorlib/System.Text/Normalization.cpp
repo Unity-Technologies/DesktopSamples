@@ -1,4 +1,3 @@
-#if NET_4_0
 #include "il2cpp-config.h"
 #include "Normalization.h"
 #include "icalls/mscorlib/Mono.Globalization.Unicode/Normalization.h"
@@ -22,4 +21,3 @@ namespace Text
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

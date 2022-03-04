@@ -9,6 +9,7 @@
 #include "vm/MetadataCache.h"
 #include "vm/RCW.h"
 #include "vm/Runtime.h"
+#include "vm/ScopedThreadAttacher.h"
 #include "vm/String.h"
 
 namespace il2cpp
@@ -57,13 +58,6 @@ namespace vm
             *object = NULL;
             return IL2CPP_E_NOINTERFACE;
         }
-
-        virtual il2cpp_hresult_t STDCALL GetIids(uint32_t* iidCount, Il2CppGuid** iids) IL2CPP_OVERRIDE
-        {
-            *iidCount = 0;
-            *iids = NULL;
-            return IL2CPP_S_OK;
-        }
     };
 
     Il2CppIUnknown* CCW::CreateCCW(Il2CppObject* obj)
@@ -82,21 +76,86 @@ namespace vm
         void* memory = utils::Memory::Malloc(sizeof(ManagedObject));
         if (memory == NULL)
             Exception::RaiseOutOfMemoryException();
-        return static_cast<Il2CppIManagedObjectHolder*>(new(memory)ManagedObject(obj));
+        return static_cast<Il2CppIManagedObjectHolder*>(new(memory) ManagedObject(obj));
     }
 
-    Il2CppException* CCW::GetIPropertyValueInvalidCast(Il2CppObject* value, const char* from, const char* to)
+    Il2CppObject* CCW::Unpack(Il2CppIUnknown* unknown)
+    {
+        Il2CppIManagedObjectHolder* managedHolder;
+        il2cpp_hresult_t hr = unknown->QueryInterface(Il2CppIManagedObjectHolder::IID, reinterpret_cast<void**>(&managedHolder));
+        Exception::RaiseIfFailed(hr, true);
+
+        Il2CppObject* instance = managedHolder->GetManagedObject();
+        managedHolder->Release();
+
+        IL2CPP_ASSERT(instance);
+        return instance;
+    }
+
+    static Il2CppString* ValueToStringFallbackToEmpty(Il2CppObject* value)
     {
         Il2CppClass* klass = il2cpp::vm::Object::GetClass(value);
-        const MethodInfo* toString = il2cpp::vm::Class::GetMethodFromName(klass, "ToString", 0);
-        Il2CppString* valueString = (Il2CppString*)il2cpp::vm::Runtime::Invoke(toString, value, NULL, NULL);
-        std::string utf8Value = il2cpp::utils::StringUtils::Utf16ToUtf8(il2cpp::utils::StringUtils::GetChars(valueString));
+        const MethodInfo* toStringMethod = il2cpp::vm::Class::GetMethodFromName(klass, "ToString", 0);
+
+        Il2CppException* exception = NULL;
+        Il2CppString* result = (Il2CppString*)il2cpp::vm::Runtime::Invoke(toStringMethod, value, NULL, &exception);
+        if (exception != NULL)
+            return String::Empty();
+
+        return result;
+    }
+
+    static il2cpp_hresult_t HandleInvalidIPropertyConversionImpl(const std::string& exceptionMessage)
+    {
+        ScopedThreadAttacher scopedThreadAttacher; // Make sure we're attached before we create exceptions (aka allocate managed memory)
+
+        Il2CppException* exception = Exception::GetInvalidCastException(exceptionMessage.c_str());
+        Exception::PrepareExceptionForThrow(exception);
+        Exception::StoreExceptionInfo(exception, ValueToStringFallbackToEmpty(exception));
+        return exception->hresult;
+    }
+
+    il2cpp_hresult_t CCW::HandleInvalidIPropertyConversion(const char* fromType, const char* toType)
+    {
+        std::string message = il2cpp::utils::StringUtils::Printf("Object in an IPropertyValue is of type '%s', which cannot be converted to a '%s'.", fromType, toType);
+        return HandleInvalidIPropertyConversionImpl(message);
+    }
+
+    il2cpp_hresult_t CCW::HandleInvalidIPropertyConversion(Il2CppObject* value, const char* fromType, const char* toType)
+    {
+        Il2CppString* valueStr = ValueToStringFallbackToEmpty(value);
         std::string message = il2cpp::utils::StringUtils::Printf(
-                "Object in an IPropertyValue is of type '%s' with value '%s', which cannot be converted to a '%s'.",
-                from,
-                utf8Value.c_str(),
-                to);
-        return il2cpp::vm::Exception::GetInvalidCastException(message.c_str());
+            "Object in an IPropertyValue is of type '%s' with value '%s', which cannot be converted to a '%s'.",
+            fromType,
+            utils::StringUtils::Utf16ToUtf8(valueStr->chars, valueStr->length).c_str(),
+            toType);
+        return HandleInvalidIPropertyConversionImpl(message);
+    }
+
+    il2cpp_hresult_t CCW::HandleInvalidIPropertyArrayConversion(const char* fromArrayType, const char* fromElementType, const char* toElementType, il2cpp_array_size_t index)
+    {
+        std::string message = il2cpp::utils::StringUtils::Printf(
+            "Object in an IPropertyValue is of type '%s' which cannot be converted to a '%s[]' due to array element '%d': Object in an IPropertyValue is of type '%s', which cannot be converted to a '%s'.",
+            fromArrayType,
+            toElementType,
+            static_cast<int>(index),
+            fromElementType,
+            toElementType);
+        return HandleInvalidIPropertyConversionImpl(message);
+    }
+
+    il2cpp_hresult_t CCW::HandleInvalidIPropertyArrayConversion(Il2CppObject* value, const char* fromArrayType, const char* fromElementType, const char* toElementType, il2cpp_array_size_t index)
+    {
+        Il2CppString* valueStr = ValueToStringFallbackToEmpty(value);
+        std::string message = il2cpp::utils::StringUtils::Printf(
+            "Object in an IPropertyValue is of type '%s' which cannot be converted to a '%s[]' due to array element '%d': Object in an IPropertyValue is of type '%s' with value '%s', which cannot be converted to a '%s'.",
+            fromArrayType,
+            toElementType,
+            static_cast<int>(index),
+            fromElementType,
+            utils::StringUtils::Utf16ToUtf8(valueStr->chars, valueStr->length).c_str(),
+            toElementType);
+        return HandleInvalidIPropertyConversionImpl(message);
     }
 } /* namespace vm */
 } /* namespace il2cpp */

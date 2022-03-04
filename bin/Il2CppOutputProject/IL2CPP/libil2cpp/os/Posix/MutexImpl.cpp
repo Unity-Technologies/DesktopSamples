@@ -1,6 +1,6 @@
 #include "os/c-api/il2cpp-config-platforms.h"
 
-#if IL2CPP_THREADS_PTHREAD
+#if IL2CPP_THREADS_PTHREAD && !RUNTIME_TINY
 
 #include "MutexImpl.h"
 #include "PosixHelpers.h"

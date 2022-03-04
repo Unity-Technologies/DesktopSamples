@@ -2,7 +2,10 @@
 #include "il2cpp-class-internals.h"
 #include "icalls/mscorlib/System.Runtime.InteropServices/GCHandle.h"
 #include "gc/GCHandle.h"
+#include "vm/Class.h"
 #include "vm/Exception.h"
+#include "vm/GenericClass.h"
+#include "vm/Type.h"
 
 namespace il2cpp
 {
@@ -64,24 +67,34 @@ namespace InteropServices
         return gc::GCHandle::GetTarget(handle);
     }
 
+    static bool IsTypePinnable(Il2CppClass* klass)
+    {
+        const Il2CppType* il2cppType = vm::Class::GetType(klass);
+        if (il2cppType->type == IL2CPP_TYPE_ARRAY || il2cppType->type == IL2CPP_TYPE_SZARRAY)
+        {
+            Il2CppClass* elementClass = klass->element_class;
+            if (elementClass->byval_arg.type == IL2CPP_TYPE_STRING ||
+                elementClass->byval_arg.type == IL2CPP_TYPE_ARRAY ||
+                elementClass->byval_arg.type == IL2CPP_TYPE_SZARRAY)
+            {
+                return false;
+            }
+
+            return IsTypePinnable(elementClass); // Note the recursive call here
+        }
+
+        if (il2cppType->type == IL2CPP_TYPE_CHAR  || il2cppType->type == IL2CPP_TYPE_BOOLEAN || il2cppType->type == IL2CPP_TYPE_STRING)
+            return true;
+
+        return klass->is_blittable;
+    }
+
     static inline bool IsObjectPinnable(Il2CppObject* obj)
     {
         if (obj == NULL)
             return true;
 
-        Il2CppClass* klass = obj->klass;
-        if (klass->byval_arg.type == IL2CPP_TYPE_ARRAY || klass->byval_arg.type == IL2CPP_TYPE_SZARRAY)
-        {
-            Il2CppClass* elementClass = klass->element_class;
-            return elementClass->is_blittable ||
-                elementClass->byval_arg.type == IL2CPP_TYPE_CHAR || // while "char" and "bool" are not blittable, we can still pin their arrays
-                elementClass->byval_arg.type == IL2CPP_TYPE_BOOLEAN;
-        }
-
-        if (klass->byval_arg.type == IL2CPP_TYPE_CHAR  || klass->byval_arg.type == IL2CPP_TYPE_BOOLEAN || klass->byval_arg.type == IL2CPP_TYPE_STRING)
-            return true;
-
-        return klass->is_blittable;
+        return IsTypePinnable(obj->klass);
     }
 
     int32_t GCHandle::GetTargetHandle(Il2CppObject* obj, int32_t handle, int32_t type)

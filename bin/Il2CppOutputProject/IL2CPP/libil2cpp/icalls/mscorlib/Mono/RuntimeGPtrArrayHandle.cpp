@@ -1,5 +1,3 @@
-#if NET_4_0
-
 #include "il2cpp-config.h"
 #include "mono-structs.h"
 #include "RuntimeGPtrArrayHandle.h"
@@ -16,11 +14,9 @@ namespace Mono
     void RuntimeGPtrArrayHandle::GPtrArrayFree(void* value)
     {
         IL2CPP_ASSERT(value != NULL);
-        free_gptr_array((GPtrArray*)value);
+        free_gptr_array((MonoGPtrArray*)value);
     }
 } // namespace Mono
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-
-#endif

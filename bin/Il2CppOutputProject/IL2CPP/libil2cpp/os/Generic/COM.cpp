@@ -1,5 +1,4 @@
 #include "il2cpp-config.h"
-#include "il2cpp-object-internals.h"
 #include "os/COM.h"
 
 #if IL2CPP_USE_GENERIC_COM

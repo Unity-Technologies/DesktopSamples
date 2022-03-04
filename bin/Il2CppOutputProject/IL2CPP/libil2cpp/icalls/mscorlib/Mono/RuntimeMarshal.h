@@ -1,7 +1,5 @@
 #pragma once
 
-#if NET_4_0
-
 struct Il2CppMonoAssemblyName;
 
 namespace il2cpp
@@ -21,5 +19,3 @@ namespace Mono
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-
-#endif

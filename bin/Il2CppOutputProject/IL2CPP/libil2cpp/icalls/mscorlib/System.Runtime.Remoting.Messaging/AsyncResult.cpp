@@ -1,4 +1,3 @@
-#if NET_4_0
 #include "il2cpp-config.h"
 #include "il2cpp-object-internals.h"
 #include "il2cpp-api.h"
@@ -24,6 +23,10 @@ namespace Messaging
 {
     Il2CppObject* AsyncResult::Invoke(Il2CppObject* _this)
     {
+#if IL2CPP_TINY
+        IL2CPP_NOT_IMPLEMENTED_ICALL(AsyncResult::Invoke);
+        return NULL;
+#else
         Il2CppAsyncCall *ac;
         Il2CppObject *res;
         Il2CppAsyncResult *ares = (Il2CppAsyncResult*)_this;
@@ -40,7 +43,7 @@ namespace Messaging
         {
             il2cpp::os::EventHandle *wait_event = NULL;
 
-            ac->msg->exc = NULL;
+            IL2CPP_OBJECT_SETREF(ac->msg, exc, NULL);
             res = il2cpp::vm::ThreadPoolMs::MessageInvoke((Il2CppObject*)ares->async_delegate->target, ac->msg, &ac->msg->exc, &ac->out_args);
             IL2CPP_OBJECT_SETREF(ac, res, res);
 
@@ -64,6 +67,7 @@ namespace Messaging
         }
 
         return res;
+#endif
     }
 } // namespace Messaging
 } // namespace Remoting
@@ -72,4 +76,3 @@ namespace Messaging
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

@@ -1,4 +1,4 @@
-#include "os/c-api/il2cpp-config-platforms.h"
+#include "il2cpp-config.h"
 
 #if IL2CPP_THREADS_WIN32
 
@@ -40,6 +40,11 @@ namespace os
     WaitStatus SemaphoreImpl::Wait(uint32_t ms, bool interruptible)
     {
         return il2cpp::os::win::WaitForSingleObjectAndAccountForAPCs(m_Handle, ms, interruptible);
+    }
+
+    void* SemaphoreImpl::GetOSHandle()
+    {
+        return (void*)m_Handle;
     }
 }
 }

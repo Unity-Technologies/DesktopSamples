@@ -1,7 +1,5 @@
 #pragma once
 
-#if NET_4_0
-
 struct Il2CppString;
 
 namespace il2cpp
@@ -28,5 +26,3 @@ namespace Security
 } // namespace System
 } // namespace icalls
 } // namespace il2cpp
-
-#endif

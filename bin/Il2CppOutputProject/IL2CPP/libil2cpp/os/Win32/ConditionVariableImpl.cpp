@@ -1,5 +1,4 @@
 #include "os/c-api/il2cpp-config-platforms.h"
-#if NET_4_0
 #if IL2CPP_THREADS_WIN32
 
 #include "MutexImpl.h"
@@ -42,5 +41,4 @@ namespace os
 }
 }
 
-#endif
 #endif

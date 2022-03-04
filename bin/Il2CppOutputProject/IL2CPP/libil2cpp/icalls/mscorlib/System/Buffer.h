@@ -21,12 +21,10 @@ namespace System
         static int32_t ByteLengthInternal(Il2CppArray* arr);
         static uint8_t GetByteInternal(Il2CppArray* arr, int idx);
         static void SetByteInternal(Il2CppArray* arr, int idx, int value);
-#if NET_4_0
         static uint8_t _GetByte(Il2CppArray* array, int32_t index);
         static bool InternalBlockCopy(Il2CppArray* src, int32_t srcOffsetBytes, Il2CppArray* dst, int32_t dstOffsetBytes, int32_t byteCount);
         static int32_t _ByteLength(Il2CppArray* array);
         static void _SetByte(Il2CppArray* array, int32_t index, uint8_t value);
-#endif
     };
 } /* namespace System */
 } /* namespace mscorlib */

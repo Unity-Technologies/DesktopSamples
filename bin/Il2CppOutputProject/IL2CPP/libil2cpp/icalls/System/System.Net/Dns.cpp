@@ -99,7 +99,6 @@ namespace Net
         return *name != NULL;
     }
 
-#if NET_4_0
     bool Dns::GetHostByAddr40(Il2CppString* addr, Il2CppString** h_name, Il2CppArray** h_aliases, Il2CppArray** h_addr_list, int32_t hint)
     {
         return GetHostByAddr(addr, h_name, h_aliases, h_addr_list);
@@ -109,8 +108,6 @@ namespace Net
     {
         return GetHostByName(addr, h_name, h_aliases, h_addr_list);
     }
-
-#endif
 } /* namespace Net */
 } /* namespace System */
 } /* namespace System */

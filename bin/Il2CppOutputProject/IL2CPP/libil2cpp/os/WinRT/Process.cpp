@@ -6,7 +6,6 @@
 #include "il2cpp-vm-support.h"
 #include "os/Process.h"
 #include "utils/StringUtils.h"
-#include "vm/Exception.h"
 
 struct ProcessHandle
 {

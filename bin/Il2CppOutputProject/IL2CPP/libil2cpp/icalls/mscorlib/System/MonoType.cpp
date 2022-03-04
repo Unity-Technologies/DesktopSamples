@@ -23,8 +23,6 @@
 #include <vector>
 #include <set>
 
-using namespace il2cpp::vm;
-
 namespace il2cpp
 {
 namespace icalls
@@ -225,14 +223,14 @@ namespace System
 
     Il2CppReflectionAssembly* MonoType::get_Assembly(Il2CppReflectionType* type)
     {
-        Il2CppClass* klass = Class::FromIl2CppType(type->type);
+        Il2CppClass* klass = vm::Class::FromIl2CppType(type->type);
 
         return il2cpp::vm::Reflection::GetAssemblyObject(klass->image->assembly);
     }
 
     int MonoType::get_attributes(Il2CppReflectionType *type)
     {
-        Il2CppClass *klass = Class::FromSystemType(type);
+        Il2CppClass *klass = vm::Class::FromSystemType(type);
 
         return klass->flags;
     }
@@ -242,7 +240,7 @@ namespace System
         if (type->type->type != IL2CPP_TYPE_ARRAY && type->type->type != IL2CPP_TYPE_SZARRAY)
             IL2CPP_ASSERT("Type must be an array type");
 
-        Il2CppClass* klass = Class::FromIl2CppType(type->type);
+        Il2CppClass* klass = vm::Class::FromIl2CppType(type->type);
         return klass->rank;
     }
 
@@ -263,19 +261,19 @@ namespace System
 
     Il2CppReflectionModule* MonoType::get_Module(Il2CppReflectionType* type)
     {
-        Il2CppClass* klass = Class::FromIl2CppType(type->type);
+        Il2CppClass* klass = vm::Class::FromIl2CppType(type->type);
 
         return il2cpp::vm::Reflection::GetModuleObject(klass->image);
     }
 
     Il2CppString * MonoType::get_Name(Il2CppReflectionType * type)
     {
-        Il2CppClass* typeInfo = Class::FromIl2CppType(type->type);
+        Il2CppClass* typeInfo = vm::Class::FromIl2CppType(type->type);
 
         if (type->type->byref)
         {
             std::string n = il2cpp::utils::StringUtils::Printf("%s&", typeInfo->name);
-            return String::New(n.c_str());
+            return vm::String::New(n.c_str());
         }
         else
         {
@@ -285,9 +283,9 @@ namespace System
 
     Il2CppString *  MonoType::get_Namespace(Il2CppReflectionType *type)
     {
-        Il2CppClass* typeInfo = Class::FromIl2CppType(type->type);
+        Il2CppClass* typeInfo = vm::Class::FromIl2CppType(type->type);
 
-        while (Il2CppClass* declaringType = Class::GetDeclaringType(typeInfo))
+        while (Il2CppClass* declaringType = vm::Class::GetDeclaringType(typeInfo))
             typeInfo = declaringType;
 
         if (typeInfo->namespaze[0] == '\0')
@@ -298,14 +296,14 @@ namespace System
 
     Il2CppReflectionType * MonoType::get_BaseType(Il2CppReflectionType * type)
     {
-        Il2CppClass* klass = Class::FromIl2CppType(type->type);
+        Il2CppClass* klass = vm::Class::FromIl2CppType(type->type);
 
         return klass->parent ? il2cpp::vm::Reflection::GetTypeObject(&klass->parent->byval_arg) : NULL;
     }
 
     Il2CppArray* MonoType::GetConstructors_internal(Il2CppReflectionType* type, int32_t bflags, Il2CppReflectionType *reftype)
     {
-        static Il2CppClass *System_Reflection_ConstructorInfo = NULL;
+        Il2CppClass *system_Reflection_ConstructorInfo = il2cpp::vm::Reflection::GetConstructorInfo();
         Il2CppClass *startklass, *klass, *refklass;
         Il2CppArray *res;
         const MethodInfo *method;
@@ -316,15 +314,12 @@ namespace System
 
         if (type->type->byref)
             return il2cpp::vm::Array::NewCached(il2cpp_defaults.method_info_class, 0);
-        klass = startklass = Class::FromIl2CppType(type->type);
+        klass = startklass = vm::Class::FromIl2CppType(type->type);
 
-        refklass = Class::FromIl2CppType(reftype->type);
-
-        if (!System_Reflection_ConstructorInfo)
-            System_Reflection_ConstructorInfo = Class::FromName(il2cpp_defaults.corlib, "System.Reflection", "ConstructorInfo");
+        refklass = vm::Class::FromIl2CppType(reftype->type);
 
         iter = NULL;
-        while ((method = Class::GetMethods(klass, &iter)))
+        while ((method = vm::Class::GetMethods(klass, &iter)))
         {
             match = 0;
             if (strcmp(method->name, ".ctor") && strcmp(method->name, ".cctor"))
@@ -360,10 +355,10 @@ namespace System
             tmp_vec.push_back(std::make_pair(method, refklass));
         }
 
-        res = il2cpp::vm::Array::NewCached(System_Reflection_ConstructorInfo, (il2cpp_array_size_t)tmp_vec.size());
+        res = il2cpp::vm::Array::NewCached(system_Reflection_ConstructorInfo, (il2cpp_array_size_t)tmp_vec.size());
 
         for (size_t i = 0; i < tmp_vec.size(); ++i)
-            il2cpp_array_setref(res, i, (Il2CppObject*)Reflection::GetMethodObject(tmp_vec[i].first, tmp_vec[i].second));
+            il2cpp_array_setref(res, i, (Il2CppObject*)vm::Reflection::GetMethodObject(tmp_vec[i].first, tmp_vec[i].second));
 
         return res;
     }
@@ -372,7 +367,7 @@ namespace System
     {
         Il2CppClass *klass;
 
-        klass = Class::FromIl2CppType(type->type);
+        klass = vm::Class::FromIl2CppType(type->type);
 
         // GetElementType should only return a type for:
         // Array Pointer PassedByRef
@@ -390,11 +385,11 @@ namespace System
     static inline Il2CppReflectionField* GetFieldFromType(Il2CppClass* type, Il2CppClass* const originalType, int32_t bindingFlags, const NameFilter& nameFilter)
     {
         void* iter = NULL;
-        while (FieldInfo* field = Class::GetFields(type, &iter))
+        while (FieldInfo* field = vm::Class::GetFields(type, &iter))
         {
             if (CheckMemberMatch(field, type, originalType, bindingFlags, nameFilter))
             {
-                return Reflection::GetFieldObject(originalType, field);
+                return vm::Reflection::GetFieldObject(originalType, field);
             }
         }
 
@@ -409,12 +404,12 @@ namespace System
         if (field == NULL && (bindingFlags & BFLAGS_DeclaredOnly) == 0)
         {
             Il2CppClass* const originalType = type;
-            type = Class::GetParent(type);
+            type = vm::Class::GetParent(type);
 
             while (field == NULL && type != NULL)
             {
                 field = GetFieldFromType(type, originalType, bindingFlags, nameFilter);
-                type = Class::GetParent(type);
+                type = vm::Class::GetParent(type);
             }
         }
 
@@ -423,20 +418,17 @@ namespace System
 
     Il2CppReflectionField* MonoType::GetField(Il2CppReflectionType* _this, Il2CppString* name, int32_t bindingFlags)
     {
-        using namespace utils;
-        using namespace utils::functional;
-
         if (_this->type->byref)
             return NULL;
 
-        Il2CppClass* type = Class::FromIl2CppType(_this->type);
+        Il2CppClass* type = vm::Class::FromIl2CppType(_this->type);
 
         if (bindingFlags & BFLAGS_IgnoreCase)
         {
-            return GetFieldImpl(type, bindingFlags, Filter<std::string, VmStringUtils::CaseInsensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+            return GetFieldImpl(type, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseInsensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
         }
 
-        return GetFieldImpl(type, bindingFlags, Filter<std::string, VmStringUtils::CaseSensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+        return GetFieldImpl(type, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseSensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
     }
 
     template<typename NameFilter>
@@ -444,7 +436,7 @@ namespace System
     {
         void* iterator = NULL;
         FieldInfo* field = NULL;
-        while ((field = Class::GetFields(type, &iterator)) != NULL)
+        while ((field = vm::Class::GetFields(type, &iterator)) != NULL)
         {
             if (CheckMemberMatch(field, type, originalType, bindingFlags, nameFilter))
                 fields.push_back(field);
@@ -455,10 +447,10 @@ namespace System
     static inline Il2CppArray* GetFieldsImpl(Il2CppReflectionType* _this, int bindingFlags, Il2CppReflectionType* reflectedType, const NameFilter& nameFilter)
     {
         if (reflectedType->type->byref || !ValidBindingFlagsForGetMember(bindingFlags))
-            return Array::New(il2cpp_defaults.field_info_class, 0);
+            return vm::Array::New(il2cpp_defaults.field_info_class, 0);
 
         std::vector<FieldInfo*> fields;
-        Il2CppClass* typeInfo = Class::FromIl2CppType(reflectedType->type);
+        Il2CppClass* typeInfo = vm::Class::FromIl2CppType(reflectedType->type);
         Il2CppClass* const originalType = typeInfo;
 
         CollectTypeFields(typeInfo, typeInfo, bindingFlags, fields, nameFilter);
@@ -475,11 +467,11 @@ namespace System
         }
 
         size_t fieldCount = fields.size();
-        Il2CppArray* result = Array::NewCached(il2cpp_defaults.field_info_class, (il2cpp_array_size_t)fieldCount);
+        Il2CppArray* result = vm::Array::NewCached(il2cpp_defaults.field_info_class, (il2cpp_array_size_t)fieldCount);
 
         for (size_t i = 0; i < fieldCount; i++)
         {
-            il2cpp_array_setref(result, i, Reflection::GetFieldObject(originalType, fields[i]));
+            il2cpp_array_setref(result, i, vm::Reflection::GetFieldObject(originalType, fields[i]));
         }
 
         return result;
@@ -492,18 +484,15 @@ namespace System
 
     Il2CppArray* MonoType::GetFieldsByName(Il2CppReflectionType* _this, Il2CppString* name, int bindingFlags, Il2CppReflectionType* reflectedType)
     {
-        using namespace utils;
-        using namespace utils::functional;
-
         if (name == NULL)
             return GetFieldsImpl(_this, bindingFlags, reflectedType, utils::functional::TrueFilter());
 
         if (bindingFlags & BFLAGS_IgnoreCase)
         {
-            return GetFieldsImpl(_this, bindingFlags, reflectedType, Filter<std::string, VmStringUtils::CaseInsensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+            return GetFieldsImpl(_this, bindingFlags, reflectedType, utils::functional::Filter<std::string, utils::VmStringUtils::CaseInsensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
         }
 
-        return GetFieldsImpl(_this, bindingFlags, reflectedType, Filter<std::string, VmStringUtils::CaseSensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+        return GetFieldsImpl(_this, bindingFlags, reflectedType, utils::functional::Filter<std::string, utils::VmStringUtils::CaseSensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
     }
 
     Il2CppString * MonoType::getFullName(Il2CppReflectionType * type, bool full_name, bool assembly_qualified)
@@ -517,7 +506,7 @@ namespace System
         else
             format = IL2CPP_TYPE_NAME_FORMAT_REFLECTION;
 
-        std::string name(Type::GetName(type->type, format));
+        std::string name(vm::Type::GetName(type->type, format));
         if (name.empty())
             return NULL;
 
@@ -536,7 +525,7 @@ namespace System
 
     Il2CppArray* MonoType::GetInterfaces(Il2CppReflectionType* type)
     {
-        Il2CppClass* klass = Class::FromIl2CppType(type->type);
+        Il2CppClass* klass = vm::Class::FromIl2CppType(type->type);
         typedef std::set<Il2CppClass*> InterfaceVector;
         InterfaceVector itfs;
 
@@ -544,16 +533,16 @@ namespace System
         while (currentType != NULL)
         {
             void* iter = NULL;
-            while (Il2CppClass* itf = Class::GetInterfaces(currentType, &iter))
+            while (Il2CppClass* itf = vm::Class::GetInterfaces(currentType, &iter))
                 itfs.insert(itf);
 
-            currentType = Class::GetParent(currentType);
+            currentType = vm::Class::GetParent(currentType);
         }
 
-        Il2CppArray* res = Array::New(il2cpp_defaults.systemtype_class, (il2cpp_array_size_t)itfs.size());
+        Il2CppArray* res = vm::Array::New(il2cpp_defaults.systemtype_class, (il2cpp_array_size_t)itfs.size());
         int i = 0;
         for (InterfaceVector::const_iterator iter = itfs.begin(); iter != itfs.end(); ++iter, ++i)
-            il2cpp_array_setref(res, i, Reflection::GetTypeObject(&(*iter)->byval_arg));
+            il2cpp_array_setref(res, i, vm::Reflection::GetTypeObject(&(*iter)->byval_arg));
 
         return res;
     }
@@ -595,7 +584,7 @@ namespace System
     void CollectTypeMethods(Il2CppClass* type, const Il2CppClass* originalType, uint32_t bindingFlags, const NameFilter& nameFilter, std::vector<const MethodInfo*>& methods, bool(&filledSlots)[65535])
     {
         void* iter = NULL;
-        while (const MethodInfo* method = Class::GetMethods(type, &iter))
+        while (const MethodInfo* method = vm::Class::GetMethods(type, &iter))
         {
             if ((method->flags & METHOD_ATTRIBUTE_RT_SPECIAL_NAME) != 0 && (strcmp(method->name, ".ctor") == 0 || strcmp(method->name, ".cctor") == 0))
                 continue;
@@ -621,25 +610,25 @@ namespace System
         std::vector<const MethodInfo*> methods;
         bool filledSlots[65535] = { 0 };
 
-        Il2CppClass* typeInfo = Class::FromIl2CppType(type);
+        Il2CppClass* typeInfo = vm::Class::FromIl2CppType(type);
         Il2CppClass* const originalTypeInfo = typeInfo;
 
         CollectTypeMethods(typeInfo, typeInfo, bindingFlags, nameFilter, methods, filledSlots);
 
         if ((bindingFlags & BFLAGS_DeclaredOnly) == 0)
         {
-            for (typeInfo = Class::GetParent(typeInfo); typeInfo != NULL; typeInfo = Class::GetParent(typeInfo))
+            for (typeInfo = vm::Class::GetParent(typeInfo); typeInfo != NULL; typeInfo = vm::Class::GetParent(typeInfo))
             {
                 CollectTypeMethods(typeInfo, originalTypeInfo, bindingFlags, nameFilter, methods, filledSlots);
             }
         }
 
         size_t methodCount = methods.size();
-        Il2CppArray* result = Array::NewCached(il2cpp_defaults.method_info_class, (il2cpp_array_size_t)methodCount);
+        Il2CppArray* result = vm::Array::NewCached(il2cpp_defaults.method_info_class, (il2cpp_array_size_t)methodCount);
 
         for (size_t i = 0; i < methodCount; i++)
         {
-            Il2CppReflectionMethod* method = Reflection::GetMethodObject(methods[i], originalTypeInfo);
+            Il2CppReflectionMethod* method = vm::Reflection::GetMethodObject(methods[i], originalTypeInfo);
             il2cpp_array_setref(result, i, method);
         }
 
@@ -648,30 +637,27 @@ namespace System
 
     Il2CppArray* MonoType::GetMethodsByName(Il2CppReflectionType* _this, Il2CppString* name, int bindingFlags, bool ignoreCase, Il2CppReflectionType* type)
     {
-        using namespace utils;
-        using namespace utils::functional;
-
         if (type->type->byref || !ValidBindingFlagsForGetMember(bindingFlags))
-            return Array::NewCached(il2cpp_defaults.property_info_class, 0);
+            return vm::Array::NewCached(il2cpp_defaults.property_info_class, 0);
 
         if (name != NULL)
         {
             if (ignoreCase)
             {
-                return GetMethodsByNameImpl(type->type, bindingFlags, Filter<std::string, VmStringUtils::CaseInsensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+                return GetMethodsByNameImpl(type->type, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseInsensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
             }
 
-            return GetMethodsByNameImpl(type->type, bindingFlags, Filter<std::string, VmStringUtils::CaseSensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+            return GetMethodsByNameImpl(type->type, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseSensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
         }
 
-        return GetMethodsByNameImpl(type->type, bindingFlags, TrueFilter());
+        return GetMethodsByNameImpl(type->type, bindingFlags, utils::functional::TrueFilter());
     }
 
     template<typename NameFilter>
     static void CollectTypeProperties(Il2CppClass* type, uint32_t bindingFlags, const NameFilter& nameFilter, Il2CppClass* const originalType, PropertyPairVector& properties)
     {
         void* iter = NULL;
-        while (const PropertyInfo* property = Class::GetProperties(type, &iter))
+        while (const PropertyInfo* property = vm::Class::GetProperties(type, &iter))
         {
             if (CheckMemberMatch(property, type, originalType, bindingFlags, nameFilter))
             {
@@ -687,7 +673,7 @@ namespace System
     static Il2CppArray* GetPropertiesByNameImpl(const Il2CppType* type, uint32_t bindingFlags, const NameFilter& nameFilter)
     {
         PropertyPairVector properties;
-        Il2CppClass* typeInfo = Class::FromIl2CppType(type);
+        Il2CppClass* typeInfo = vm::Class::FromIl2CppType(type);
         Il2CppClass* const originalTypeInfo = typeInfo;
 
         properties.reserve(typeInfo->property_count);
@@ -702,11 +688,11 @@ namespace System
         }
 
         int i = 0;
-        Il2CppArray* res = Array::NewCached(il2cpp_defaults.property_info_class, (il2cpp_array_size_t)properties.size());
+        Il2CppArray* res = vm::Array::NewCached(il2cpp_defaults.property_info_class, (il2cpp_array_size_t)properties.size());
 
         for (PropertyPairVector::const_iterator iter = properties.begin(); iter != properties.end(); iter++)
         {
-            il2cpp_array_setref(res, i, Reflection::GetPropertyObject(iter->originalType, iter->property));
+            il2cpp_array_setref(res, i, vm::Reflection::GetPropertyObject(iter->originalType, iter->property));
             i++;
         }
 
@@ -715,23 +701,20 @@ namespace System
 
     Il2CppArray* MonoType::GetPropertiesByName(Il2CppReflectionType* _this, Il2CppString* name, uint32_t bindingFlags, bool ignoreCase, Il2CppReflectionType* type)
     {
-        using namespace utils;
-        using namespace utils::functional;
-
         if (type->type->byref || !ValidBindingFlagsForGetMember(bindingFlags))
-            return Array::NewCached(il2cpp_defaults.property_info_class, 0);
+            return vm::Array::NewCached(il2cpp_defaults.property_info_class, 0);
 
         if (name != NULL)
         {
             if (ignoreCase)
             {
-                return GetPropertiesByNameImpl(type->type, bindingFlags, Filter<std::string, VmStringUtils::CaseInsensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+                return GetPropertiesByNameImpl(type->type, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseInsensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
             }
 
-            return GetPropertiesByNameImpl(type->type, bindingFlags, Filter<std::string, VmStringUtils::CaseSensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+            return GetPropertiesByNameImpl(type->type, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseSensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
         }
 
-        return GetPropertiesByNameImpl(type->type, bindingFlags, TrueFilter());
+        return GetPropertiesByNameImpl(type->type, bindingFlags, utils::functional::TrueFilter());
     }
 
     bool MonoType::IsByRefImpl(Il2CppReflectionType* type)
@@ -758,11 +741,11 @@ namespace System
     static inline Il2CppReflectionEvent* GetEventFromType(Il2CppClass* const type, Il2CppClass* const originalType, int32_t bindingFlags, const NameFilter& nameFilter)
     {
         void* iter = NULL;
-        while (const EventInfo* event = Class::GetEvents(type, &iter))
+        while (const EventInfo* event = vm::Class::GetEvents(type, &iter))
         {
             if (CheckMemberMatch(event, type, originalType, bindingFlags, nameFilter))
             {
-                return Reflection::GetEventObject(originalType, event);
+                return vm::Reflection::GetEventObject(originalType, event);
             }
         }
 
@@ -791,27 +774,24 @@ namespace System
 
     Il2CppReflectionEvent* MonoType::InternalGetEvent(Il2CppReflectionType* _this, Il2CppString* name, int32_t bindingFlags)
     {
-        using namespace utils;
-        using namespace utils::functional;
-
         if (_this->type->byref || !ValidBindingFlagsForGetMember(bindingFlags))
             return NULL;
 
-        Il2CppClass* type = Class::FromIl2CppType(_this->type);
+        Il2CppClass* type = vm::Class::FromIl2CppType(_this->type);
 
         if (bindingFlags & BFLAGS_IgnoreCase)
         {
-            return GetEventImpl(type, bindingFlags, Filter<std::string, VmStringUtils::CaseInsensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+            return GetEventImpl(type, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseInsensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
         }
 
-        return GetEventImpl(type, bindingFlags, Filter<std::string, VmStringUtils::CaseSensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+        return GetEventImpl(type, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseSensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
     }
 
     template<typename NameFilter>
     static inline void CollectTypeEvents(Il2CppClass* type, Il2CppClass* const originalType, int32_t bindingFlags, EventMap& events, const NameFilter& nameFilter)
     {
         void* iter = NULL;
-        while (const EventInfo* event = Class::GetEvents(type, &iter))
+        while (const EventInfo* event = vm::Class::GetEvents(type, &iter))
         {
             if (CheckMemberMatch(event, type, originalType, bindingFlags, nameFilter))
             {
@@ -827,31 +807,31 @@ namespace System
     static inline Il2CppArray* GetEventsImpl(Il2CppReflectionType* type, int bindingFlags, Il2CppReflectionType* reflectedType, const NameFilter& nameFilter)
     {
         if (type->type->byref || !ValidBindingFlagsForGetMember(bindingFlags))
-            return Array::New(il2cpp_defaults.event_info_class, 0);
+            return vm::Array::New(il2cpp_defaults.event_info_class, 0);
 
         EventMap events;
-        Il2CppClass* typeInfo = Class::FromIl2CppType(type->type);
+        Il2CppClass* typeInfo = vm::Class::FromIl2CppType(type->type);
 
         CollectTypeEvents(typeInfo, typeInfo, bindingFlags, events, nameFilter);
 
         if ((bindingFlags & BFLAGS_DeclaredOnly) == 0)
         {
             Il2CppClass* const originalType = typeInfo;
-            typeInfo = Class::GetParent(typeInfo);
+            typeInfo = vm::Class::GetParent(typeInfo);
 
             while (typeInfo != NULL)
             {
                 CollectTypeEvents(typeInfo, originalType, bindingFlags, events, nameFilter);
-                typeInfo = Class::GetParent(typeInfo);
+                typeInfo = vm::Class::GetParent(typeInfo);
             }
         }
 
         int i = 0;
-        Il2CppArray* result = Array::NewCached(il2cpp_defaults.event_info_class, (il2cpp_array_size_t)events.size());
+        Il2CppArray* result = vm::Array::NewCached(il2cpp_defaults.event_info_class, (il2cpp_array_size_t)events.size());
 
         for (EventMap::const_iterator iter = events.begin(); iter != events.end(); iter++)
         {
-            il2cpp_array_setref(result, i, Reflection::GetEventObject(iter->second, iter->first.key));
+            il2cpp_array_setref(result, i, vm::Reflection::GetEventObject(iter->second, iter->first.key));
             i++;
         }
 
@@ -865,18 +845,15 @@ namespace System
 
     Il2CppArray* MonoType::GetEventsByName(Il2CppReflectionType* _this, Il2CppString* name, int bindingFlags, Il2CppReflectionType* reflectedType)
     {
-        using namespace utils;
-        using namespace utils::functional;
-
         if (name == NULL)
             return GetEventsImpl(_this, bindingFlags, reflectedType, utils::functional::TrueFilter());
 
         if (bindingFlags & BFLAGS_IgnoreCase)
         {
-            return GetEventsImpl(_this, bindingFlags, reflectedType, Filter<std::string, VmStringUtils::CaseInsensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+            return GetEventsImpl(_this, bindingFlags, reflectedType, utils::functional::Filter<std::string, utils::VmStringUtils::CaseInsensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
         }
 
-        return GetEventsImpl(_this, bindingFlags, reflectedType, Filter<std::string, VmStringUtils::CaseSensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+        return GetEventsImpl(_this, bindingFlags, reflectedType, utils::functional::Filter<std::string, utils::VmStringUtils::CaseSensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
     }
 
     void MonoType::type_from_obj(void* /* System.MonoType */ type, Il2CppObject* obj)
@@ -894,10 +871,10 @@ namespace System
     Il2CppReflectionType* GetNestedTypeImpl(Il2CppClass* typeInfo, BindingFlags bindingFlags, const NameFilter& nameFilter)
     {
         void* iter = NULL;
-        while (Il2CppClass* nestedType = Class::GetNestedTypes(typeInfo, &iter))
+        while (Il2CppClass* nestedType = vm::Class::GetNestedTypes(typeInfo, &iter))
         {
             if (CheckNestedTypeMatch(nestedType, bindingFlags) && nameFilter(nestedType->name))
-                return Reflection::GetTypeObject(&nestedType->byval_arg);
+                return vm::Reflection::GetTypeObject(&nestedType->byval_arg);
         }
 
         return NULL;
@@ -905,27 +882,24 @@ namespace System
 
     Il2CppReflectionType* MonoType::GetNestedType(Il2CppReflectionType* type, Il2CppString* name, BindingFlags bindingFlags)
     {
-        using namespace utils;
-        using namespace utils::functional;
-
         bool validBindingFlags = (bindingFlags & BFLAGS_NonPublic) != 0 || (bindingFlags & BFLAGS_Public) != 0;
 
         if (type->type->byref || !validBindingFlags)
             return NULL;
 
-        Il2CppClass* typeInfo = Class::FromIl2CppType(type->type);
+        Il2CppClass* typeInfo = vm::Class::FromIl2CppType(type->type);
 
         // nested types are always generic type definitions, even for inflated types. As such we only store/retrieve them on
         // type definitions and generic type definitions. If we are a generic instance, use our generic type definition instead.
         if (typeInfo->generic_class)
-            typeInfo = GenericClass::GetTypeDefinition(typeInfo->generic_class);
+            typeInfo = vm::GenericClass::GetTypeDefinition(typeInfo->generic_class);
 
         if (bindingFlags & BFLAGS_IgnoreCase)
         {
-            return GetNestedTypeImpl(typeInfo, bindingFlags, Filter<std::string, VmStringUtils::CaseInsensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+            return GetNestedTypeImpl(typeInfo, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseInsensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
         }
 
-        return GetNestedTypeImpl(typeInfo, bindingFlags, Filter<std::string, VmStringUtils::CaseSensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+        return GetNestedTypeImpl(typeInfo, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseSensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
     }
 
     template<typename NameFilter>
@@ -934,30 +908,30 @@ namespace System
         bool validBindingFlags = (bindingFlags & BFLAGS_NonPublic) != 0 || (bindingFlags & BFLAGS_Public) != 0;
 
         if (type->type->byref || !validBindingFlags)
-            return Array::New(il2cpp_defaults.monotype_class, 0);
+            return vm::Array::New(il2cpp_defaults.monotype_class, 0);
 
-        Il2CppClass* typeInfo = Class::FromIl2CppType(type->type);
+        Il2CppClass* typeInfo = vm::Class::FromIl2CppType(type->type);
 
         // nested types are always generic type definitions, even for inflated types. As such we only store/retrieve them on
         // type definitions and generic type definitions. If we are a generic instance, use our generic type definition instead.
         if (typeInfo->generic_class)
-            typeInfo = GenericClass::GetTypeDefinition(typeInfo->generic_class);
+            typeInfo = vm::GenericClass::GetTypeDefinition(typeInfo->generic_class);
 
         std::vector<Il2CppClass*> nestedTypes;
 
         void* iter = NULL;
-        while (Il2CppClass* nestedType = Class::GetNestedTypes(typeInfo, &iter))
+        while (Il2CppClass* nestedType = vm::Class::GetNestedTypes(typeInfo, &iter))
         {
             if (CheckNestedTypeMatch(nestedType, bindingFlags) && nameFilter(nestedType->name))
                 nestedTypes.push_back(nestedType);
         }
 
         size_t nestedTypeCount = nestedTypes.size();
-        Il2CppArray* result = Array::New(il2cpp_defaults.monotype_class, (il2cpp_array_size_t)nestedTypeCount);
+        Il2CppArray* result = vm::Array::New(il2cpp_defaults.monotype_class, (il2cpp_array_size_t)nestedTypeCount);
 
         for (size_t i = 0; i < nestedTypeCount; i++)
         {
-            il2cpp_array_setref(result, i, Reflection::GetTypeObject(&nestedTypes[i]->byval_arg));
+            il2cpp_array_setref(result, i, vm::Reflection::GetTypeObject(&nestedTypes[i]->byval_arg));
         }
 
         return result;
@@ -965,16 +939,13 @@ namespace System
 
     Il2CppArray* MonoType::GetNestedTypesByName(Il2CppReflectionType* type, Il2CppString* name, int32_t bindingFlags)
     {
-        using namespace utils;
-        using namespace utils::functional;
-
         if (name == NULL)
             return GetNestedTypesImpl(type, bindingFlags, utils::functional::TrueFilter());
 
         if (bindingFlags & BFLAGS_IgnoreCase)
-            return GetNestedTypesImpl(type, bindingFlags, Filter<std::string, VmStringUtils::CaseInsensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+            return GetNestedTypesImpl(type, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseInsensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
 
-        return GetNestedTypesImpl(type, bindingFlags, Filter<std::string, VmStringUtils::CaseSensitiveComparer>(StringUtils::Utf16ToUtf8(name->chars)));
+        return GetNestedTypesImpl(type, bindingFlags, utils::functional::Filter<std::string, utils::VmStringUtils::CaseSensitiveComparer>(utils::StringUtils::Utf16ToUtf8(name->chars)));
     }
 
     Il2CppArray* MonoType::GetNestedTypes(Il2CppReflectionType* type, int32_t bindingFlags)

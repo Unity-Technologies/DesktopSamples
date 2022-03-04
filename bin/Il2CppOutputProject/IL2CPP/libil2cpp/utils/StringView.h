@@ -1,6 +1,17 @@
 #pragma once
-#include <limits>
-#include <string>
+#include "il2cpp-config.h"
+#include <limits.h>
+#if IL2CPP_TARGET_WINDOWS
+#include <malloc.h>
+#else
+#include <alloca.h>
+#endif
+
+#if IL2CPP_TARGET_LINUX
+#define GCC_VERSION (__GNUC__ * 10000 \
+                   + __GNUC_MINOR__ * 100 \
+                   + __GNU_PATCHLEVEL__)
+#endif
 
 namespace il2cpp
 {
@@ -33,6 +44,12 @@ namespace utils
             IL2CPP_ASSERT(str != NULL);
         }
 
+        inline StringView(const CharType* str, size_t startIndex, size_t length) :
+            m_String(str + startIndex), m_Length(length)
+        {
+            IL2CPP_ASSERT(str != NULL);
+        }
+
         inline StringView(const StringView<CharType>& str, size_t startIndex, size_t length) :
             m_String(str.Str() + startIndex),
             m_Length(length)
@@ -40,18 +57,14 @@ namespace utils
             IL2CPP_ASSERT(startIndex + length <= str.Length());
         }
 
-        template<typename CharTraits, typename StringAlloc>
-        inline StringView(const std::basic_string<CharType, CharTraits, StringAlloc>& str) :
-            m_String(str.c_str()), m_Length(str.length())
+// This is to work around a bug in gcc (24666) where arrays decay to pointers too fast
+// This is known to be fixed by at least 7.3.0
+#if IL2CPP_TARGET_LINUX && GCC_VERSION < 70300
+        inline StringView(const char* str) :
+            m_String(str), m_Length(strlen(str))
         {
         }
 
-        // This will prevent accidentally assigning temporary values (like function return values)
-        // to a string view. While this protection will only be enabled on C++11 compiles, even those
-        // are enough to catch the bug in our runtime
-#if IL2CPP_HAS_DELETED_FUNCTIONS
-        template<typename CharTraits, typename StringAlloc>
-        StringView(std::basic_string<CharType, CharTraits, StringAlloc>&&) = delete;
 #endif
 
         inline const CharType* Str() const
@@ -145,11 +158,11 @@ namespace utils
                     return false;
 
                 int digitNumeric = digit - '0';
-                if (result > std::numeric_limits<int>::max() / 10)
+                if (result > INT_MAX / 10)
                     return false;
 
                 result = result * 10;
-                if (result > std::numeric_limits<int>::max() - digitNumeric)
+                if (result > INT_MAX - digitNumeric)
                     return false;
 
                 result += digitNumeric;
@@ -172,7 +185,7 @@ namespace utils
     const CharType* variableName; \
     do \
     { \
-        if (stringView.IsNullTerminated()) \
+        if (!stringView.IsEmpty() && stringView.IsNullTerminated()) \
         { \
             variableName = stringView.Str(); \
         } \

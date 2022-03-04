@@ -30,9 +30,6 @@
 #include "mono-structs.h"
 #include <limits>
 
-
-using namespace il2cpp::vm;
-
 namespace il2cpp
 {
 namespace icalls
@@ -67,7 +64,7 @@ namespace Reflection
 
 #define CHECK_IF_NULL(v)    \
     if ( (v) == NULL && throwOnError ) \
-        Exception::Raise (Exception::GetTypeLoadException (info)); \
+        vm::Exception::Raise (vm::Exception::GetTypeLoadException (info)); \
     if ( (v) == NULL ) \
         return NULL;
 
@@ -81,7 +78,7 @@ namespace Reflection
         if (!parser.Parse())
         {
             if (throwOnError)
-                Exception::Raise(Exception::GetTypeLoadException());
+                vm::Exception::Raise(vm::Exception::GetTypeLoadException());
             else
                 return NULL;
         }
@@ -92,13 +89,13 @@ namespace Reflection
 
         CHECK_IF_NULL(image);
 
-        Il2CppClass *klass = Image::FromTypeNameParseInfo(image, info, ignoreCase);
+        Il2CppClass *klass = vm::Image::FromTypeNameParseInfo(image, info, ignoreCase);
 
         CHECK_IF_NULL(klass);
 
         il2cpp::vm::Class::Init(klass);
 
-        const Il2CppType *type = Class::GetType(klass, info);
+        const Il2CppType *type = vm::Class::GetType(klass, info);
 
         CHECK_IF_NULL(type);
 
@@ -123,73 +120,73 @@ namespace Reflection
         // System.Reflection.AssemblyName is not protected from stripping. Since this call will be used
         // very rarely, instead of including that type to stripper excludes, let's instead set fields only
         // if they're there.
-        FieldInfo* assemblyNameField = Class::GetFieldFromName(assemblyNameType, "name");
-        FieldInfo* codebaseField = Class::GetFieldFromName(assemblyNameType, "codebase");
+        FieldInfo* assemblyNameField = vm::Class::GetFieldFromName(assemblyNameType, "name");
+        FieldInfo* codebaseField = vm::Class::GetFieldFromName(assemblyNameType, "codebase");
 
         if (assemblyNameField != NULL)
-            Field::SetValue(assemblyNameObject, assemblyNameField, String::New(assemblyName->name));
+            vm::Field::SetValue(assemblyNameObject, assemblyNameField, vm::String::New(assemblyName->name));
 
         if (codebaseField != NULL)
-            Field::SetValue(assemblyNameObject, codebaseField, get_code_base(ass, false));
+            vm::Field::SetValue(assemblyNameObject, codebaseField, get_code_base(ass, false));
 
-        FieldInfo* field = Class::GetFieldFromName(assemblyNameType, "major");
+        FieldInfo* field = vm::Class::GetFieldFromName(assemblyNameType, "major");
         if (field != NULL)
         {
             int32_t major = assemblyName->major;
-            Field::SetValue(assemblyNameObject, field, &major);
+            vm::Field::SetValue(assemblyNameObject, field, &major);
         }
 
-        field = Class::GetFieldFromName(assemblyNameType, "minor");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "minor");
         if (field != NULL)
         {
             int32_t minor = assemblyName->minor;
-            Field::SetValue(assemblyNameObject, field, &minor);
+            vm::Field::SetValue(assemblyNameObject, field, &minor);
         }
 
-        field = Class::GetFieldFromName(assemblyNameType, "build");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "build");
         if (field != NULL)
         {
             int32_t build = assemblyName->build;
-            Field::SetValue(assemblyNameObject, field, &build);
+            vm::Field::SetValue(assemblyNameObject, field, &build);
         }
 
-        field = Class::GetFieldFromName(assemblyNameType, "revision");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "revision");
         if (field != NULL)
         {
             int32_t revision = assemblyName->revision;
-            Field::SetValue(assemblyNameObject, field, &revision);
+            vm::Field::SetValue(assemblyNameObject, field, &revision);
         }
 
-        field = Class::GetFieldFromName(assemblyNameType, "cultureinfo");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "cultureinfo");
         if (field != NULL)
         {
-            Il2CppClass* cultureInfoType = Class::FromIl2CppType(field->type);
-            FieldInfo* invariantCultureField = Class::GetFieldFromName(cultureInfoType, "invariant_culture_info");
+            Il2CppClass* cultureInfoType = vm::Class::FromIl2CppType(field->type);
+            FieldInfo* invariantCultureField = vm::Class::GetFieldFromName(cultureInfoType, "invariant_culture_info");
             Il2CppObject* invariantCulture = NULL;
 
             if (invariantCultureField != NULL)
-                Field::StaticGetValue(invariantCultureField, &invariantCulture);
+                vm::Field::StaticGetValue(invariantCultureField, &invariantCulture);
 
-            Field::SetValue(assemblyNameObject, field, invariantCulture);
+            vm::Field::SetValue(assemblyNameObject, field, invariantCulture);
         }
 
-        field = Class::GetFieldFromName(assemblyNameType, "flags");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "flags");
         if (field != NULL)
-            Field::SetValue(assemblyNameObject, field, const_cast<void*>((const void*)&assemblyName->flags));
+            vm::Field::SetValue(assemblyNameObject, field, const_cast<void*>((const void*)&assemblyName->flags));
 
-        field = Class::GetFieldFromName(assemblyNameType, "hashalg");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "hashalg");
         if (field != NULL)
-            Field::SetValue(assemblyNameObject, field, const_cast<void*>((const void*)&assemblyName->hash_alg));
+            vm::Field::SetValue(assemblyNameObject, field, const_cast<void*>((const void*)&assemblyName->hash_alg));
 
-        field = Class::GetFieldFromName(assemblyNameType, "keypair");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "keypair");
         if (field != NULL)
-            Field::SetValue(assemblyNameObject, field, NULL);
+            vm::Field::SetValue(assemblyNameObject, field, NULL);
 
-        field = Class::GetFieldFromName(assemblyNameType, "publicKey");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "publicKey");
         if (field != NULL)
-            Field::SetValue(assemblyNameObject, field, Array::New(il2cpp_defaults.byte_class, 0));
+            vm::Field::SetValue(assemblyNameObject, field, vm::Array::New(il2cpp_defaults.byte_class, 0));
 
-        field = Class::GetFieldFromName(assemblyNameType, "keyToken");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "keyToken");
         if (field != NULL)
         {
             Il2CppArray* keyTokenManaged = NULL;
@@ -199,64 +196,64 @@ namespace Reflection
             {
                 if (assemblyName->public_key_token[i] != 0)
                 {
-                    keyTokenManaged = Array::New(il2cpp_defaults.byte_class, kPublicKeyByteLength);
+                    keyTokenManaged = vm::Array::New(il2cpp_defaults.byte_class, kPublicKeyByteLength);
                     memcpy(il2cpp::vm::Array::GetFirstElementAddress(keyTokenManaged), assemblyName->public_key_token, kPublicKeyByteLength);
                     break;
                 }
             }
 
-            Field::SetValue(assemblyNameObject, field, keyTokenManaged);
+            vm::Field::SetValue(assemblyNameObject, field, keyTokenManaged);
         }
 
-        field = Class::GetFieldFromName(assemblyNameType, "versioncompat");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "versioncompat");
         if (field != NULL)
         {
             int32_t kSameProcess = 2;
-            Field::SetValue(assemblyNameObject, field, &kSameProcess);
+            vm::Field::SetValue(assemblyNameObject, field, &kSameProcess);
         }
 
-        field = Class::GetFieldFromName(assemblyNameType, "version");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "version");
         if (field != NULL)
         {
-            Il2CppClass* versionType = Class::FromIl2CppType(field->type);
-            Il2CppObject* version = Object::New(versionType);
+            Il2CppClass* versionType = vm::Class::FromIl2CppType(field->type);
+            Il2CppObject* version = vm::Object::New(versionType);
 
-            FieldInfo* versionField = Class::GetFieldFromName(versionType, "_Major");
+            FieldInfo* versionField = vm::Class::GetFieldFromName(versionType, "_Major");
             if (versionField != NULL)
             {
                 int32_t major = assemblyName->major;
-                Field::SetValue(version, versionField, &major);
+                vm::Field::SetValue(version, versionField, &major);
             }
 
-            versionField = Class::GetFieldFromName(versionType, "_Minor");
+            versionField = vm::Class::GetFieldFromName(versionType, "_Minor");
             if (versionField != NULL)
             {
                 int32_t minor = assemblyName->minor;
-                Field::SetValue(version, versionField, &minor);
+                vm::Field::SetValue(version, versionField, &minor);
             }
 
-            versionField = Class::GetFieldFromName(versionType, "_Build");
+            versionField = vm::Class::GetFieldFromName(versionType, "_Build");
             if (versionField != NULL)
             {
                 int32_t build = assemblyName->build;
-                Field::SetValue(version, versionField, &build);
+                vm::Field::SetValue(version, versionField, &build);
             }
 
-            versionField = Class::GetFieldFromName(versionType, "_Revision");
+            versionField = vm::Class::GetFieldFromName(versionType, "_Revision");
             if (versionField != NULL)
             {
                 int32_t revision = assemblyName->revision;
-                Field::SetValue(version, versionField, &revision);
+                vm::Field::SetValue(version, versionField, &revision);
             }
 
-            Field::SetValue(assemblyNameObject, field, version);
+            vm::Field::SetValue(assemblyNameObject, field, version);
         }
 
-        field = Class::GetFieldFromName(assemblyNameType, "processor_architecture");
+        field = vm::Class::GetFieldFromName(assemblyNameType, "processor_architecture");
         if (field != NULL)
         {
             int32_t kMSILArchitecture = 1;
-            Field::SetValue(assemblyNameObject, field, &kMSILArchitecture);
+            vm::Field::SetValue(assemblyNameObject, field, &kMSILArchitecture);
         }
     }
 
@@ -275,7 +272,7 @@ namespace Reflection
 
     Il2CppReflectionAssembly* Assembly::GetCallingAssembly()
     {
-        return vm::Reflection::GetAssemblyObject(Image::GetCallingImage()->assembly);
+        return vm::Reflection::GetAssemblyObject(vm::Image::GetCallingImage()->assembly);
     }
 
     Il2CppString* Assembly::get_code_base(Il2CppReflectionAssembly * assembly, bool escaped)
@@ -300,7 +297,7 @@ namespace Reflection
 
     Il2CppReflectionMethod* Assembly::get_EntryPoint(Il2CppReflectionAssembly* self)
     {
-        const MethodInfo* method = Image::GetEntryPoint(self->assembly->image);
+        const MethodInfo* method = vm::Image::GetEntryPoint(self->assembly->image);
         if (method == NULL)
             return NULL;
 
@@ -324,17 +321,14 @@ namespace Reflection
         NOT_SUPPORTED_IL2CPP(Assembly::InternalGetAssemblyName, "This icall is not supported by il2cpp.");
     }
 
-#if NET_4_0
     void Assembly::InternalGetAssemblyName40(Il2CppString* assemblyFile, Il2CppMonoAssemblyName* aname, Il2CppString** codebase)
     {
         NOT_SUPPORTED_IL2CPP(Assembly::InternalGetAssemblyName, "This icall is not supported by il2cpp.");
     }
 
-#endif
-
     Il2CppReflectionAssembly* Assembly::LoadFrom(Il2CppString* assemblyFile, bool refonly)
     {
-        assert(!refonly && "This icall is not supported by il2cpp when refonly=true");
+        IL2CPP_ASSERT(!refonly && "This icall is not supported by il2cpp when refonly=true");
 
         // Our implementation is going to behave a bit different.  We can't actually load any assembly.  If we didn't know about the assembly at conversion time,
         // then we won't be able to do anything.
@@ -342,7 +336,7 @@ namespace Reflection
         std::string utf8Path = utils::StringUtils::Utf16ToUtf8(utils::StringUtils::GetChars(assemblyFile));
         std::string fileName = utils::PathUtils::BasenameNoExtension(utf8Path);
 
-        const Il2CppAssembly* foundAssembly = MetadataCache::GetAssemblyByName(fileName);
+        const Il2CppAssembly* foundAssembly = vm::MetadataCache::GetAssemblyByName(fileName.c_str());
 
         if (!foundAssembly)
         {
@@ -364,12 +358,12 @@ namespace Reflection
     {
         vm::AssemblyNameVector referencedAssemblies;
         vm::Assembly::GetReferencedAssemblies(self->assembly, &referencedAssemblies);
-        Il2CppArray* result = Array::New(il2cpp_defaults.assembly_name_class, (il2cpp_array_size_t)referencedAssemblies.size());
+        Il2CppArray* result = vm::Array::New(il2cpp_defaults.assembly_name_class, (il2cpp_array_size_t)referencedAssemblies.size());
         size_t index = 0;
         for (vm::AssemblyNameVector::const_iterator aname = referencedAssemblies.begin(); aname != referencedAssemblies.end(); ++aname)
         {
             Il2CppReflectionAssemblyName* reflectionAssemblyName = vm::Reflection::GetAssemblyNameObject(*aname);
-            il2cpp_array_set(result, Il2CppReflectionAssemblyName*, index, reflectionAssemblyName);
+            il2cpp_array_setref(result, index, reflectionAssemblyName);
             index++;
         }
 
@@ -405,7 +399,7 @@ namespace Reflection
 
     static os::Mutex s_ResourceDataMutex;
 
-    static void* LoadResourceData(Il2CppReflectionAssembly* assembly, EmbeddedResourceRecord record)
+    static void* LoadResourceData(Il2CppReflectionAssembly* assembly, vm::EmbeddedResourceRecord record)
     {
         os::AutoLock lock(&s_ResourceDataMutex);
 
@@ -437,9 +431,9 @@ namespace Reflection
         return size;
     }
 
-    static std::vector<EmbeddedResourceRecord> GetResourceRecords(Il2CppReflectionAssembly* assembly)
+    static std::vector<vm::EmbeddedResourceRecord> GetResourceRecords(Il2CppReflectionAssembly* assembly)
     {
-        std::vector<EmbeddedResourceRecord> resourceRecords;
+        std::vector<vm::EmbeddedResourceRecord> resourceRecords;
 
         void* fileBuffer = vm::Image::GetCachedMemoryMappedResourceFile(assembly);
         if (fileBuffer == NULL)
@@ -469,7 +463,7 @@ namespace Reflection
             std::vector<char> resourceName(resourceNameSize);
             bytesRead += ReadFromBuffer((uint8_t*)fileBuffer, bytesRead, resourceNameSize, &resourceName[0]);
 
-            resourceRecords.push_back(EmbeddedResourceRecord(assembly->assembly->image, std::string(resourceName.begin(), resourceName.end()), currentResourceDataOffset, resourceDataSize));
+            resourceRecords.push_back(vm::EmbeddedResourceRecord(assembly->assembly->image, std::string(resourceName.begin(), resourceName.end()), currentResourceDataOffset, resourceDataSize));
 
             currentResourceDataOffset += resourceDataSize;
         }
@@ -479,7 +473,7 @@ namespace Reflection
 
     Il2CppArray* Assembly::GetManifestResourceNames(Il2CppReflectionAssembly* assembly)
     {
-        std::vector<EmbeddedResourceRecord> resourceRecords = GetResourceRecords(assembly);
+        std::vector<vm::EmbeddedResourceRecord> resourceRecords = GetResourceRecords(assembly);
 
         IL2CPP_ASSERT(resourceRecords.size() <= static_cast<size_t>(std::numeric_limits<il2cpp_array_size_t>::max()));
         Il2CppArray* resourceNameArray = vm::Array::New(il2cpp_defaults.string_class, static_cast<il2cpp_array_size_t>(resourceRecords.size()));
@@ -495,7 +489,7 @@ namespace Reflection
         ResourceNameMatcher(const std::string& resourceNameToFind) : needle(resourceNameToFind)
         {}
 
-        bool operator()(const EmbeddedResourceRecord& data) const
+        bool operator()(const vm::EmbeddedResourceRecord& data) const
         {
             return data.name == needle;
         }
@@ -506,7 +500,7 @@ namespace Reflection
 
     bool Assembly::GetManifestResourceInfoInternal(Il2CppReflectionAssembly* assembly, Il2CppString* name, Il2CppManifestResourceInfo* info)
     {
-        std::vector<EmbeddedResourceRecord> resourceRecords = GetResourceRecords(assembly);
+        std::vector<vm::EmbeddedResourceRecord> resourceRecords = GetResourceRecords(assembly);
         if (std::find_if(resourceRecords.begin(), resourceRecords.end(), ResourceNameMatcher(utils::StringUtils::Utf16ToUtf8(name->chars))) != resourceRecords.end())
         {
             info->location = IL2CPP_RESOURCE_LOCATION_EMBEDDED | IL2CPP_RESOURCE_LOCATION_IN_MANIFEST;
@@ -521,8 +515,8 @@ namespace Reflection
 
     intptr_t Assembly::GetManifestResourceInternal(Il2CppReflectionAssembly* assembly, Il2CppString* name, int* size, Il2CppReflectionModule** module)
     {
-        std::vector<EmbeddedResourceRecord> resourceRecords = GetResourceRecords(assembly);
-        std::vector<EmbeddedResourceRecord>::iterator resource = std::find_if(resourceRecords.begin(), resourceRecords.end(), ResourceNameMatcher(utils::StringUtils::Utf16ToUtf8(name->chars)));
+        std::vector<vm::EmbeddedResourceRecord> resourceRecords = GetResourceRecords(assembly);
+        std::vector<vm::EmbeddedResourceRecord>::iterator resource = std::find_if(resourceRecords.begin(), resourceRecords.end(), ResourceNameMatcher(utils::StringUtils::Utf16ToUtf8(name->chars)));
         if (resource != resourceRecords.end())
         {
             *module = vm::Reflection::GetModuleObject(assembly->assembly->image);
@@ -555,15 +549,11 @@ namespace Reflection
         return false;
     }
 
-#if NET_4_0
     Il2CppString* Assembly::GetAotId()
     {
         return NULL;
     }
 
-#endif
-
-#if NET_4_0
     intptr_t Assembly::InternalGetReferencedAssemblies(Il2CppReflectionAssembly* module)
     {
         VoidPtrArray assemblyPointers;
@@ -578,8 +568,6 @@ namespace Reflection
 
         return reinterpret_cast<intptr_t>(void_ptr_array_to_gptr_array(assemblyPointers));
     }
-
-#endif
 } /* namespace Reflection */
 } /* namespace System */
 } /* namespace mscorlib */

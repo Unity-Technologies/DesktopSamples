@@ -31,13 +31,17 @@ namespace os
         return m_Thread.get_id().hash();
     }
 
-    ErrorCode ThreadImpl::Run(Thread::StartFunc func, void* arg)
+    ErrorCode ThreadImpl::Run(Thread::StartFunc func, void* arg, int64_t affinityMask)
     {
         StartData* startData = (StartData*)malloc(sizeof(StartData));
         startData->m_StartFunc = func;
         startData->m_StartArg = arg;
 
         std::thread t(ThreadStartWrapper, startData);
+        if (affinityMask != Thread::kThreadAffinityAll)
+        {
+            IL2CPP_ASSERT(0 && "Using non-default thread affinity is not supported on the STD implementation.");
+        }
 
         m_Thread.swap(t);
 

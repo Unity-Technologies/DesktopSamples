@@ -21,6 +21,7 @@ namespace os
         void Lock(bool interruptible);
         bool TryLock(uint32_t milliseconds, bool interruptible);
         void Unlock();
+        void* GetOSHandle();
 
     private:
         HANDLE m_MutexHandle;

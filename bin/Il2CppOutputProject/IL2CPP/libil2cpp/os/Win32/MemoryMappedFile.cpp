@@ -83,7 +83,7 @@ namespace os
                 *error = CAPACITY_MUST_BE_POSITIVE;
                 return NULL;
             }
-#if SIZEOF_VOID_P == 4
+#if IL2CPP_SIZEOF_VOID_P == 4
             if (*capacity > UINT32_MAX)
             {
                 *error = CAPACITY_LARGER_THAN_LOGICAL_ADDRESS_SPACE;
@@ -119,7 +119,8 @@ namespace os
             }
         }
 
-        LPCWSTR utf16MapName = mapName != NULL ? il2cpp::utils::StringUtils::Utf8ToUtf16(mapName).c_str() : NULL;
+        UTF16String utf16MapNameString = mapName != NULL ? il2cpp::utils::StringUtils::Utf8ToUtf16(mapName) : UTF16String();
+        LPCWSTR utf16MapName = mapName != NULL ? utf16MapNameString.c_str() : NULL;
 
         if (mode == FILE_MODE_CREATE_NEW || handle != INVALID_HANDLE_VALUE)
         {
@@ -205,8 +206,9 @@ namespace os
         return (os::FileHandle*)result;
     }
 
-    MemoryMappedFile::MemoryMappedFileHandle MemoryMappedFile::View(FileHandle* mappedFileHandle, int64_t* length, int64_t offset, MemoryMappedFileAccess access, MemoryMappedFileError* error)
+    MemoryMappedFile::MemoryMappedFileHandle MemoryMappedFile::View(FileHandle* mappedFileHandle, int64_t* length, int64_t offset, MemoryMappedFileAccess access, int64_t* actualOffset, MemoryMappedFileError* error)
     {
+        IL2CPP_ASSERT(actualOffset != NULL);
         IL2CPP_ASSERT(offset <= std::numeric_limits<DWORD>::max());
         IL2CPP_ASSERT(*length <= std::numeric_limits<DWORD>::max());
 
@@ -221,6 +223,7 @@ namespace os
         int64_t extraMemNeeded = offset % allocationGranularity;
         uint64_t newOffset = offset - extraMemNeeded;
         uint64_t nativeSize = (*length != 0) ? *length + extraMemNeeded : 0;
+        *actualOffset = newOffset;
 
         void* address = MapViewOfFile((HANDLE)mappedFileHandle, ConvertMappedFileAccessToWindowsFileAccess(access), (DWORD)(newOffset >> 32), (DWORD)newOffset, (SIZE_T)nativeSize);
         if (address == NULL)

@@ -25,11 +25,7 @@ namespace os
          *
          *  Returns true on success and zero on failure.
          */
-#if NET_4_0
         static bool GetTimeZoneData(int32_t year, int64_t data[4], std::string names[2], bool* daylight_inverted);
-#else
-        static bool GetTimeZoneData(int32_t year, int64_t data[4], std::string names[2]);
-#endif
     };
 }
 }

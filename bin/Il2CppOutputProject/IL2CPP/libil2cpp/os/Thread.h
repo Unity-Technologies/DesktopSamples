@@ -2,7 +2,6 @@
 
 #include "il2cpp-config.h"
 #include "os/ErrorCodes.h"
-#include "os/Handle.h"
 #include "os/Event.h"
 #include "os/WaitStatus.h"
 #include "utils/NonCopyable.h"
@@ -39,7 +38,7 @@ namespace os
         typedef void (*StartFunc) (void* arg);
         // Use STDCALL calling convention on Windows, as it will be called back directly from the OS. This is defined as nothing on other platforms.
         typedef void (STDCALL * APCFunc)(void* context);
-        typedef uint64_t ThreadId;
+        typedef size_t ThreadId;
         typedef void (*CleanupFunc) (void* arg);
 
         /// Initialize/Shutdown thread subsystem. Must be called on main thread.
@@ -51,12 +50,13 @@ namespace os
 
         /// Set thread name for debugging purposes. Won't do anything if not supported
         /// by platform.
-        void SetName(const std::string& name);
+        void SetName(const char* name);
 
         void SetPriority(ThreadPriority priority);
         ThreadPriority GetPriority();
 
         void SetStackSize(size_t stackSize);
+        static int GetMaxStackSize();
 
         void SetCleanupFunction(CleanupFunc cleanupFunc, void* arg)
         {
@@ -87,12 +87,13 @@ namespace os
 
         static ThreadId CurrentThreadId();
         static Thread* GetCurrentThread();
+        static bool HasCurrentThread();
         static Thread* GetOrCreateCurrentThread();
         static void DetachCurrentThread();
 
-#if NET_4_0
         static bool YieldInternal();
-#endif
+
+        static void SetDefaultAffinityMask(int64_t affinityMask);
 
 #if IL2CPP_HAS_NATIVE_THREAD_CLEANUP
         typedef void (*ThreadCleanupFunc) (void* arg);
@@ -103,6 +104,7 @@ namespace os
 #endif
 
         static const uint64_t kInvalidThreadId = 0;
+        static const int64_t kThreadAffinityAll = -1;
 
     private:
 
@@ -130,6 +132,8 @@ namespace os
         Thread(ThreadImpl* thread);
 
         static void RunWrapper(void* arg);
+
+        static int64_t s_DefaultAffinityMask;
     };
 }
 }

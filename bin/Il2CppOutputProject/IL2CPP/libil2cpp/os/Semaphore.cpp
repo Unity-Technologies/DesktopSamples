@@ -1,4 +1,8 @@
+#include "os/c-api/il2cpp-config-platforms.h"
 #include "os/Semaphore.h"
+
+#if IL2CPP_SUPPORT_THREADS
+
 #include "os/Atomic.h"
 #if IL2CPP_TARGET_WINDOWS
 #include "os/Win32/SemaphoreImpl.h"
@@ -36,5 +40,48 @@ namespace os
     {
         return m_Semaphore->Wait(ms, interruptible);
     }
+
+    void* Semaphore::GetOSHandle()
+    {
+        return m_Semaphore->GetOSHandle();
+    }
 }
 }
+
+#else
+
+namespace il2cpp
+{
+namespace os
+{
+    Semaphore::Semaphore(int32_t initialValue, int32_t maximumValue)
+    {
+    }
+
+    Semaphore::~Semaphore()
+    {
+    }
+
+    bool Semaphore::Post(int32_t releaseCount, int32_t* previousCount)
+    {
+        return true;
+    }
+
+    WaitStatus Semaphore::Wait(bool interruptible)
+    {
+        return kWaitStatusSuccess;
+    }
+
+    WaitStatus Semaphore::Wait(uint32_t ms, bool interruptible)
+    {
+        return kWaitStatusSuccess;
+    }
+
+    void* Semaphore::GetOSHandle()
+    {
+        return NULL;
+    }
+}
+}
+
+#endif

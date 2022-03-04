@@ -230,7 +230,6 @@ namespace Sockets
         static void Shutdown(intptr_t, SocketShutdown, int32_t*);
         static intptr_t Socket_internal(Il2CppObject * self, AddressFamily, SocketType, ProtocolType, int32_t*);
         static int32_t WSAIoctl(intptr_t, int32_t, Il2CppArray*, Il2CppArray*, int32_t*);
-#if NET_4_0
         static bool SendFile_internal(intptr_t sock, Il2CppString* filename, Il2CppArray* pre_buffer, Il2CppArray* post_buffer, int32_t flags, int32_t* error, bool blocking);
         static bool SupportsPortReuse(ProtocolType proto);
         static int32_t IOControl_internal(intptr_t sock, int32_t ioctl_code, Il2CppArray* input, Il2CppArray* output, int32_t* error);
@@ -247,7 +246,6 @@ namespace Sockets
         static int32_t SendArray40(intptr_t, void*, int32_t, SocketFlags, int32_t*, bool);
         static int32_t Send40(intptr_t, uint8_t*, int32_t, SocketFlags, int32_t*, bool);
         static bool IsProtocolSupported_internal(int32_t networkInterface);
-#endif
     };
 } /* namespace Sockets */
 } /* namespace Net */

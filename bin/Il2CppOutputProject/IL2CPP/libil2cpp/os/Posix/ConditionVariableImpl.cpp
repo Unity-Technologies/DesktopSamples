@@ -1,6 +1,5 @@
 #include "os/c-api/il2cpp-config-platforms.h"
-#if NET_4_0
-#if IL2CPP_THREADS_PTHREAD
+#if IL2CPP_THREADS_PTHREAD && !RUNTIME_TINY
 
 #include "MutexImpl.h"
 #include "ConditionVariableImpl.h"
@@ -64,5 +63,4 @@ namespace os
 }
 }
 
-#endif
 #endif

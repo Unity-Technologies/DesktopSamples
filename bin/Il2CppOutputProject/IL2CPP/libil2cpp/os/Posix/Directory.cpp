@@ -1,6 +1,6 @@
 #include "il2cpp-config.h"
 
-#if IL2CPP_TARGET_POSIX
+#if IL2CPP_TARGET_POSIX && !RUNTIME_TINY
 
 #include "os/Directory.h"
 #include "os/ErrorCodes.h"
@@ -10,7 +10,6 @@
 #include "utils/Memory.h"
 #include "utils/PathUtils.h"
 #include "utils/StringUtils.h"
-#include <assert.h>
 #include <errno.h>
 #include <dirent.h>
 #include <stdint.h>
@@ -133,17 +132,6 @@ namespace os
         if (DirectoryGlob(directoryPath, pattern, globResult, error) == false)
             return std::set<std::string>();
 
-        if (il2cpp::utils::StringUtils::EndsWith(pattern, ".*"))
-        {
-            /* Special-case the patterns ending in '.*', as
-             * windows also matches entries with no extension with
-             * this pattern.
-             */
-
-            if (DirectoryGlob(directoryPath, pattern.substr(0, pattern.length() - 2), globResult, error) == false)
-                return std::set<std::string>();
-        }
-
         std::set<std::string> result;
 
         for (std::set<std::string>::const_iterator it = globResult.begin(), end = globResult.end(); it != end; ++it)
@@ -171,18 +159,11 @@ namespace os
     }
 
     Directory::FindHandle::FindHandle(const utils::StringView<Il2CppNativeChar>& searchPathWithPattern) :
-        osHandle(NULL)
+        osHandle(NULL),
+        handleFlags(os::kNoFindHandleFlags)
     {
         directoryPath = il2cpp::utils::PathUtils::DirectoryName(searchPathWithPattern);
         pattern = il2cpp::utils::PathUtils::Basename(searchPathWithPattern);
-
-        // Special-case the patterns ending in '.*', as windows also matches entries with no extension with this pattern.
-        if (il2cpp::utils::StringUtils::EndsWith(pattern, ".*"))
-        {
-            pattern.erase(pattern.size() - 1, 1);
-            *pattern.rbegin() = '*';
-        }
-
         pattern = il2cpp::utils::CollapseAdjacentStars(pattern);
     }
 

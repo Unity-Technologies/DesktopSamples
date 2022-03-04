@@ -74,7 +74,6 @@ namespace System
         return il2cpp::gc::GarbageCollector::GetCollectionCount(generation);
     }
 
-#if NET_4_0
     Il2CppObject* GC::get_ephemeron_tombstone()
     {
         return vm::Object::New(il2cpp_defaults.object_class);
@@ -105,8 +104,6 @@ namespace System
     {
         SuppressFinalize(o);
     }
-
-#endif
 } /* namespace System */
 } /* namespace mscorlib */
 } /* namespace icalls */

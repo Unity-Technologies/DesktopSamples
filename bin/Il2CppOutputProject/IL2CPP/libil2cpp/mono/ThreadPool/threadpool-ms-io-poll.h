@@ -1,5 +1,4 @@
 #pragma once
-#if NET_4_0
 
 #include "il2cpp-config.h"
 
@@ -10,5 +9,3 @@ void poll_register_fd(int fd, int events, bool is_new);
 int poll_event_wait(void(*callback)(int fd, int events, void* user_data), void* user_data);
 
 void poll_remove_fd(int fd);
-
-#endif

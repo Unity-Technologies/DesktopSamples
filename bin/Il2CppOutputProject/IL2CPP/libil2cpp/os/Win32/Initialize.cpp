@@ -10,18 +10,22 @@
 
 void il2cpp::os::Initialize()
 {
-#if _DEBUG
+#ifdef _DEBUG
     std::string buildMachine = il2cpp::os::Environment::GetEnvironmentVariable("UNITY_THISISABUILDMACHINE");
     if (!buildMachine.empty())
     {
         _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
         _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
+        _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
+        _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
     }
 #endif
 
     // This is needed so we could extract exception text from bad hresults
+#if !RUNTIME_TINY
     os::WindowsRuntime::EnableErrorReporting();
     os::InitializeDllMain();
+#endif
 }
 
 #if !IL2CPP_TARGET_WINRT && !IL2CPP_TARGET_XBOXONE

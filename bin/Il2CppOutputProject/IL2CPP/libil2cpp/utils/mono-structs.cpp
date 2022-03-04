@@ -2,11 +2,11 @@
 #include "os/c-api/il2cpp-config-platforms.h"
 #include "os/c-api/Allocator.h"
 
-GPtrArray* void_ptr_array_to_gptr_array(const VoidPtrArray& array)
+MonoGPtrArray* void_ptr_array_to_gptr_array(const VoidPtrArray& array)
 {
-    GPtrArray *pRetVal;
+    MonoGPtrArray *pRetVal;
 
-    pRetVal = (GPtrArray*)Allocator::Allocate(sizeof(GPtrArray));
+    pRetVal = (MonoGPtrArray*)Allocator::Allocate(sizeof(MonoGPtrArray));
 
     pRetVal->len = (unsigned int)array.size();
     if (pRetVal->len > 0)
@@ -23,15 +23,15 @@ GPtrArray* void_ptr_array_to_gptr_array(const VoidPtrArray& array)
     return pRetVal;
 }
 
-GPtrArray* empty_gptr_array()
+MonoGPtrArray* empty_gptr_array()
 {
-    GPtrArray *pRetVal = (GPtrArray*)Allocator::Allocate(sizeof(GPtrArray));
+    MonoGPtrArray *pRetVal = (MonoGPtrArray*)Allocator::Allocate(sizeof(MonoGPtrArray));
     pRetVal->len = 0;
     pRetVal->pdata = NULL;
     return pRetVal;
 }
 
-void free_gptr_array(GPtrArray *pArray)
+void free_gptr_array(MonoGPtrArray *pArray)
 {
     if (!pArray)
         return;

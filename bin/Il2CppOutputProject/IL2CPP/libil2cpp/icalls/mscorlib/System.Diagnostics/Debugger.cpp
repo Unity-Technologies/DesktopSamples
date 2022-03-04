@@ -19,7 +19,6 @@ namespace Diagnostics
         return utils::Debugger::GetIsDebuggerAttached();
     }
 
-#if NET_4_0
     bool Debugger::IsLogging()
     {
 #if IL2CPP_MONO_DEBUGGER
@@ -35,8 +34,6 @@ namespace Diagnostics
         utils::Debugger::Log(level, category, message);
 #endif
     }
-
-#endif
 } /* namespace Diagnostics */
 } /* namespace System */
 } /* namespace mscorlib */

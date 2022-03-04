@@ -22,8 +22,6 @@ namespace vm
 {
 namespace MemoryInformation
 {
-    using namespace il2cpp::metadata;
-
     struct GatherMetadataContext
     {
         uint32_t currentIndex;
@@ -60,15 +58,15 @@ namespace MemoryInformation
 
             for (uint32_t i = 0; i < image.typeCount; i++)
             {
-                Il2CppClass* type = MetadataCache::GetTypeInfoFromTypeDefinitionIndex(image.typeStart + i);
+                Il2CppClass* type = MetadataCache::GetTypeInfoFromHandle(MetadataCache::GetAssemblyTypeHandle(&image, i));
                 if (type->initialized)
                     gatherMetadataContext.allTypes.insert(std::make_pair(type, gatherMetadataContext.currentIndex++));
             }
         }
 
-        ArrayMetadata::WalkArrays(GatherMetadataCallback, &gatherMetadataContext);
-        ArrayMetadata::WalkSZArrays(GatherMetadataCallback, &gatherMetadataContext);
-        GenericMetadata::WalkAllGenericClasses(GatherMetadataCallback, &gatherMetadataContext);
+        metadata::ArrayMetadata::WalkArrays(GatherMetadataCallback, &gatherMetadataContext);
+        metadata::ArrayMetadata::WalkSZArrays(GatherMetadataCallback, &gatherMetadataContext);
+        metadata::GenericMetadata::WalkAllGenericClasses(GatherMetadataCallback, &gatherMetadataContext);
         MetadataCache::WalkPointerTypes(GatherMetadataCallback, &gatherMetadataContext);
 
         const std::map<Il2CppClass*, uint32_t>& allTypes = gatherMetadataContext.allTypes;
@@ -292,6 +290,49 @@ namespace MemoryInformation
         runtimeInfo.arraySizeOffsetInHeader = kIl2CppOffsetOfArrayLength;
         runtimeInfo.arrayBoundsOffsetInHeader = kIl2CppOffsetOfArrayBounds;
         runtimeInfo.allocationGranularity = static_cast<uint32_t>(2 * sizeof(void*));
+    }
+
+    struct il2cpp_heap_chunk
+    {
+        void* start;
+        size_t size;
+    };
+
+    void ReportIL2CppClasses(ClassReportFunc callback, void* context)
+    {
+        const AssemblyVector* allAssemblies = Assembly::GetAllAssemblies();
+
+        for (AssemblyVector::const_iterator it = allAssemblies->begin(); it != allAssemblies->end(); it++)
+        {
+            const Il2CppImage& image = *(*it)->image;
+
+            for (uint32_t i = 0; i < image.typeCount; i++)
+            {
+                Il2CppClass* type = MetadataCache::GetTypeInfoFromHandle(MetadataCache::GetAssemblyTypeHandle(&image, i));
+                if (type->initialized)
+                    callback(type, context);
+            }
+        }
+
+        metadata::ArrayMetadata::WalkArrays(callback, context);
+        metadata::ArrayMetadata::WalkSZArrays(callback, context);
+        metadata::GenericMetadata::WalkAllGenericClasses(callback, context);
+        MetadataCache::WalkPointerTypes(callback, context);
+    }
+
+    void ReportGcHeapSection(void * context, void * start, void * end)
+    {
+        il2cpp_heap_chunk chunk;
+        chunk.start = start;
+        chunk.size = (uint8_t *)end - (uint8_t *)start;
+        IterationContext* ctxPtr = reinterpret_cast<IterationContext*>(context);
+        ctxPtr->callback(&chunk, ctxPtr->userData);
+    }
+
+    void ReportGcHandleTarget(Il2CppObject * obj, void * context)
+    {
+        IterationContext* ctxPtr = reinterpret_cast<IterationContext*>(context);
+        ctxPtr->callback(obj, ctxPtr->userData);
     }
 
     Il2CppManagedMemorySnapshot* CaptureManagedMemorySnapshot()

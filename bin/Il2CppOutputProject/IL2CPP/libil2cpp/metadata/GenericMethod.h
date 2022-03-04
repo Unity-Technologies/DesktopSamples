@@ -17,9 +17,11 @@ namespace metadata
 
     public:
         //internal
-        static const MethodInfo* GetMethod(const Il2CppGenericMethod* gmethod);
+        static const MethodInfo* GetMethod(const Il2CppGenericMethod* gmethod, bool copyMethodPtr = false);
         static const Il2CppGenericContext* GetContext(const Il2CppGenericMethod* gmethod);
         static std::string GetFullName(const Il2CppGenericMethod* gmethod);
+
+        static void ClearStatics();
     };
 } /* namespace vm */
 } /* namespace il2cpp */

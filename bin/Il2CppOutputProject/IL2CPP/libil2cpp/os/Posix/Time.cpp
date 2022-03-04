@@ -6,10 +6,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
 #include <sys/param.h>
 #if IL2CPP_TARGET_DARWIN
 #include <sys/sysctl.h>
+#include <mach/mach.h>
+#include <mach/mach_time.h>
 #endif
 
 #include <time.h>
@@ -17,6 +18,9 @@
 #if IL2CPP_TARGET_LINUX
 #include <sys/time.h>
 #endif
+
+/* a made up uptime of 300 seconds */
+#define MADEUP_BOOT_TIME (300 * MTICKS_PER_SEC)
 
 namespace il2cpp
 {
@@ -61,23 +65,42 @@ namespace os
 
 #endif
         /* a made up uptime of 300 seconds */
-        return (int64_t)300 * MTICKS_PER_SEC;
+        return (int64_t)MADEUP_BOOT_TIME;
     }
 
     uint32_t Time::GetTicksMillisecondsMonotonic()
     {
+#if IL2CPP_TARGET_ANDROID
+        struct timespec ts;
+        if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0)
+        {
+            return (int64_t)MADEUP_BOOT_TIME;
+        }
+        return (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+#else
         static int64_t boot_time = 0;
         int64_t now;
         if (!boot_time)
             boot_time = GetBootTime();
         now = GetTicks100NanosecondsMonotonic();
         return (uint32_t)((now - boot_time) / 10000);
+#endif
     }
 
     int64_t Time::GetTicks100NanosecondsMonotonic()
     {
         struct timeval tv;
-#if defined(CLOCK_MONOTONIC) && !IL2CPP_TARGET_DARWIN
+#if IL2CPP_TARGET_DARWIN
+        /* http://developer.apple.com/library/mac/#qa/qa1398/_index.html */
+        static mach_timebase_info_data_t timebase;
+        uint64_t now = mach_absolute_time();
+        if (timebase.denom == 0)
+        {
+            mach_timebase_info(&timebase);
+            timebase.denom *= 100; /* we return 100ns ticks */
+        }
+        return now * timebase.numer / timebase.denom;
+#elif defined(CLOCK_MONOTONIC)
         struct timespec tspec;
         static struct timespec tspec_freq = {0};
         static int can_use_clock = 0;

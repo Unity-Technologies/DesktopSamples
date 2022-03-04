@@ -2,6 +2,8 @@
 #include <string>
 #include <stdint.h>
 
+#undef GetTempPath
+
 namespace il2cpp
 {
 namespace os

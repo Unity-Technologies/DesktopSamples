@@ -1,8 +1,6 @@
 #pragma once
 
-#if NET_4_0
-
-#include "vm/Atomic.h"
+#include "os/Atomic.h"
 
 #define COUNTER_CHECK(counter) \
     do { \
@@ -11,7 +9,7 @@
         IL2CPP_ASSERT(counter._.active >= 0); \
     } while (0)
 
-#define COUNTER_READ() (il2cpp::vm::Atomic::Read64 (&g_ThreadPool->counters.as_int64_t))
+#define COUNTER_READ() (il2cpp::os::Atomic::Read64 (&g_ThreadPool->counters.as_int64_t))
 
 #define COUNTER_ATOMIC(var, block) \
     do { \
@@ -22,24 +20,8 @@
             (var) = __old; \
             { block; } \
             COUNTER_CHECK (var); \
-        } while (il2cpp::vm::Atomic::CompareExchange64 (&g_ThreadPool->counters.as_int64_t, (var).as_int64_t, __old.as_int64_t) != __old.as_int64_t); \
-    } while (0)
-
-#define COUNTER_TRY_ATOMIC(res, var, block) \
-    do { \
-        ThreadPoolCounter __old; \
-        do { \
-            IL2CPP_ASSERT(g_ThreadPool); \
-            __old.as_int64_t = COUNTER_READ (); \
-            (var) = __old; \
-            (res) = false; \
-            { block; } \
-            COUNTER_CHECK (var); \
-            (res) = il2cpp::vm::Atomic::CompareExchange64 (&g_ThreadPool->counters.as_int64_t, (var).as_int64_t, __old.as_int64_t) == __old.as_int64_t; \
-        } while (0); \
+        } while (il2cpp::os::Atomic::CompareExchange64 (&g_ThreadPool->counters.as_int64_t, (var).as_int64_t, __old.as_int64_t) != __old.as_int64_t); \
     } while (0)
 
 #define CPU_USAGE_LOW 80
 #define CPU_USAGE_HIGH 95
-
-#endif // NET_4_0

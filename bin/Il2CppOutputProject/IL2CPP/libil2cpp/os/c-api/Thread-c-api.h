@@ -9,7 +9,7 @@ typedef il2cpp::os::Thread::ThreadId UnityPalThreadId;
 
 #else
 
-typedef uint64_t UnityPalThreadId;
+typedef size_t UnityPalThreadId;
 
 #endif //__cplusplus
 

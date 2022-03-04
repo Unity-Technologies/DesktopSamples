@@ -23,25 +23,34 @@
     "i" (offsetof (MonoContext, field) + (index) * sizeof (field_type))
 
 #if defined(TARGET_X86)
-#if defined(__APPLE__)
-typedef struct __darwin_xmm_reg MonoContextSimdReg;
-#endif
+	#if defined(__APPLE__)
+	typedef struct __darwin_xmm_reg MonoContextSimdReg;
+	#endif
 #elif defined(TARGET_AMD64)
-#if defined(__APPLE__)
-typedef struct __darwin_xmm_reg MonoContextSimdReg;
-#elif defined(__linux__) && defined(__GLIBC__)
-typedef struct _libc_xmmreg MonoContextSimdReg;
-#elif defined(HOST_WIN32)
-#include <emmintrin.h>
-typedef __m128d MonoContextSimdReg;
-#elif defined(HOST_ANDROID)
-typedef struct _libc_xmmreg MonoContextSimdReg;
-#elif defined(__linux__)
-#include <emmintrin.h>
-typedef __m128d MonoContextSimdReg;
-#endif
+	#if defined(__APPLE__)
+	typedef struct __darwin_xmm_reg MonoContextSimdReg;
+	#elif defined(__linux__) && defined(__GLIBC__)
+	typedef struct _libc_xmmreg MonoContextSimdReg;
+	#elif defined(HOST_WIN32)
+	#include <emmintrin.h>
+	typedef __m128d MonoContextSimdReg;
+	#elif defined(HOST_ANDROID)
+	typedef struct _libc_xmmreg MonoContextSimdReg;
+	#elif defined(__linux__)
+	#include <emmintrin.h>
+	typedef __m128d MonoContextSimdReg;
+	#endif
 #elif defined(TARGET_ARM64)
-typedef __uint128_t MonoContextSimdReg;
+	#if defined(HOST_WIN32)
+	#include <arm64_neon.h>
+	typedef __n128 MonoContextSimdReg;
+	#else
+	typedef __uint128_t MonoContextSimdReg;
+	#endif
+#elif defined(TARGET_AARCH64)
+	#if defined(HOST_LUMIN)
+	typedef __uint128_t MonoContextSimdReg;
+	#endif
 #endif
 
 /*

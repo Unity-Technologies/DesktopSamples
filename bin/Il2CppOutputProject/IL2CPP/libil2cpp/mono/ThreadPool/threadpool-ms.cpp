@@ -22,16 +22,17 @@
 
 #include "il2cpp-config.h"
 
-#if NET_4_0
 #include <stdlib.h>
 #define _USE_MATH_DEFINES // needed by MSVC to define math constants
 #include <algorithm>
 #include <cmath>
 #include <complex>
+#include "math.h"
 
 #include "il2cpp-api.h"
 #include "gc/GarbageCollector.h"
 #include "gc/GCHandle.h"
+#include "gc/WriteBarrier.h"
 #include "icalls/mscorlib/System.Threading/ThreadPool.h"
 #include "icalls/mscorlib/System.Runtime.Remoting.Messaging/MonoMethodMessage.h"
 #include "mono/ThreadPool/threadpool-ms.h"
@@ -46,7 +47,6 @@
 #include "os/Mutex.h"
 #include "os/Time.h"
 #include "utils/CallOnce.h"
-#include "vm/Atomic.h"
 #include "vm/Array.h"
 #include "vm/Class.h"
 #include "vm/Domain.h"
@@ -115,7 +115,7 @@ mono_method_call_message_new(MethodInfo *method, void* *params, MethodInfo *invo
 		void* vpos;
 		Il2CppClass *klass;
 		Il2CppObject *arg;
-		
+
 			vpos = params[i];
 
 		klass = il2cpp_class_from_type(method->parameters[i].parameter_type);
@@ -167,7 +167,7 @@ static void initialize(void* arg)
 	int threads_count;
 
 	IL2CPP_ASSERT(!g_ThreadPool);
-	g_ThreadPool = new ThreadPool();
+    g_ThreadPool = new ThreadPool();
 	IL2CPP_ASSERT(g_ThreadPool);
 
 	il2cpp::vm::Random::Open();
@@ -307,7 +307,7 @@ static ThreadPoolDomain* domain_get(Il2CppDomain *domain, bool create)
 
 bool worker_try_unpark()
 {
-	il2cpp::os::FastAutoLock lock(&g_ThreadPool->active_threads_lock);
+	il2cpp::os::FastAutoLockOld lock(&g_ThreadPool->active_threads_lock);
 
 	if (g_ThreadPool->parked_threads_count == 0)
 		return false;
@@ -326,7 +326,7 @@ static bool worker_request (Il2CppDomain *domain)
 	if (il2cpp::vm::Runtime::IsShuttingDown ())
 		return false;
 
-	g_ThreadPool->domains_lock.Lock();
+	g_ThreadPool->domains_lock.Acquire();
 
 	/* synchronize check with worker_thread */
 	//if (mono_domain_is_unloading (domain)) {
@@ -341,7 +341,7 @@ static bool worker_request (Il2CppDomain *domain)
 	/*mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_THREADPOOL, "[%p] request worker, domain = %p, outstanding_request = %d",
 		mono_native_thread_id_get (), tpdomain->domain, tpdomain->outstanding_request);*/
 
-	g_ThreadPool->domains_lock.Unlock();
+	g_ThreadPool->domains_lock.Release();
 
 	if (g_ThreadPool->suspended)
 		return false;
@@ -633,7 +633,7 @@ static void heuristic_notify_work_completed (void)
 {
 	IL2CPP_ASSERT(g_ThreadPool);
 
-	il2cpp::vm::Atomic::Increment(&g_ThreadPool->heuristic_completions);
+	g_ThreadPool->heuristic_completions++;
 	g_ThreadPool->heuristic_last_dequeue = il2cpp::os::Time::GetTicksMillisecondsMonotonic();
 }
 
@@ -655,8 +655,8 @@ static void heuristic_adjust (void)
 {
 	IL2CPP_ASSERT(g_ThreadPool);
 
-	if (g_ThreadPool->heuristic_lock.TryLock()) {
-		int32_t completions = il2cpp::vm::Atomic::Exchange (&g_ThreadPool->heuristic_completions, 0);
+	if (g_ThreadPool->heuristic_lock.TryAcquire()) {
+		int32_t completions = g_ThreadPool->heuristic_completions.exchange(0);
 		int64_t sample_end = il2cpp::os::Time::GetTicksMillisecondsMonotonic();
 		int64_t sample_duration = sample_end - g_ThreadPool->heuristic_sample_start;
 
@@ -676,7 +676,7 @@ static void heuristic_adjust (void)
 			g_ThreadPool->heuristic_last_adjustment = il2cpp::os::Time::GetTicksMillisecondsMonotonic();
 		}
 
-		g_ThreadPool->heuristic_lock.Unlock();
+		g_ThreadPool->heuristic_lock.Release();
 	}
 }
 
@@ -700,7 +700,9 @@ Il2CppAsyncResult* threadpool_ms_begin_invoke (Il2CppDomain *domain, Il2CppObjec
 
 	lazy_initialize ();
 
-	MethodInfo *invoke = (MethodInfo*)il2cpp::vm::Class::GetMethodFromName(method->klass, "Invoke", -1);
+	MethodInfo *invoke = NULL;
+	if (il2cpp::vm::Class::HasParent(method->klass, il2cpp_defaults.multicastdelegate_class))
+		invoke = (MethodInfo*)il2cpp::vm::Class::GetMethodFromName(method->klass, "Invoke", -1);
 
 	message = mono_method_call_message_new (method, params, invoke, (params != NULL) ? (&async_callback) : NULL, (params != NULL) ? (&state) : NULL);
 
@@ -738,7 +740,7 @@ Il2CppObject* threadpool_ms_end_invoke (Il2CppAsyncResult *ares, Il2CppArray **o
 	/* check if already finished */
 	il2cpp_monitor_enter((Il2CppObject*) ares);
 
-	if (ares->endinvoke_called) 
+	if (ares->endinvoke_called)
 	{
 		il2cpp::vm::Exception::Raise(il2cpp::vm::Exception::GetInvalidOperationException("Cannot call EndInvoke() repeatedly or concurrently on the same AsyncResult!"));
 		il2cpp_monitor_exit((Il2CppObject*) ares);
@@ -748,11 +750,11 @@ Il2CppObject* threadpool_ms_end_invoke (Il2CppAsyncResult *ares, Il2CppArray **o
 	ares->endinvoke_called = 1;
 
 	/* wait until we are really finished */
-	if (ares->completed) 
+	if (ares->completed)
 	{
 		il2cpp_monitor_exit((Il2CppObject *) ares);
 	}
-	else 
+	else
 	{
 
 		if (!ares->handle)
@@ -772,8 +774,8 @@ Il2CppObject* threadpool_ms_end_invoke (Il2CppAsyncResult *ares, Il2CppArray **o
 
 	ac = (Il2CppAsyncCall*) ares->object_data;
 	IL2CPP_ASSERT(ac);
-	
-	*exc = ((Il2CppMethodMessage*)ac->msg)->exc; /* FIXME: GC add write barrier */
+
+	il2cpp::gc::WriteBarrier::GenericStore(exc, ((Il2CppMethodMessage*)ac->msg)->exc);
 	*out_args = ac->out_args;
 	return ac->res;
 }
@@ -922,4 +924,3 @@ bool ves_icall_System_Threading_ThreadPool_IsThreadPoolHosted (void)
 {
 	return false;
 }
-#endif

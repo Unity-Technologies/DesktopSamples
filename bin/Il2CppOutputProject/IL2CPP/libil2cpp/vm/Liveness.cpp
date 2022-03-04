@@ -3,6 +3,7 @@
 #include <utils/dynamic_array.h>
 #include "vm/Array.h"
 #include "vm/Class.h"
+#include "vm/ClassInlines.h"
 #include "vm/Field.h"
 #include "vm/Liveness.h"
 #include "vm/Type.h"
@@ -92,7 +93,8 @@ namespace vm
         callback_userdata(NULL),
         filter_callback(NULL),
         onWorldStarted(onWorldStarted),
-        onWorldStopped(onWorldStopped)
+        onWorldStopped(onWorldStopped),
+        traverse_depth(0)
     {
 // construct liveness_state;
 // allocate memory for the following structs
@@ -358,7 +360,7 @@ namespace vm
     bool LivenessState::ShouldProcessValue(Il2CppObject* val, Il2CppClass* filter)
     {
         Il2CppClass* val_class = GET_CLASS(val);
-        if (filter && !Class::HasParentUnsafe(val_class, filter))
+        if (filter && !ClassInlines::HasParentUnsafe(val_class, filter))
             return false;
 
         return true;

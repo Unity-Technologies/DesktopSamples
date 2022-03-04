@@ -8,8 +8,6 @@
 #include "vm/Reflection.h"
 #include "vm/Enum.h"
 
-using namespace il2cpp::vm;
-
 namespace il2cpp
 {
 namespace icalls
@@ -25,24 +23,22 @@ namespace System
 
         IL2CPP_ASSERT(thisPtr->klass->enumtype);
 
-        Il2CppClass* enumClass = Class::FromIl2CppType(Class::GetEnumBaseType(thisPtr->klass));
-        Il2CppObject* res = Object::New(enumClass);
+        Il2CppClass* enumClass = vm::Class::FromIl2CppType(vm::Class::GetEnumBaseType(thisPtr->klass));
+        Il2CppObject* res = vm::Object::New(enumClass);
         void* dst = (char*)res + sizeof(Il2CppObject);
         void* src = (char*)thisPtr + sizeof(Il2CppObject);
-        int32_t size = Class::GetValueSize(enumClass, NULL);
+        int32_t size = vm::Class::GetValueSize(enumClass, NULL);
 
         memcpy(dst, src, size);
 
         return res;
-
-        return il2cpp::vm::Object::Box(thisPtr->klass->element_class, (char*)thisPtr + sizeof(Il2CppObject));
     }
 
     int Enum::compare_value_to(Il2CppObject * thisPtr, Il2CppObject * other)
     {
         void* tdata = (char*)thisPtr + sizeof(Il2CppObject);
         void* odata = (char*)other + sizeof(Il2CppObject);
-        const Il2CppType *basetype = Class::GetEnumBaseType(Object::GetClass(thisPtr));
+        const Il2CppType *basetype = vm::Class::GetEnumBaseType(vm::Object::GetClass(thisPtr));
         IL2CPP_ASSERT(basetype);
 
 #define COMPARE_ENUM_VALUES(ENUM_TYPE) do { \
@@ -186,15 +182,15 @@ namespace System
         IL2CPP_CHECK_ARG_NULL(value);
 
         //domain = mono_object_domain (enumType);
-        enumc = Class::FromIl2CppType(enumType->type);
-        objc = Object::GetClass(value);
+        enumc = vm::Class::FromIl2CppType(enumType->type);
+        objc = vm::Object::GetClass(value);
 
         //if (!enumc->enumtype)
         //  mono_raise_exception (mono_get_exception_argument ("enumType", "Type provided must be an Enum."));
         //if (!((objc->enumtype) || (objc->byval_arg.type >= MONO_TYPE_I1 && objc->byval_arg.type <= MONO_TYPE_U8)))
         //  mono_raise_exception (mono_get_exception_argument ("value", "The value passed in must be an enum base or an underlying type for an enum, such as an Int32."));
 
-        etype = Class::GetElementClass(enumc);
+        etype = vm::Class::GetElementClass(enumc);
         if (!etype)
             /* MS throws this for typebuilders */
             il2cpp::vm::Exception::Raise(il2cpp::vm::Exception::GetArgumentException("Type must be a type provided by the runtime.", "enumType"));
@@ -211,7 +207,7 @@ namespace System
     {
         const Il2CppType *etype;
 
-        etype = Class::GetEnumBaseType(Class::FromIl2CppType(type->type));
+        etype = vm::Class::GetEnumBaseType(vm::Class::FromIl2CppType(type->type));
         if (!etype)
             /* MS throws this for typebuilders */
             il2cpp::vm::Exception::Raise(il2cpp::vm::Exception::GetArgumentException("Type must be a type provided by the runtime.", "enumType"));
@@ -219,20 +215,19 @@ namespace System
         return il2cpp::vm::Reflection::GetTypeObject(etype);
     }
 
-#if NET_4_0
     bool Enum::GetEnumValuesAndNames(Il2CppReflectionRuntimeType* enumType, Il2CppArray** values, Il2CppArray** names)
     {
-        return vm::Enum::GetEnumValuesAndNames(Class::FromIl2CppType(enumType->type.type), values, names);
+        return vm::Enum::GetEnumValuesAndNames(vm::Class::FromIl2CppType(enumType->type.type), values, names);
     }
 
     bool Enum::InternalHasFlag(Il2CppObject* thisPtr, Il2CppObject* flags)
     {
-        Il2CppClass* enumClass = Class::FromIl2CppType(Class::GetEnumBaseType(thisPtr->klass));
-        int32_t size = Class::GetValueSize(enumClass, NULL);
+        Il2CppClass* enumClass = vm::Class::FromIl2CppType(vm::Class::GetEnumBaseType(thisPtr->klass));
+        int32_t size = vm::Class::GetValueSize(enumClass, NULL);
         uint64_t a_val = 0, b_val = 0;
 
-        memcpy(&a_val, Object::Unbox(thisPtr), size);
-        memcpy(&b_val, Object::Unbox(flags), size);
+        memcpy(&a_val, vm::Object::Unbox(thisPtr), size);
+        memcpy(&b_val, vm::Object::Unbox(flags), size);
 
         return (a_val & b_val) == b_val;
     }
@@ -244,12 +239,21 @@ namespace System
 
     Il2CppObject* Enum::InternalBoxEnum(Il2CppReflectionRuntimeType* enumType, int64_t value)
     {
-        return Object::Box(Class::FromIl2CppType(enumType->type.type), &value);
+        return vm::Object::Box(vm::Class::FromIl2CppType(enumType->type.type), &value);
     }
 
     Il2CppReflectionRuntimeType* Enum::InternalGetUnderlyingType(Il2CppReflectionRuntimeType* enumType)
     {
         return reinterpret_cast<Il2CppReflectionRuntimeType*>(get_underlying_type(&enumType->type));
+    }
+
+#if IL2CPP_TINY
+    bool Enum::TinyEnumEquals(Il2CppObject* left, Il2CppObject* right)
+    {
+        if (left->klass != right->klass)
+            return false;
+
+        return compare_value_to(left, right) == 0;
     }
 
 #endif

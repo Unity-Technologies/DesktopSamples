@@ -3,14 +3,13 @@
 #include "icalls/mscorlib/System/MonoCustomAttrs.h"
 #include "il2cpp-class-internals.h"
 #include "il2cpp-object-internals.h"
+#include "gc/GarbageCollector.h"
 #include "vm/Array.h"
 #include "vm/Class.h"
 #include "vm/Object.h"
 #include "vm/Reflection.h"
 #include "vm/Runtime.h"
 #include "vm/Exception.h"
-
-using namespace il2cpp::vm;
 
 namespace il2cpp
 {
@@ -35,16 +34,16 @@ namespace System
         {
             Il2CppArray *result = il2cpp::vm::Array::New(il2cpp_defaults.object_class, cinfo->count);
             memcpy(il2cpp_array_addr(result, Il2CppObject*, 0), cinfo->attributes, sizeof(Il2CppObject*) * cinfo->count);
-
+            gc::GarbageCollector::SetWriteBarrier((void**)il2cpp_array_addr(result, Il2CppObject*, 0), sizeof(Il2CppObject*) * cinfo->count);
             return result;
         }
 
-        Il2CppClass* attributeClass = Class::FromIl2CppType(type->type);
+        Il2CppClass* attributeClass = vm::Class::FromIl2CppType(type->type);
         int count = 0;
         for (int i = 0; i < cinfo->count; i++)
         {
             Il2CppObject* attr = cinfo->attributes[i];
-            if (Class::IsAssignableFrom(attributeClass, attr->klass))
+            if (vm::Class::IsAssignableFrom(attributeClass, attr->klass))
                 count++;
         }
 
@@ -54,7 +53,7 @@ namespace System
         for (int i = 0; i < cinfo->count; i++)
         {
             Il2CppObject* attr = cinfo->attributes[i];
-            if (!Class::IsAssignableFrom(attributeClass, attr->klass))
+            if (!vm::Class::IsAssignableFrom(attributeClass, attr->klass))
                 continue;
 
             il2cpp_array_setref(result, index, cinfo->attributes[i]);
@@ -66,31 +65,9 @@ namespace System
 
     bool MonoCustomAttrs::IsDefinedInternal(Il2CppObject *obj, Il2CppReflectionType *attr_type)
     {
-        return il2cpp::vm::Reflection::HasAttribute(obj, Class::FromIl2CppType(attr_type->type));
+        return il2cpp::vm::Reflection::HasAttribute(obj, vm::Class::FromIl2CppType(attr_type->type));
     }
 
-#if !NET_4_0
-    static Il2CppObject* CreateCustomAttributeData(Il2CppObject* attribute)
-    {
-        static const MethodInfo* customAttributeDataConstructor;
-        void *params[3];
-
-        if (!customAttributeDataConstructor)
-            customAttributeDataConstructor = vm::Class::GetMethodFromName(il2cpp_defaults.customattribute_data_class, ".ctor", 3);
-
-        const MethodInfo* attributeConstructor = vm::Class::GetMethodFromName(attribute->klass, ".ctor", 0);
-
-        if (attributeConstructor == NULL)
-            IL2CPP_NOT_IMPLEMENTED_ICALL(MonoCustomAttrs::GetCustomAttributesDataInternal);
-
-        Il2CppObject* customAttributeData = vm::Object::New(il2cpp_defaults.customattribute_data_class);
-        params[0] = vm::Reflection::GetMethodObject(attributeConstructor, NULL);
-        params[1] = params[2] = NULL;
-        vm::Runtime::Invoke(customAttributeDataConstructor, customAttributeData, params, NULL);
-        return customAttributeData;
-    }
-
-#else
     static Il2CppObject* CreateCustomAttributeData(Il2CppObject* attribute)
     {
         static const MethodInfo* customAttributeDataConstructor;
@@ -99,7 +76,7 @@ namespace System
         if (!customAttributeDataConstructor)
             customAttributeDataConstructor = vm::Class::GetMethodFromName(il2cpp_defaults.customattribute_data_class, ".ctor", 4);
 
-        const MethodInfo* attributeConstructor = vm::Class::GetMethodFromName(attribute->klass, ".ctor", 0);
+        const MethodInfo* attributeConstructor = vm::Class::GetMethodFromNameFlags(attribute->klass, ".ctor", vm::Class::IgnoreNumberOfArguments, METHOD_ATTRIBUTE_PUBLIC);
 
         if (attributeConstructor == NULL)
             IL2CPP_NOT_IMPLEMENTED_ICALL(MonoCustomAttrs::GetCustomAttributesDataInternal);
@@ -114,8 +91,6 @@ namespace System
         vm::Runtime::Invoke(customAttributeDataConstructor, customAttributeData, params, NULL);
         return customAttributeData;
     }
-
-#endif
 
     Il2CppArray* MonoCustomAttrs::GetCustomAttributesDataInternal(Il2CppObject* obj)
     {

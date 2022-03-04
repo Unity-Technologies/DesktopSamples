@@ -29,10 +29,8 @@ namespace Reflection
     class LIBIL2CPP_CODEGEN_API MonoCMethod
     {
     public:
-        static Il2CppObject* InternalInvoke(void* /* System.Reflection.MonoCMethod */ self, Il2CppObject* obj, Il2CppArray* parameters, Il2CppException** exc);
-#if NET_4_0
+        static Il2CppObject* InternalInvoke(Il2CppReflectionMethod* self, Il2CppObject* obj, Il2CppArray* parameters, Il2CppException** exc);
         static int32_t get_core_clr_security_level(Il2CppObject* _this);
-#endif
     };
 } /* namespace Reflection */
 } /* namespace System */

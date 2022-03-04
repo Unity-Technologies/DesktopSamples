@@ -4,10 +4,8 @@
 #include "Mutex-c-api.h"
 
 #if defined(__cplusplus)
-#if NET_4_0
 #include "os/ConditionVariable.h"
 typedef il2cpp::os::ConditionVariable UnityPalConditionVariable;
-#endif
 #else
 typedef struct UnityPalConditionVariable UnityPalConditionVariable;
 #endif

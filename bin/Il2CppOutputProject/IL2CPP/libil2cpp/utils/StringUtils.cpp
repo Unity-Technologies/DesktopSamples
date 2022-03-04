@@ -1,6 +1,6 @@
 #include "il2cpp-config.h"
 #include "../char-conversions.h"
-#include "../il2cpp-object-internals.h"
+#include "il2cpp-object-internals.h"
 #include "utils/Functional.h"
 #include "utils/Memory.h"
 #include "utils/StringUtils.h"

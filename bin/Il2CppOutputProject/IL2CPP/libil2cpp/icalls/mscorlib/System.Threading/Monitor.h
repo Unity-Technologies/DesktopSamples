@@ -24,11 +24,9 @@ namespace Threading
         static bool Monitor_test_synchronised(Il2CppObject* obj);
         static bool Monitor_try_enter(Il2CppObject* obj, int32_t ms);
         static bool Monitor_wait(Il2CppObject* obj, int32_t ms);
-#if NET_4_0
         static bool Monitor_test_owner(Il2CppObject* obj);
         static void enter_with_atomic_var(Il2CppObject* obj, bool* lockTaken);
         static void try_enter_with_atomic_var(Il2CppObject* obj, int32_t millisecondsTimeout, bool* lockTaken);
-#endif
     };
 } /* namespace Threading */
 } /* namespace System */

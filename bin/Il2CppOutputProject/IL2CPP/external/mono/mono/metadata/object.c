@@ -1993,9 +1993,11 @@ mono_class_create_runtime_vtable (MonoDomain *domain, MonoClass *klass, MonoErro
 	 * vtable field in MonoObject, since we can no longer assume the
 	 * vtable is reachable by other roots after the appdomain is unloaded.
 	 */
-	if (!mono_gc_is_moving () && domain != mono_get_root_domain () && !mono_dont_free_domains)
+#if HAVE_BOEHM_GC
+	if (domain != mono_get_root_domain () && !mono_dont_free_domains)
 		vt->gc_descr = MONO_GC_DESCRIPTOR_NULL;
 	else
+#endif	
 		vt->gc_descr = klass->gc_descr;
 
 	gc_bits = mono_gc_get_vtable_bits (klass);
@@ -2084,6 +2086,10 @@ mono_class_create_runtime_vtable (MonoDomain *domain, MonoClass *klass, MonoErro
 				/* it's a pointer type: add check */
 				g_assert ((fklass->byval_arg.type == MONO_TYPE_PTR) || (fklass->byval_arg.type == MONO_TYPE_FNPTR));
 				*t = *(char *)data;
+				/* This is not needed by sgen, as it does not seem 
++				to need write barriers for uncollectable objects (like the vtables storing static 
++				fields), but it is needed for incremental boehm. */
+				mono_gc_wbarrier_generic_nostore (t);
 			}
 			continue;
 		}		
@@ -3294,6 +3300,11 @@ mono_field_static_set_value (MonoVTable *vt, MonoClassField *field, void *value)
 		dest = (char*)mono_vtable_get_static_field_data (vt) + field->offset;
 	}
 	mono_copy_value (field->type, dest, value, FALSE);
+	/* This is not needed by sgen, as it does not seem 
+	to need write barriers for uncollectable objects (like the vtables storing static 
++	fields), but it is needed for incremental boehm. */
+	if (field->offset == -1)
+		mono_gc_wbarrier_generic_nostore (dest);
 }
 
 /**
@@ -6285,6 +6296,24 @@ mono_string_new_len_checked (MonoDomain *domain, const char *text, guint length,
 	return o;
 }
 
+static MonoString*
+mono_string_new_internal (MonoDomain *domain, const char *text)
+{
+	MonoError error;
+	MonoString *res = NULL;
+	res = mono_string_new_checked (domain, text, &error);
+	if (!is_ok (&error)) {
+		/* Mono API compatability: assert on Out of Memory errors,
+		* return NULL otherwise (most likely an invalid UTF-8 byte
+		* sequence). */
+		if (mono_error_get_error_code (&error) == MONO_ERROR_OUT_OF_MEMORY)
+			mono_error_assert_ok (&error);
+		else
+			mono_error_cleanup (&error);
+	}
+	return res;
+}
+
 /**
  * mono_string_new:
  * \param text a pointer to a UTF-8 string
@@ -6295,11 +6324,7 @@ mono_string_new_len_checked (MonoDomain *domain, const char *text, guint length,
 MonoString*
 mono_string_new (MonoDomain *domain, const char *text)
 {
-	MonoError error;
-	MonoString *res = NULL;
-	res = mono_string_new_checked (domain, text, &error);
-	mono_error_assert_ok (&error);
-	return res;
+	return mono_string_new_internal (domain, text);
 }
 
 /**
@@ -6372,16 +6397,7 @@ mono_string_new_wrapper (const char *text)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	MonoDomain *domain = mono_domain_get ();
-
-	if (text) {
-		MonoError error;
-		MonoString *result = mono_string_new_checked (domain, text, &error);
-		mono_error_assert_ok (&error);
-		return result;
-	}
-
-	return NULL;
+	return mono_string_new_internal (mono_domain_get (), text);
 }
 
 /**

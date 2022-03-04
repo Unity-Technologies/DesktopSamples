@@ -26,14 +26,12 @@ namespace System
         static void SuppressFinalize(Il2CppObject *);
         static void RecordPressure(int64_t bytesAllocated);
         static void WaitForPendingFinalizers();
-#if NET_4_0
         static Il2CppObject* get_ephemeron_tombstone();
         static void register_ephemeron_array(Il2CppArray* array);
         static int32_t GetCollectionCount(int32_t generation);
         static int32_t GetMaxGeneration();
         static void _ReRegisterForFinalize(Il2CppObject* o);
         static void _SuppressFinalize(Il2CppObject* o);
-#endif
     };
 } /* namespace System */
 } /* namespace mscorlib */

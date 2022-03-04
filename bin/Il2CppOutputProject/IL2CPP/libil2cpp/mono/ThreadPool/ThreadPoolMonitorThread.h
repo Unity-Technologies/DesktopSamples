@@ -1,7 +1,5 @@
 #pragma once
 
-#if NET_4_0
-
 enum MonitorStatus
 {
     MONITOR_STATUS_REQUESTED,
@@ -11,5 +9,3 @@ enum MonitorStatus
 
 void monitor_ensure_running();
 MonitorStatus GetMonitorStatus();
-
-#endif // NET_4_0

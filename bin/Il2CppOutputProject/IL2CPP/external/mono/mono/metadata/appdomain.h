@@ -26,6 +26,8 @@ typedef struct _MonoAppDomain MonoAppDomain;
 typedef struct _MonoJitInfo MonoJitInfo;
 
 typedef void (*MonoDomainFunc) (MonoDomain *domain, void* user_data);
+typedef void (*MonoDomainAssemblyFunc) (MonoAssembly *assembly, void* user_data);
+typedef void (*MonoUnityExceptionFunc) (MonoObject* exc);
 
 MONO_API MonoDomain*
 mono_init                  (const char *filename);
@@ -85,6 +87,9 @@ mono_domain_get_id         (MonoDomain *domain);
 MONO_API const char *
 mono_domain_get_friendly_name (MonoDomain *domain);
 
+MonoAssembly*
+m_domain_get_corlib (MonoDomain *domain);
+
 MONO_API mono_bool
 mono_domain_set            (MonoDomain *domain, mono_bool force);
 
@@ -96,7 +101,7 @@ MONO_API void
 mono_domain_unload (MonoDomain *domain);
 
 MONO_API void
-mono_domain_try_unload (MonoDomain *domain, MonoObject **exc);
+mono_domain_try_unload (MonoDomain *domain, MonoObject **exc,  MonoUnityExceptionFunc callback);
 
 MONO_API mono_bool
 mono_domain_is_unloading   (MonoDomain *domain);
@@ -107,6 +112,9 @@ mono_domain_from_appdomain (MonoAppDomain *appdomain);
 
 MONO_API void
 mono_domain_foreach        (MonoDomainFunc func, void* user_data);
+
+MONO_API void
+mono_domain_assembly_foreach (MonoDomain* domain, MonoDomainAssemblyFunc func, void* user_data);
 
 MONO_API MonoAssembly *
 mono_domain_assembly_open  (MonoDomain *domain, const char *name);

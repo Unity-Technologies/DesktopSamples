@@ -20,6 +20,7 @@ namespace os
         bool Post(int32_t releaseCount, int32_t* previousCount = NULL);
         WaitStatus Wait(bool interruptible);
         WaitStatus Wait(uint32_t ms, bool interruptible);
+        void* GetOSHandle();
     private:
         HANDLE m_Handle;
     };

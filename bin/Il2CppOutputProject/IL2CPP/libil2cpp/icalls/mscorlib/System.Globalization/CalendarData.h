@@ -1,6 +1,5 @@
 #pragma once
 
-#if NET_4_0
 struct Il2CppCalendarData;
 
 namespace il2cpp
@@ -23,4 +22,3 @@ namespace Globalization
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

@@ -1,7 +1,5 @@
 #include "il2cpp-config.h"
 
-#if NET_4_0
-
 #include "gc/GarbageCollector.h"
 #include "mono/ThreadPool/threadpool-ms.h"
 #include "mono/ThreadPool/ThreadPoolDataStructures.h"
@@ -157,14 +155,14 @@ struct WorkerThreadStateHolder
         IL2CPP_ASSERT(thread);
         il2cpp::vm::Thread::SetName(thread, il2cpp::vm::String::New("IL2CPP Threadpool worker"));
 
-        il2cpp::os::FastAutoLock activeThreadsLock(&g_ThreadPool->active_threads_lock);
+        il2cpp::os::FastAutoLockOld activeThreadsLock(&g_ThreadPool->active_threads_lock);
         g_ThreadPool->working_threads.push_back(thread);
     }
 
     ~WorkerThreadStateHolder()
     {
         {
-            il2cpp::os::FastAutoLock activeThreadsLock(&g_ThreadPool->active_threads_lock);
+            il2cpp::os::FastAutoLockOld activeThreadsLock(&g_ThreadPool->active_threads_lock);
             remove_working_thread(thread);
         }
 
@@ -315,5 +313,3 @@ bool worker_try_create()
 
     return false;
 }
-
-#endif

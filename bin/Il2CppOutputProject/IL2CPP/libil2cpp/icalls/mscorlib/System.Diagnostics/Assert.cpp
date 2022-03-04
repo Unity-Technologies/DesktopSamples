@@ -1,4 +1,3 @@
-#if NET_4_0
 #include "il2cpp-config.h"
 #include "Assert.h"
 
@@ -23,4 +22,3 @@ namespace Diagnostics
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

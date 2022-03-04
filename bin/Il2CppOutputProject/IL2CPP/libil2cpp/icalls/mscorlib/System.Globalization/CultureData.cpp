@@ -1,4 +1,3 @@
-#ifdef NET_4_0
 #include "il2cpp-config.h"
 #include "CultureData.h"
 #include "CultureInfoInternals.h"
@@ -18,7 +17,7 @@ namespace System
 {
 namespace Globalization
 {
-    static Il2CppArray* create_names_array_idx(const uint16_t* names, int max, const char* strings_array)
+    static Il2CppArray* culture_data_create_names_array_idx(const uint16_t* names, int max, const char* strings_array)
     {
         if (names == NULL)
             return NULL;
@@ -39,7 +38,7 @@ namespace Globalization
         return ret;
     }
 
-    static Il2CppArray* create_group_sizes_array(const int *gs, int ml)
+    static Il2CppArray* culture_data_create_group_sizes_array(const int *gs, int ml)
     {
         int i, len = 0;
 
@@ -68,9 +67,9 @@ namespace Globalization
         IL2CPP_OBJECT_SETREF(_this, AMDesignator, il2cpp_string_new(idx2string(dfe->am_designator)));
         IL2CPP_OBJECT_SETREF(_this, PMDesignator, il2cpp_string_new(idx2string(dfe->pm_designator)));
         IL2CPP_OBJECT_SETREF(_this, TimeSeparator, il2cpp_string_new(idx2string(dfe->time_separator)));
-        Il2CppArray *long_time_patterns = create_names_array_idx(dfe->long_time_patterns, NUM_LONG_TIME_PATTERNS, &patterns[0]);
+        Il2CppArray *long_time_patterns = culture_data_create_names_array_idx(dfe->long_time_patterns, NUM_LONG_TIME_PATTERNS, &patterns[0]);
         IL2CPP_OBJECT_SETREF(_this, LongTimePatterns, long_time_patterns);
-        Il2CppArray *short_time_patterns = create_names_array_idx(dfe->short_time_patterns, NUM_SHORT_TIME_PATTERNS, &patterns[0]);
+        Il2CppArray *short_time_patterns = culture_data_create_names_array_idx(dfe->short_time_patterns, NUM_SHORT_TIME_PATTERNS, &patterns[0]);
         IL2CPP_OBJECT_SETREF(_this, ShortTimePatterns, short_time_patterns);
         _this->FirstDayOfWeek = dfe->first_day_of_week;
         _this->CalendarWeekRule = dfe->calendar_week_rule;
@@ -87,7 +86,7 @@ namespace Globalization
         number->currencyDecimalDigits = nfe->currency_decimal_digits;
         IL2CPP_OBJECT_SETREF(number, currencyDecimalSeparator, il2cpp_string_new(idx2string(nfe->currency_decimal_separator)));
         IL2CPP_OBJECT_SETREF(number, currencyGroupSeparator, il2cpp_string_new(idx2string(nfe->currency_group_separator)));
-        Il2CppArray *currency_sizes_arr = create_group_sizes_array(nfe->currency_group_sizes, GROUP_SIZE);
+        Il2CppArray *currency_sizes_arr = culture_data_create_group_sizes_array(nfe->currency_group_sizes, GROUP_SIZE);
         IL2CPP_OBJECT_SETREF(number, currencyGroupSizes, currency_sizes_arr);
         number->currencyNegativePattern = nfe->currency_negative_pattern;
         number->currencyPositivePattern = nfe->currency_positive_pattern;
@@ -98,7 +97,7 @@ namespace Globalization
         number->numberDecimalDigits = nfe->number_decimal_digits;
         IL2CPP_OBJECT_SETREF(number, numberDecimalSeparator, il2cpp_string_new(idx2string(nfe->number_decimal_separator)));
         IL2CPP_OBJECT_SETREF(number, numberGroupSeparator, il2cpp_string_new(idx2string(nfe->number_group_separator)));
-        Il2CppArray *number_sizes_arr = create_group_sizes_array(nfe->number_group_sizes, GROUP_SIZE);
+        Il2CppArray *number_sizes_arr = culture_data_create_group_sizes_array(nfe->number_group_sizes, GROUP_SIZE);
         IL2CPP_OBJECT_SETREF(number, numberGroupSizes, number_sizes_arr);
         number->numberNegativePattern = nfe->number_negative_pattern;
         number->percentNegativePattern = nfe->percent_negative_pattern;
@@ -113,5 +112,3 @@ namespace Globalization
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-
-#endif

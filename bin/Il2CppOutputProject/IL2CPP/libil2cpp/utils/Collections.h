@@ -150,7 +150,7 @@ namespace collections
             TKeyLess keyLessComparer = TKeyLess(), TKeyEquals keyEqualsComparer = TKeyEquals())
         {
             this->~ArrayValueMap();
-            new(this)map_type(values, valueCount, valueToKeyConverter, keyLessComparer, keyEqualsComparer);
+            new(this) map_type(values, valueCount, valueToKeyConverter, keyLessComparer, keyEqualsComparer);
         }
 
         // Constructs map that contains pointers to original array
@@ -171,7 +171,7 @@ namespace collections
                 }
             }
 
-            new(this)map_type(storage, valueCount, valueToKeyConverter, keyLessComparer, keyEqualsComparer);
+            new(this) map_type(storage, valueCount, valueToKeyConverter, keyLessComparer, keyEqualsComparer);
             m_OwnStorage = true;
         }
 
@@ -179,7 +179,7 @@ namespace collections
             TKeyLess keyLessComparer = TKeyLess(), TKeyEquals keyEqualsComparer = TKeyEquals())
         {
             this->~ArrayValueMap();
-            new(this)map_type(values, valueToKeyConverter, keyLessComparer, keyEqualsComparer);
+            new(this) map_type(values, valueToKeyConverter, keyLessComparer, keyEqualsComparer);
         }
 
         inline iterator begin() const
@@ -238,6 +238,17 @@ namespace collections
         inline const TValue& operator[](size_t i) const
         {
             return m_Values[i];
+        }
+
+        template<typename Mutator>
+        inline void mutate(Mutator& mutator)
+        {
+            size_t count = m_ValueCount;
+            const TValue* values = m_Values;
+            for (size_t i = 0; i < count; i++)
+                mutator(const_cast<TValue*>(values + i));
+
+            m_Values = InitializeInPlace(const_cast<TValue*>(values), count, m_ValueToKeyConverter, m_KeyLessComparer);
         }
     };
 }

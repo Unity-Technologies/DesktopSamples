@@ -1,6 +1,5 @@
 #include "il2cpp-config.h"
 
-#if NET_4_0
 #include "gc/GarbageCollector.h"
 #include "mono/ThreadPool/threadpool-ms-io-poll.h"
 #include "os/Socket.h"
@@ -80,7 +79,7 @@ void poll_register_fd(int fd, int events, bool is_new)
         poll_fds_capacity *= 2;
         IL2CPP_ASSERT(poll_fds_size <= poll_fds_capacity);
 
-        poll_fds->reserve(poll_fds_capacity);
+        poll_fds->resize(poll_fds_capacity, il2cpp::os::PollRequest(-1));
     }
 
     POLL_INIT_FD(&(*poll_fds)[poll_fds_size - 1], fd, poll_event);
@@ -218,5 +217,3 @@ int poll_event_wait(void (*callback)(int fd, int events, void* user_data), void*
 
     return 0;
 }
-
-#endif

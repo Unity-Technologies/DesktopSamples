@@ -15,6 +15,8 @@
 #include "utils/StringUtils.h"
 #include "vm-utils/VmStringUtils.h"
 
+#include "utils/sha1.h"
+
 using il2cpp::vm::Array;
 using il2cpp::vm::Class;
 using il2cpp::vm::Object;
@@ -36,11 +38,14 @@ namespace Reflection
         return vm::AssemblyName::ParseName(aname, utils::StringUtils::Utf16ToUtf8(utils::StringUtils::GetChars(assemblyName)));
     }
 
-#if NET_4_0
     void AssemblyName::get_public_token(uint8_t* token, uint8_t* pubkey, int32_t len)
     {
-        IL2CPP_NOT_IMPLEMENTED_ICALL(AssemblyName::get_public_token);
-        IL2CPP_UNREACHABLE;
+        uint8_t digest[20];
+
+        IL2CPP_ASSERT(token != NULL);
+        sha1_get_digest(pubkey, len, digest);
+        for (int i = 0; i < 8; ++i)
+            token[i] = digest[19 - i];
     }
 
     Il2CppMonoAssemblyName* AssemblyName::GetNativeName(intptr_t assembly_ptr)
@@ -96,7 +101,6 @@ namespace Reflection
         else
             aname->culture = il2cpp::utils::StringUtils::StringDuplicate(parsedName.culture.c_str());
 
-        aname->hash_value = il2cpp::utils::StringUtils::StringDuplicate(parsedName.hash_value.c_str());
         aname->public_key = reinterpret_cast<uint8_t*>(il2cpp::utils::StringUtils::StringDuplicate(parsedName.public_key.c_str()));
 
         for (int i = 0; i < il2cpp::vm::kPublicKeyTokenLength; ++i)
@@ -112,8 +116,6 @@ namespace Reflection
 
         return true;
     }
-
-#endif
 } /* namespace Reflection */
 } /* namespace System */
 } /* namespace mscorlib */

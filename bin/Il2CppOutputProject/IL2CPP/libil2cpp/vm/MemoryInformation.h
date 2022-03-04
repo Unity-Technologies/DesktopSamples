@@ -99,6 +99,18 @@ namespace vm
 {
 namespace MemoryInformation
 {
+    typedef void(*ClassReportFunc)(Il2CppClass* klass, void* context);
+    typedef void(*DataReportFunc)(void* data, void* context);
+
+    struct IterationContext
+    {
+        DataReportFunc callback;
+        void* userData;
+    };
+
+    void ReportIL2CppClasses(ClassReportFunc callback, void* context);
+    void ReportGcHeapSection(void* context, void* start, void* end);
+    void ReportGcHandleTarget(Il2CppObject* obj, void* context);
     Il2CppManagedMemorySnapshot* CaptureManagedMemorySnapshot();
     void FreeCapturedManagedMemorySnapshot(Il2CppManagedMemorySnapshot* snapshot);
 }

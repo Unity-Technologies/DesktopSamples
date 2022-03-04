@@ -1,7 +1,5 @@
 #include "il2cpp-config.h"
 
-#if NET_4_0
-
 #include "Activator.h"
 #include "il2cpp-runtime-metadata.h"
 #include "MonoType.h"
@@ -333,5 +331,3 @@ namespace System
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-
-#endif

@@ -20,9 +20,7 @@ namespace Reflection
         static void* /* System.Reflection.MethodBody */ GetMethodBodyInternal(intptr_t handle);
         static Il2CppReflectionMethod* GetMethodFromHandleInternalType(intptr_t method, intptr_t type);
 
-#if NET_4_0
         static Il2CppReflectionMethod* GetMethodFromHandleInternalType_native(intptr_t method_handle, intptr_t type_handle, bool genericCheck);
-#endif
     };
 } /* namespace Reflection */
 } /* namespace System */

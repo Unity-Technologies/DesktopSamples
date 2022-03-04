@@ -6,18 +6,14 @@ namespace il2cpp
 {
 namespace vm
 {
-    Il2CppClass* GenericContainer::GetDeclaringType(const Il2CppGenericContainer* genericContainer)
+    Il2CppClass* GenericContainer::GetDeclaringType(Il2CppMetadataGenericContainerHandle handle)
     {
-        if (genericContainer->is_method)
-            return MetadataCache::GetMethodInfoFromMethodDefinitionIndex(genericContainer->ownerIndex)->klass;
-
-        return MetadataCache::GetTypeInfoFromTypeDefinitionIndex(genericContainer->ownerIndex);
+        return MetadataCache::GetContainerDeclaringType(handle);
     }
 
-    const Il2CppGenericParameter* GenericContainer::GetGenericParameter(const Il2CppGenericContainer* genericContainer, uint16_t index)
+    Il2CppMetadataGenericParameterHandle GenericContainer::GetGenericParameter(Il2CppMetadataGenericContainerHandle handle, uint16_t index)
     {
-        IL2CPP_ASSERT(index < genericContainer->type_argc);
-        return MetadataCache::GetGenericParameterFromIndex(genericContainer->genericParameterStart + index);
+        return MetadataCache::GetGenericParameterFromIndex(handle, index);
     }
 } /* namespace vm */
 } /* namespace il2cpp */

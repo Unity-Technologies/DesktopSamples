@@ -1,6 +1,7 @@
 #include "il2cpp-config.h"
 #include "gc/GCHandle.h"
 #include "il2cpp-object-internals.h"
+#include "il2cpp-vm-support.h"
 #include "GarbageCollector.h"
 #include "os/Mutex.h"
 #include "utils/Memory.h"
@@ -45,10 +46,10 @@ namespace gc
         return -1;
     }
 
-    static os::FastMutex g_HandlesMutex;
+    static baselib::ReentrantLock g_HandlesMutex;
 
-#define lock_handles(handles) g_HandlesMutex.Lock ()
-#define unlock_handles(handles) g_HandlesMutex.Unlock ()
+#define lock_handles(handles) g_HandlesMutex.Acquire ()
+#define unlock_handles(handles) g_HandlesMutex.Release ()
 
     static uint32_t
     alloc_handle(HandleData *handles, Il2CppObject *obj, bool track)
@@ -109,6 +110,9 @@ namespace gc
                 void* *entries;
                 entries = (void**)GarbageCollector::AllocateFixed(sizeof(void*) * new_size, NULL);
                 memcpy(entries, handles->entries, sizeof(void*) * handles->size);
+
+                GarbageCollector::SetWriteBarrier(entries, sizeof(void*) * handles->size);
+
                 void** previous_entries = handles->entries;
                 handles->entries = entries;
                 GarbageCollector::FreeFixed(previous_entries);
@@ -151,6 +155,8 @@ namespace gc
         handles->bitmap[slot] |= 1 << i;
         slot = slot * 32 + i;
         handles->entries[slot] = obj;
+        GarbageCollector::SetWriteBarrier(handles->entries + slot);
+
         if (handles->type <= HANDLE_WEAK_TRACK)
         {
             if (obj)
@@ -174,7 +180,7 @@ namespace gc
 
 #ifndef HAVE_SGEN_GC
         if (track_resurrection)
-            IL2CPP_NOT_IMPLEMENTED(GCHandle::NewWeakref);
+            IL2CPP_VM_NOT_SUPPORTED(GCHandle::NewWeakref, "IL2CPP does not support resurrection for weak references. Pass the trackResurrection with a value of false.");
 #endif
 
         return handle;

@@ -1,6 +1,8 @@
 #include "il2cpp-config.h"
-
 #include "os/Event.h"
+
+#if IL2CPP_SUPPORT_THREADS
+
 #if IL2CPP_THREADS_WIN32
 #include "os/Win32/EventImpl.h"
 #elif IL2CPP_THREADS_PTHREAD
@@ -43,5 +45,53 @@ namespace os
     {
         return m_Event->Wait(ms, interruptible);
     }
+
+    void* Event::GetOSHandle()
+    {
+        return m_Event->GetOSHandle();
+    }
 }
 }
+
+#else
+
+namespace il2cpp
+{
+namespace os
+{
+    Event::Event(bool manualReset, bool signaled)
+    {
+    }
+
+    Event::~Event()
+    {
+    }
+
+    ErrorCode Event::Set()
+    {
+        return kErrorCodeSuccess;
+    }
+
+    ErrorCode Event::Reset()
+    {
+        return kErrorCodeSuccess;
+    }
+
+    WaitStatus Event::Wait(bool interruptible)
+    {
+        return kWaitStatusSuccess;
+    }
+
+    WaitStatus Event::Wait(uint32_t ms, bool interruptible)
+    {
+        return kWaitStatusSuccess;
+    }
+
+    void* Event::GetOSHandle()
+    {
+        return NULL;
+    }
+}
+}
+
+#endif

@@ -1,18 +1,22 @@
 #include "il2cpp-config.h"
 
-#if IL2CPP_TARGET_POSIX
+#if IL2CPP_TARGET_POSIX && !RUNTIME_TINY && !IL2CPP_TARGET_PS4
 #include "os/Environment.h"
 #include "os/Path.h"
 #include <string>
 
 #if defined(__APPLE__)
 #include "mach-o/dyld.h"
-#elif IL2CPP_TARGET_LINUX || IL2CPP_TARGET_ANDROID
+#elif IL2CPP_TARGET_LINUX || IL2CPP_TARGET_ANDROID || IL2CPP_TARGET_LUMIN
 #include <linux/limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
+#endif
+
+#if IL2CPP_TARGET_LUMIN
+namespace il2cpp { namespace os { namespace lumin { extern std::string GetPackageTempPath(); } } }
 #endif
 
 namespace il2cpp
@@ -31,7 +35,7 @@ namespace os
         result.resize(size + 1);
         _NSGetExecutablePath(&result[0], &size);
         return result;
-#elif IL2CPP_TARGET_LINUX || IL2CPP_TARGET_ANDROID
+#elif IL2CPP_TARGET_LINUX || IL2CPP_TARGET_ANDROID || IL2CPP_TARGET_LUMIN
         char path[PATH_MAX];
         char dest[PATH_MAX + 1];
         //readlink does not null terminate
@@ -61,6 +65,8 @@ namespace os
 
 #if IL2CPP_TARGET_ANDROID
         return std::string("/data/local/tmp");
+#elif IL2CPP_TARGET_LUMIN
+        return il2cpp::os::lumin::GetPackageTempPath();
 #else
         return std::string("/tmp");
 #endif

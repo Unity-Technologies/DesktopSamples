@@ -198,6 +198,7 @@ create_domain_objects (MonoDomain *domain)
 	mono_error_assert_ok (&error);
 	mono_field_static_set_value (string_vt, string_empty_fld, empty_str);
 	domain->empty_string = empty_str;
+	mono_gc_wbarrier_generic_nostore (&domain->empty_string);
 
 	/*
 	 * Create an instance early since we can't do it when there is no memory.
@@ -205,6 +206,7 @@ create_domain_objects (MonoDomain *domain)
 	arg = mono_string_new_checked (domain, "Out of memory", &error);
 	mono_error_assert_ok (&error);
 	domain->out_of_memory_ex = mono_exception_from_name_two_strings_checked (mono_defaults.corlib, "System", "OutOfMemoryException", arg, NULL, &error);
+    mono_gc_wbarrier_generic_nostore (&domain->out_of_memory_ex);	
 	mono_error_assert_ok (&error);
 
 	/* 
@@ -214,14 +216,17 @@ create_domain_objects (MonoDomain *domain)
 	arg = mono_string_new_checked (domain, "A null value was found where an object instance was required", &error);
 	mono_error_assert_ok (&error);
 	domain->null_reference_ex = mono_exception_from_name_two_strings_checked (mono_defaults.corlib, "System", "NullReferenceException", arg, NULL, &error);
+    mono_gc_wbarrier_generic_nostore (&domain->null_reference_ex);    
 	mono_error_assert_ok (&error);
 	arg = mono_string_new_checked (domain, "The requested operation caused a stack overflow.", &error);
 	mono_error_assert_ok (&error);
 	domain->stack_overflow_ex = mono_exception_from_name_two_strings_checked (mono_defaults.corlib, "System", "StackOverflowException", arg, NULL, &error);
+    mono_gc_wbarrier_generic_nostore (&domain->stack_overflow_ex);    
 	mono_error_assert_ok (&error);
 
 	/*The ephemeron tombstone i*/
 	domain->ephemeron_tombstone = mono_object_new_checked (domain, mono_defaults.object_class, &error);
+    mono_gc_wbarrier_generic_nostore (&domain->ephemeron_tombstone);    
 	mono_error_assert_ok (&error);
 
 	if (domain != old_domain) {
@@ -292,7 +297,9 @@ mono_runtime_init_checked (MonoDomain *domain, MonoThreadStartCB start_cb, MonoT
 
 	ad->data = domain;
 	domain->domain = ad;
+    mono_gc_wbarrier_generic_nostore (&domain->domain);	
 	domain->setup = setup;
+    mono_gc_wbarrier_generic_nostore (&domain->setup);	
 
 	mono_thread_attach (domain);
 
@@ -626,6 +633,7 @@ mono_domain_create_appdomain_internal (char *friendly_name, MonoAppDomainSetupHa
 	goto_if_nok (error, leave);
 	MONO_HANDLE_SETVAL (ad, data, MonoDomain*, data);
 	data->domain = MONO_HANDLE_RAW (ad);
+	mono_gc_wbarrier_generic_nostore (&data->domain);	
 	data->friendly_name = g_strdup (friendly_name);
 
 	MONO_PROFILER_RAISE (domain_name, (data, data->friendly_name));
@@ -653,6 +661,7 @@ mono_domain_create_appdomain_internal (char *friendly_name, MonoAppDomainSetupHa
 	goto_if_nok (error, leave);
 
 	data->setup = MONO_HANDLE_RAW (copy_app_domain_setup (data, setup, error));
+	mono_gc_wbarrier_generic_nostore (&data->setup);
 	if (!mono_error_ok (error)) {
 		g_free (data->friendly_name);
 		goto leave;
@@ -2072,12 +2081,18 @@ mono_domain_assembly_search (MonoAssemblyName *aname,
 	GSList *tmp;
 	MonoAssembly *ass;
 	gboolean refonly = GPOINTER_TO_UINT (user_data);
+	const gboolean strong_name = aname->public_key_token[0] != 0;
+	/* If it's not a strong name, any version that has the right simple
+	 * name is good enough to satisfy the request.  .NET Framework also
+	 * ignores case differences in this case. */
+	const MonoAssemblyNameEqFlags eq_flags = strong_name ? MONO_ANAME_EQ_IGNORE_CASE :
+	(MONO_ANAME_EQ_IGNORE_PUBKEY | MONO_ANAME_EQ_IGNORE_VERSION | MONO_ANAME_EQ_IGNORE_CASE);
 
 	mono_domain_assemblies_lock (domain);
 	for (tmp = domain->domain_assemblies; tmp; tmp = tmp->next) {
 		ass = (MonoAssembly *)tmp->data;
 		/* Dynamic assemblies can't match here in MS.NET */
-		if (assembly_is_dynamic (ass) || refonly != ass->ref_only || !mono_assembly_names_equal (aname, &ass->aname))
+		if (assembly_is_dynamic (ass) || refonly != ass->ref_only || !mono_assembly_names_equal_flags (aname, &ass->aname, eq_flags))
 			continue;
 
 		mono_domain_assemblies_unlock (domain);
@@ -2264,7 +2279,7 @@ ves_icall_System_AppDomain_InternalUnload (gint32 domain_id, MonoError *error)
 		return;
 
 	MonoException *exc = NULL;
-	mono_domain_try_unload (domain, (MonoObject**)&exc);
+	mono_domain_try_unload (domain, (MonoObject**)&exc, NULL);
 	if (exc)
 		mono_error_set_exception_instance (error, exc);
 }
@@ -2630,7 +2645,7 @@ void
 mono_domain_unload (MonoDomain *domain)
 {
 	MonoObject *exc = NULL;
-	mono_domain_try_unload (domain, &exc);
+	mono_domain_try_unload (domain, &exc, NULL);
 }
 
 static MonoThreadInfoWaitRet
@@ -2646,9 +2661,12 @@ guarded_wait (MonoThreadHandle *thread_handle, guint32 timeout, gboolean alertab
 }
 
 /**
- * mono_domain_unload:
+ * mono_domain_try_unload:
  * \param domain The domain to unload
  * \param exc Exception information
+ * \param callback Passes exception information back to caller before domain is unloaded
+ *
+ *  NOTE: If the callback param is not null the domain unload will continue after executing the callback.
  *
  *  Unloads an appdomain. Follows the process outlined in:
  *  http://blogs.gotdotnet.com/cbrumme
@@ -2665,7 +2683,7 @@ guarded_wait (MonoThreadHandle *thread_handle, guint32 timeout, gboolean alertab
  *  process could end up trying to abort the current thread.
  */
 void
-mono_domain_try_unload (MonoDomain *domain, MonoObject **exc)
+mono_domain_try_unload (MonoDomain *domain, MonoObject **exc, MonoUnityExceptionFunc callback)
 {
 	MonoError error;
 	MonoThreadHandle *thread_handle;
@@ -2711,10 +2729,14 @@ mono_domain_try_unload (MonoDomain *domain, MonoObject **exc)
 	}
 
 	if (*exc) {
-		/* Roll back the state change */
-		domain->state = MONO_APPDOMAIN_CREATED;
-		mono_domain_set (caller_domain, FALSE);
-		return;
+		if (callback != NULL)
+			callback (*exc);
+		else {
+			/* Roll back the state change */
+			domain->state = MONO_APPDOMAIN_CREATED;
+			mono_domain_set (caller_domain, FALSE);
+			return;
+		}
 	}
 	mono_domain_set (caller_domain, FALSE);
 

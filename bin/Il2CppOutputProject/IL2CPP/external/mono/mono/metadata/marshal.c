@@ -1616,9 +1616,11 @@ emit_ptr_to_object_conv (MonoMethodBuilder *mb, MonoType *type, MonoMarshalConv 
 		mono_mb_emit_byte (mb, CEE_STIND_REF);
 		break;
 	}
-	case MONO_MARSHAL_CONV_ARRAY_LPARRAY:
-		g_error ("Structure field of type %s can't be marshalled as LPArray", mono_class_from_mono_type (type)->name);
+	case MONO_MARSHAL_CONV_ARRAY_LPARRAY: {
+		char *msg = g_strdup_printf ("Structure field of type %s can't be marshalled as LPArray", mono_class_from_mono_type (type)->name);
+		mono_mb_emit_exception_marshal_directive (mb, msg);
 		break;
+	}
 
 #ifndef DISABLE_COM
 	case MONO_MARSHAL_CONV_OBJECT_INTERFACE:
@@ -1823,6 +1825,10 @@ emit_object_to_ptr_conv (MonoMethodBuilder *mb, MonoType *type, MonoMarshalConv 
 
 		if (type->type == MONO_TYPE_SZARRAY) {
 			eklass = type->data.klass;
+		} else if (type->type == MONO_TYPE_ARRAY) {
+			eklass = type->data.array->eklass;
+			if (!eklass->blittable)
+				g_assert_not_reached ();
 		} else {
 			g_assert_not_reached ();
 		}
@@ -3930,6 +3936,11 @@ get_runtime_invoke_type (MonoType *t, gboolean ret)
 	if (t->byref) {
 		if (t->type == MONO_TYPE_GENERICINST && mono_class_is_nullable (mono_class_from_mono_type (t)))
 			return t;
+
+		/* The result needs loaded indirectly */
+		if (ret)
+			return t;
+
 		/* Can't share this with 'I' as that needs another indirection */
 		return &mono_defaults.int_class->this_arg;
 	}
@@ -4137,8 +4148,18 @@ handle_enum:
 	}
 
 	if (sig->ret->byref) {
-		/* fixme: */
-		g_assert_not_reached ();
+		int ldind_op;
+		/* perform indirect load and return by value */
+		MonoType* ret_byval = &mono_class_from_mono_type (sig->ret)->byval_arg;
+		g_assert (!ret_byval->byref);
+		ldind_op = mono_type_to_ldind (ret_byval);
+		/* taken from similar code in mini-generic-sharing.c
+		 * we need to use mono_mb_emit_op to add method data when loading
+		 * a structure since method-to-ir needs this data for wrapper methods */
+		if (ldind_op == CEE_LDOBJ)
+			mono_mb_emit_op (mb, CEE_LDOBJ, mono_class_from_mono_type (ret_byval));
+		else
+			mono_mb_emit_byte (mb, ldind_op);
 	}
 
 	switch (sig->ret->type) {

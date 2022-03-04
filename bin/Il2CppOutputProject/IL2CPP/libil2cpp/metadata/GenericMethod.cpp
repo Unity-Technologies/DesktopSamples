@@ -18,6 +18,7 @@
 #include "utils/Il2CppHashMap.h"
 #include "il2cpp-class-internals.h"
 #include "il2cpp-runtime-metadata.h"
+#include "il2cpp-runtime-stats.h"
 #include <string>
 
 using il2cpp::metadata::GenericMetadata;
@@ -43,7 +44,7 @@ namespace metadata
         vm::Exception::Raise(vm::Exception::GetMaxmimumNestedGenericsException());
     }
 
-    const MethodInfo* GenericMethod::GetMethod(const Il2CppGenericMethod* gmethod)
+    const MethodInfo* GenericMethod::GetMethod(const Il2CppGenericMethod* gmethod, bool copyMethodPtr)
     {
         FastAutoLock lock(&il2cpp::vm::g_MetadataLock);
 
@@ -58,6 +59,14 @@ namespace metadata
         Il2CppGenericMethodMap::const_iterator iter = s_GenericMethodMap.find(gmethod);
         if (iter != s_GenericMethodMap.end())
             return iter->second;
+
+        if (copyMethodPtr)
+        {
+            Il2CppGenericMethod *newGMethod = vm::MetadataAllocGenericMethod();
+            newGMethod->methodDefinition = gmethod->methodDefinition;
+            newGMethod->context = gmethod->context;
+            gmethod = newGMethod;
+        }
 
         const MethodInfo* methodDefinition = gmethod->methodDefinition;
         Il2CppClass* declaringClass = methodDefinition->klass;
@@ -85,7 +94,6 @@ namespace metadata
         newMethod->name = methodDefinition->name;
         newMethod->is_generic = false;
         newMethod->is_inflated = true;
-        newMethod->customAttributeIndex = methodDefinition->customAttributeIndex;
         newMethod->token = methodDefinition->token;
 
         newMethod->return_type = GenericMetadata::InflateIfNeeded(methodDefinition->return_type, &gmethod->context, true);
@@ -102,16 +110,15 @@ namespace metadata
 
             if (!declaringClass->generic_class)
             {
-                const Il2CppGenericContainer* container = methodDefinition->genericContainer;
-                newMethod->genericContainer = container;
+                newMethod->genericContainerHandle = methodDefinition->genericContainerHandle;
             }
 
-            newMethod->methodDefinition = methodDefinition->methodDefinition;
+            newMethod->methodMetadataHandle = methodDefinition->methodMetadataHandle;
         }
         else
         {
             // we only need RGCTX for generic instance methods
-            newMethod->rgctx_data = GenericMetadata::InflateRGCTX(methodDefinition->methodDefinition->rgctxStartIndex, methodDefinition->methodDefinition->rgctxCount, &gmethod->context);
+            newMethod->rgctx_data = GenericMetadata::InflateRGCTX(gmethod->methodDefinition->klass->image, gmethod->methodDefinition->token, &gmethod->context);
         }
 
         newMethod->invoker_method = MetadataCache::GetInvokerMethodPointer(methodDefinition, &gmethod->context);
@@ -156,6 +163,11 @@ namespace metadata
         output.append(FormatGenericArguments(gmethod->context.method_inst));
 
         return output;
+    }
+
+    void GenericMethod::ClearStatics()
+    {
+        s_GenericMethodMap.clear();
     }
 } /* namespace vm */
 } /* namespace il2cpp */

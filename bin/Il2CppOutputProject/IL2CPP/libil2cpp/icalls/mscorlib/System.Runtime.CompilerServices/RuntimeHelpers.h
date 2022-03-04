@@ -24,9 +24,7 @@ namespace CompilerServices
         static int get_OffsetToStringData(void);
         static void InitializeArray(Il2CppArray* arr, intptr_t ptr);
 
-#if NET_4_0
         static bool SufficientExecutionStack();
-#endif
     };
 } /* namespace CompilerServices */
 } /* namespace Runtime */

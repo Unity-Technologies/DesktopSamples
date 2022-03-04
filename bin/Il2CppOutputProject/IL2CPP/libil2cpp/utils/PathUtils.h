@@ -2,7 +2,7 @@
 
 #include "il2cpp-config.h"
 #include <string>
-#include "StringView.h"
+#include "StringViewUtils.h"
 
 namespace il2cpp
 {
@@ -31,7 +31,7 @@ namespace PathUtils
     template<typename CharType>
     std::basic_string<CharType> Basename(const std::basic_string<CharType>& path)
     {
-        return Basename(utils::StringView<CharType>(path));
+        return Basename(STRING_TO_STRINGVIEW(path));
     }
 
     template<typename CharType>
@@ -65,25 +65,25 @@ namespace PathUtils
     template<typename CharType>
     std::basic_string<CharType> DirectoryName(const std::basic_string<CharType>& path)
     {
-        return DirectoryName(utils::StringView<CharType>(path));
+        return DirectoryName(STRING_TO_STRINGVIEW(path));
     }
 
     template<typename CharType>
     std::basic_string<CharType> Combine(const std::basic_string<CharType>& path1, const std::basic_string<CharType>& path2)
     {
-        return Combine(utils::StringView<CharType>(path1), utils::StringView<CharType>(path2));
+        return Combine(STRING_TO_STRINGVIEW(path1), STRING_TO_STRINGVIEW(path2));
     }
 
     template<typename CharType>
     std::basic_string<CharType> Combine(const std::basic_string<CharType>& path1, const utils::StringView<CharType>& path2)
     {
-        return Combine(utils::StringView<CharType>(path1), path2);
+        return Combine(STRING_TO_STRINGVIEW(path1), path2);
     }
 
     template<typename CharType>
     std::basic_string<CharType> Combine(const utils::StringView<CharType>& path1, const std::basic_string<CharType>& path2)
     {
-        return Combine(path1, utils::StringView<CharType>(path2));
+        return Combine(path1, STRING_TO_STRINGVIEW(path2));
     }
 }
 } /* utils */

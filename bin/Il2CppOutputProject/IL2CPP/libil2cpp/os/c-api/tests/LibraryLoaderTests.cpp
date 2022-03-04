@@ -35,7 +35,7 @@ SUITE(LibraryLoader)
         {
             palDynLib = UnityPalLibraryLoaderLoadDynamicLibrary(POSIX_DL_NAME, RTLD_LAZY);
             Il2CppNativeString libName(il2cpp::utils::StringUtils::Utf8ToNativeString(POSIX_DL_NAME));
-            classDynLib = il2cpp::os::LibraryLoader::LoadDynamicLibrary(libName);
+            classDynLib = il2cpp::os::LibraryLoader::LoadDynamicLibrary(STRING_TO_STRINGVIEW(libName));
         }
 
         ~PosixLoaderFixture()
@@ -77,7 +77,7 @@ SUITE(LibraryLoader)
         void* palDynLib = UnityPalLibraryLoaderLoadDynamicLibrary(POSIX_DL_NAME, RTLD_LAZY);
         bool palResult = UnityPalLibraryLoaderCloseLoadedLibrary(&palDynLib);
         Il2CppNativeString libName(il2cpp::utils::StringUtils::Utf8ToNativeString(POSIX_DL_NAME));
-        void* classDynLib = il2cpp::os::LibraryLoader::LoadDynamicLibrary(libName);
+        void* classDynLib = il2cpp::os::LibraryLoader::LoadDynamicLibrary(STRING_TO_STRINGVIEW(libName));
         bool classResult = il2cpp::os::LibraryLoader::CloseLoadedLibrary(classDynLib);
         CHECK_EQUAL(classResult, palResult);
     }
@@ -88,6 +88,7 @@ SUITE(LibraryLoader)
         classMethodPointer = il2cpp::os::LibraryLoader::GetFunctionPointer(classDynLib, POSIX_FUNC_NAME);
         CHECK_EQUAL(classMethodPointer, palMethodPointer);
     }
+
 #endif // IL2CPP_TARGET_POSIX
 #if defined(WINDOWS)
 
@@ -97,7 +98,7 @@ SUITE(LibraryLoader)
         {
             palDynLib = UnityPalLibraryLoaderLoadDynamicLibrary(WINDOWS_DL_NAME, RTLD_LAZY);
             Il2CppNativeString libName(il2cpp::utils::StringUtils::Utf8ToNativeString(WINDOWS_DL_NAME));
-            classDynLib = il2cpp::os::LibraryLoader::LoadDynamicLibrary(libName);
+            classDynLib = il2cpp::os::LibraryLoader::LoadDynamicLibrary(STRING_TO_STRINGVIEW(libName));
         }
 
         ~WindowsLoaderFixture()
@@ -139,7 +140,7 @@ SUITE(LibraryLoader)
         void* palDynLib = UnityPalLibraryLoaderLoadDynamicLibrary(WINDOWS_DL_NAME, RTLD_LAZY);
         bool palResult = UnityPalLibraryLoaderCloseLoadedLibrary(&palDynLib);
         Il2CppNativeString libName(il2cpp::utils::StringUtils::Utf8ToNativeString(WINDOWS_DL_NAME));
-        void* classDynLib = il2cpp::os::LibraryLoader::LoadDynamicLibrary(libName);
+        void* classDynLib = il2cpp::os::LibraryLoader::LoadDynamicLibrary(STRING_TO_STRINGVIEW(libName));
         bool classResult = il2cpp::os::LibraryLoader::CloseLoadedLibrary(classDynLib);
         CHECK_EQUAL(classResult, palResult);
     }

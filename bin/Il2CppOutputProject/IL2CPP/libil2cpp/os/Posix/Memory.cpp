@@ -1,6 +1,6 @@
 #include "il2cpp-config.h"
 
-#if IL2CPP_TARGET_POSIX || IL2CPP_TARGET_N3DS
+#if IL2CPP_TARGET_POSIX || IL2CPP_TARGET_N3DS && !RUNTIME_TINY
 
 #include "os/Memory.h"
 #include <stdint.h>

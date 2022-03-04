@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if NET_4_0
 #include "il2cpp-config.h"
 #include "Number.h"
 #include "utils/StringUtils.h"
@@ -688,4 +687,3 @@ namespace System
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

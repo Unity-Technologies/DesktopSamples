@@ -15,8 +15,8 @@
 
 #include <limits>
 
-
-using namespace il2cpp;
+#include "Baselib.h"
+#include "Cpp/Atomic.h"
 
 
 // Mostly follows the algorithm outlined in "Implementing Fast Java Monitors with Relaxed-Locks".
@@ -30,10 +30,10 @@ using namespace il2cpp;
 ///
 // NOTE: We do *NOT* allow deletion of monitors as threads may be hanging on to monitors even as they
 //  are already back on the free list (and maybe even in use somewhere else already).
-struct MonitorData : public utils::ThreadSafeFreeListNode
+struct MonitorData : public il2cpp::utils::ThreadSafeFreeListNode
 {
-    static const os::Thread::ThreadId kCanBeAcquiredByOtherThread = os::Thread::kInvalidThreadId;
-    static const os::Thread::ThreadId kHasBeenReturnedToFreeList = (os::Thread::ThreadId)-1;
+    static const il2cpp::os::Thread::ThreadId kCanBeAcquiredByOtherThread = il2cpp::os::Thread::kInvalidThreadId;
+    static const il2cpp::os::Thread::ThreadId kHasBeenReturnedToFreeList = (il2cpp::os::Thread::ThreadId)-1;
 
     /// ID of thread that currently has the object locked or one of the two values above.
     ///
@@ -46,7 +46,7 @@ struct MonitorData : public utils::ThreadSafeFreeListNode
     ///    thread ID first.
     /// 3) Contains kHasBeenReturnedToFreeList. Means monitor is not attached to any object and can be
     ///    acquired by any thread *but* only through the free list.
-    ALIGN_TYPE(8) volatile uint64_t owningThreadId;
+    baselib::atomic<il2cpp::os::Thread::ThreadId> owningThreadId;
 
     /// Number of times the object has been locked on the owning thread. Everything above 1 indicates
     /// a recursive lock.
@@ -55,16 +55,16 @@ struct MonitorData : public utils::ThreadSafeFreeListNode
 
     /// Semaphore used to signal other blocked threads that the monitor has become available.
     /// The "ready queue" is implicit in the list of threads waiting on this semaphore.
-    os::Semaphore semaphore;
+    il2cpp::os::Semaphore semaphore;
 
     /// Number of threads that are already waiting or are about to wait for a lock on the monitor.
-    volatile uint32_t numThreadsWaitingForSemaphore;
+    baselib::atomic<uint32_t> numThreadsWaitingForSemaphore;
 
     /// Event that a waiting thread fires to acknowledge that it has been kicked off a monitor by the thread
     /// already holding a lock on the object being waited for. This happens when the locking thread decides
     /// to deflate the locked object and thus kill the monitor but then some other thread comes along and
     /// decides to wait on the monitor-to-be-killed.
-    os::Event flushAcknowledged;
+    il2cpp::os::Event flushAcknowledged;
 
     /// Node in list of waiting threads.
     ///
@@ -73,7 +73,7 @@ struct MonitorData : public utils::ThreadSafeFreeListNode
     /// nodes which may be returned by the pulsing thread.
     ///
     /// NOTE: Every wait node must be cleaned up by the wait thread that allocated it.
-    struct PulseWaitingListNode : public utils::ThreadSafeFreeListNode
+    struct PulseWaitingListNode : public il2cpp::utils::ThreadSafeFreeListNode
     {
         enum State
         {
@@ -136,30 +136,33 @@ struct MonitorData : public utils::ThreadSafeFreeListNode
         return (owningThreadId != kCanBeAcquiredByOtherThread && owningThreadId != kHasBeenReturnedToFreeList);
     }
 
-    bool TryAcquire(uint64_t threadId)
+    bool TryAcquire(size_t threadId)
     {
-        return (os::Atomic::CompareExchange64(&owningThreadId, threadId, kCanBeAcquiredByOtherThread) == kCanBeAcquiredByOtherThread);
+        // The compare_exchange_strong method can change its first argument.
+        // We don't care about the changed valuem, though, so ignore it.
+        il2cpp::os::Thread::ThreadId local = kCanBeAcquiredByOtherThread;
+        return owningThreadId.compare_exchange_strong(local, threadId);
     }
 
     void Unacquire()
     {
-        IL2CPP_ASSERT(owningThreadId == os::Thread::CurrentThreadId());
-        os::Atomic::Exchange64(&owningThreadId, kCanBeAcquiredByOtherThread);
+        IL2CPP_ASSERT(owningThreadId == il2cpp::os::Thread::CurrentThreadId());
+        owningThreadId = kCanBeAcquiredByOtherThread;
     }
 
     /// Mark current thread as being blocked in Monitor.Enter(), i.e. as "ready to acquire monitor
     /// whenever it becomes available."
     void AddCurrentThreadToReadyList()
     {
-        os::Atomic::Increment(&numThreadsWaitingForSemaphore);
-        vm::Thread::SetState(vm::Thread::Current(), vm::kThreadStateWaitSleepJoin);
+        numThreadsWaitingForSemaphore++;
+        il2cpp::vm::Thread::SetState(il2cpp::vm::Thread::Current(), il2cpp::vm::kThreadStateWaitSleepJoin);
     }
 
     /// Mark current thread is no longer being blocked on the monitor.
     int RemoveCurrentThreadFromReadyList()
     {
-        int numRemainingWaitingThreads = os::Atomic::Decrement(&numThreadsWaitingForSemaphore);
-        vm::Thread::ClrState(vm::Thread::Current(), vm::kThreadStateWaitSleepJoin);
+        int numRemainingWaitingThreads = --numThreadsWaitingForSemaphore;
+        il2cpp::vm::Thread::ClrState(il2cpp::vm::Thread::Current(), il2cpp::vm::kThreadStateWaitSleepJoin);
         return numRemainingWaitingThreads;
     }
 
@@ -183,7 +186,7 @@ struct MonitorData : public utils::ThreadSafeFreeListNode
         {
             PulseWaitingListNode* nextNode = threadsWaitingForPulse;
             node->nextNode = nextNode;
-            if (os::Atomic::CompareExchangePointer(&threadsWaitingForPulse, node, nextNode) == nextNode)
+            if (il2cpp::os::Atomic::CompareExchangePointer(&threadsWaitingForPulse, node, nextNode) == nextNode)
                 break;
         }
     }
@@ -192,7 +195,7 @@ struct MonitorData : public utils::ThreadSafeFreeListNode
     /// NOTE: Calling thread *must* have the monitor locked.
     PulseWaitingListNode* PopNextFromPulseWaitingList()
     {
-        IL2CPP_ASSERT(owningThreadId == os::Thread::CurrentThreadId());
+        IL2CPP_ASSERT(owningThreadId == il2cpp::os::Thread::CurrentThreadId());
 
         PulseWaitingListNode* head = threadsWaitingForPulse;
         if (!head)
@@ -203,7 +206,7 @@ struct MonitorData : public utils::ThreadSafeFreeListNode
         // unlink the node and the node will stay on the list until the waiting thread
         // cleans up the list.
         PulseWaitingListNode* next = head->nextNode;
-        if (os::Atomic::CompareExchangePointer(&threadsWaitingForPulse, next, head) == head)
+        if (il2cpp::os::Atomic::CompareExchangePointer(&threadsWaitingForPulse, next, head) == head)
             head->nextNode = NULL;
 
         return head;
@@ -213,7 +216,7 @@ struct MonitorData : public utils::ThreadSafeFreeListNode
     /// NOTE: Calling thread *must* have the monitor locked.
     bool RemoveFromPulseWaitingList(PulseWaitingListNode* node)
     {
-        IL2CPP_ASSERT(owningThreadId == os::Thread::CurrentThreadId());
+        IL2CPP_ASSERT(owningThreadId == il2cpp::os::Thread::CurrentThreadId());
 
         // This function works only because threads calling Wait() on the monitor will only
         // ever *prepend* nodes to the list. This means that only the "threadsWaitingForPulse"
@@ -239,7 +242,7 @@ struct MonitorData : public utils::ThreadSafeFreeListNode
             {
                 // We may have to change "threadsWaitingForPulse" and thus have to synchronize
                 // with other threads.
-                if (os::Atomic::CompareExchangePointer(&threadsWaitingForPulse, node->nextNode, node) != node)
+                if (il2cpp::os::Atomic::CompareExchangePointer(&threadsWaitingForPulse, node->nextNode, node) != node)
                 {
                     // One or more other threads have changed the list.
                     goto tryAgain;
@@ -255,25 +258,25 @@ struct MonitorData : public utils::ThreadSafeFreeListNode
     }
 };
 
-utils::ThreadSafeFreeList<MonitorData> MonitorData::s_FreeList;
-utils::ThreadSafeFreeList<MonitorData::PulseWaitingListNode> MonitorData::PulseWaitingListNode::s_FreeList;
+il2cpp::utils::ThreadSafeFreeList<MonitorData> MonitorData::s_FreeList;
+il2cpp::utils::ThreadSafeFreeList<MonitorData::PulseWaitingListNode> MonitorData::PulseWaitingListNode::s_FreeList;
 
 static MonitorData* GetMonitorAndThrowIfNotLockedByCurrentThread(Il2CppObject* obj)
 {
     // Fetch monitor data.
-    MonitorData* monitor = os::Atomic::ReadPointer(&obj->monitor);
+    MonitorData* monitor = il2cpp::os::Atomic::ReadPointer(&obj->monitor);
     if (!monitor)
     {
         // No one locked this object.
-        vm::Exception::Raise(vm::Exception::GetSynchronizationLockException("Object is not locked."));
+        il2cpp::vm::Exception::Raise(il2cpp::vm::Exception::GetSynchronizationLockException("Object is not locked."));
     }
 
     // Throw SynchronizationLockException if we're not holding a lock.
     // NOTE: Unlike .NET, Mono simply ignores this and does not throw.
-    uint64_t currentThreadId = os::Thread::CurrentThreadId();
+    uint64_t currentThreadId = il2cpp::os::Thread::CurrentThreadId();
     if (monitor->owningThreadId != currentThreadId)
     {
-        vm::Exception::Raise(vm::Exception::GetSynchronizationLockException
+        il2cpp::vm::Exception::Raise(il2cpp::vm::Exception::GetSynchronizationLockException
                 ("Object has not been locked by this thread."));
     }
 
@@ -291,21 +294,20 @@ namespace vm
 
     bool Monitor::TryEnter(Il2CppObject* obj, uint32_t timeOutMilliseconds)
     {
-        uint64_t currentThreadId = os::Thread::CurrentThreadId();
+        size_t currentThreadId = il2cpp::os::Thread::CurrentThreadId();
 
         while (true)
         {
-            MonitorData* installedMonitor = os::Atomic::ReadPointer(&obj->monitor);
+            MonitorData* installedMonitor = il2cpp::os::Atomic::ReadPointer(&obj->monitor);
             if (!installedMonitor)
             {
                 // Set up a new monitor.
                 MonitorData* newlyAllocatedMonitorForThisThread = MonitorData::s_FreeList.Allocate();
-                IL2CPP_ASSERT(os::Atomic::Read64((int64_t*)&newlyAllocatedMonitorForThisThread->owningThreadId) == MonitorData::kHasBeenReturnedToFreeList
-                    && "Monitor on freelist cannot be owned by thread!");
-                os::Atomic::Exchange64(&newlyAllocatedMonitorForThisThread->owningThreadId, currentThreadId);
+                il2cpp::os::Thread::ThreadId previousOwnerThreadId = newlyAllocatedMonitorForThisThread->owningThreadId.exchange(currentThreadId);
+                IL2CPP_ASSERT(previousOwnerThreadId == MonitorData::kHasBeenReturnedToFreeList && "Monitor on freelist cannot be owned by thread!");
 
                 // Try to install the monitor on the object (aka "inflate" the object).
-                if (os::Atomic::CompareExchangePointer(&obj->monitor, newlyAllocatedMonitorForThisThread, (MonitorData*)NULL) == NULL)
+                if (il2cpp::os::Atomic::CompareExchangePointer(&obj->monitor, newlyAllocatedMonitorForThisThread, (MonitorData*)NULL) == NULL)
                 {
                     // Done. There was no contention on this object. This is
                     // the fast path.
@@ -317,14 +319,14 @@ namespace vm
                 else
                 {
                     // Some other thread raced us and won. Retry.
-                    os::Atomic::Exchange64(&newlyAllocatedMonitorForThisThread->owningThreadId, MonitorData::kHasBeenReturnedToFreeList);
+                    newlyAllocatedMonitorForThisThread->owningThreadId = MonitorData::kHasBeenReturnedToFreeList;
                     MonitorData::s_FreeList.Release(newlyAllocatedMonitorForThisThread);
                     continue;
                 }
             }
 
             // Object was locked previously. See if we already have the lock.
-            if (os::Atomic::Read64(&installedMonitor->owningThreadId) == currentThreadId)
+            if (installedMonitor->owningThreadId == currentThreadId)
             {
                 // Yes, recursive lock. Just increase count.
                 ++installedMonitor->recursiveLockingCount;
@@ -340,7 +342,7 @@ namespace vm
                 // TryAquire, dont return, unaquire the installedMonitor, go back through the logic again to grab a
                 // a valid monitor.
 
-                if (!obj->monitor)
+                if (il2cpp::os::Atomic::ReadPointer(&obj->monitor) != installedMonitor)
                 {
                     installedMonitor->Unacquire();
                     continue;
@@ -360,7 +362,7 @@ namespace vm
 
             // Object was locked by other thread. Let the monitor know we are waiting for a lock.
             installedMonitor->AddCurrentThreadToReadyList();
-            if (os::Atomic::ReadPointer(&obj->monitor) != installedMonitor)
+            if (il2cpp::os::Atomic::ReadPointer(&obj->monitor) != installedMonitor)
             {
                 // Another thread deflated the object while we tried to lock it. Get off
                 // the monitor.
@@ -383,7 +385,7 @@ namespace vm
             //  still get kicked off the monitor.
 
             // Wait for the locking thread to signal us.
-            while (os::Atomic::ReadPointer(&obj->monitor) == installedMonitor)
+            while (il2cpp::os::Atomic::ReadPointer(&obj->monitor) == installedMonitor)
             {
                 // Try to grab the object for ourselves.
                 if (installedMonitor->TryAcquire(currentThreadId))
@@ -396,7 +398,7 @@ namespace vm
                 }
 
                 // Wait for owner to signal us.
-                os::WaitStatus waitStatus;
+                il2cpp::os::WaitStatus waitStatus;
                 try
                 {
                     if (timeOutMilliseconds != std::numeric_limits<uint32_t>::max())
@@ -435,7 +437,7 @@ namespace vm
                     // We solve this by simply trying to acquire ownership of the monitor if we were the last
                     // waiting thread and if that succeeds, we simply change from returning with a time out
                     // failure to returning with a successful lock.
-                    if (!newNumWaitingThreads && os::Atomic::ReadPointer(&obj->monitor) == installedMonitor)
+                    if (!newNumWaitingThreads && il2cpp::os::Atomic::ReadPointer(&obj->monitor) == installedMonitor)
                     {
                         if (installedMonitor->TryAcquire(currentThreadId))
                         {
@@ -448,7 +450,7 @@ namespace vm
 
                     // Catch the case where a timeout expired the very moment the owning thread decided to
                     // get us to vacate the monitor by sending an acknowledgement just to make sure.
-                    if (os::Atomic::ReadPointer(&obj->monitor) != installedMonitor)
+                    if (il2cpp::os::Atomic::ReadPointer(&obj->monitor) != installedMonitor)
                         installedMonitor->flushAcknowledged.Set();
 
                     return false;
@@ -479,7 +481,7 @@ namespace vm
         }
 
         // See if there are already threads ready to take over the lock.
-        if (os::Atomic::Add(&monitor->numThreadsWaitingForSemaphore, 0) != 0)
+        if (monitor->numThreadsWaitingForSemaphore != 0)
         {
             // Yes, so relinquish ownership of the object and signal the next thread.
             monitor->Unacquire();
@@ -504,13 +506,13 @@ namespace vm
             // Fix: double check 'numThreadsWaitingForSemaphore' after we've unacquired
             // Worst case might be an extra post, which will just incur an additional
             // pass through the loop with an extra attempt to acquire the monitor with a CAS
-            if (os::Atomic::Add(&monitor->numThreadsWaitingForSemaphore, 0) != 0)
+            if (monitor->numThreadsWaitingForSemaphore != 0)
                 monitor->semaphore.Post();
         }
         else
         {
             // Seems like no other thread is interested in the monitor. Deflate the object.
-            os::Atomic::ExchangePointer(&obj->monitor, (MonitorData*)NULL);
+            il2cpp::os::Atomic::ExchangePointer(&obj->monitor, (MonitorData*)NULL);
 
             // At this point the monitor is no longer associated with the object and we cannot safely
             // "re-attach" it. We need to make sure that all threads still having a reference to the
@@ -520,7 +522,7 @@ namespace vm
             //  we must not let go of the monitor until we have kicked all other threads off of it.
 
             monitor->flushAcknowledged.Reset();
-            while (os::Atomic::Add(&monitor->numThreadsWaitingForSemaphore, 0) != 0)
+            while (monitor->numThreadsWaitingForSemaphore != 0)
             {
                 monitor->semaphore.Post(monitor->numThreadsWaitingForSemaphore);
                 // If a thread starts waiting right after we have read numThreadsWaitingForSemaphore,
@@ -540,8 +542,8 @@ namespace vm
             //   realizing the mistake.
 
             // Release monitor back to free list.
-            IL2CPP_ASSERT(monitor->owningThreadId == os::Thread::CurrentThreadId());
-            os::Atomic::Exchange64(&monitor->owningThreadId, MonitorData::kHasBeenReturnedToFreeList);
+            IL2CPP_ASSERT(monitor->owningThreadId == il2cpp::os::Thread::CurrentThreadId());
+            monitor->owningThreadId = MonitorData::kHasBeenReturnedToFreeList;
             MonitorData::s_FreeList.Release(monitor);
         }
     }
@@ -609,14 +611,14 @@ namespace vm
 
         // Wait for pulse (if we either have a timeout or are supposed to
         // wait infinitely).
-        os::WaitStatus pulseWaitStatus = kWaitStatusSuccess;
+        il2cpp::os::WaitStatus pulseWaitStatus = kWaitStatusSuccess;
         Il2CppException* exceptionThrownDuringWait = NULL;
         if (timeoutMilliseconds != 0)
         {
             pulseWaitStatus = kWaitStatusFailure;
             try
             {
-                vm::ThreadStateSetter state(vm::kThreadStateWaitSleepJoin);
+                il2cpp::vm::ThreadStateSetter state(il2cpp::vm::kThreadStateWaitSleepJoin);
                 pulseWaitStatus = waitNode->signalWaitingThread.Wait(timeoutMilliseconds, true);
             }
             catch (Il2CppExceptionWrapper& exception)
@@ -658,7 +660,7 @@ namespace vm
         //  still holds a lock. Otherwise a lock() statement around the Wait() will throw an exception,
         //  for example.
         if (exceptionThrownDuringWait)
-            vm::Exception::Raise(exceptionThrownDuringWait);
+            il2cpp::vm::Exception::Raise(exceptionThrownDuringWait);
 
         ////TODO: According to MSDN, the timeout indicates whether we reacquired the lock in time
         ////    and not just whether the pulse came in time. Thus the current code is imprecise.

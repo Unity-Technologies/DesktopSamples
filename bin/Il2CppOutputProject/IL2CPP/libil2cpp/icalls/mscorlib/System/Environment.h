@@ -40,12 +40,14 @@ namespace System
         static Il2CppString* internalGetEnvironmentVariable(Il2CppString *);
         static void set_ExitCode(int32_t value);
         static void InternalSetEnvironmentVariable(Il2CppString* variable, Il2CppString* value);
-#if NET_4_0
         static bool GetIs64BitOperatingSystem();
         static int32_t GetPageSize();
         static Il2CppString* GetNewLine();
         static Il2CppString* internalGetEnvironmentVariable_native(intptr_t variable);
         static Il2CppString* get_bundled_machine_config();
+#if IL2CPP_TINY
+        static Il2CppString* GetStackTrace_internal();
+        static void FailFast_internal(Il2CppString* message);
 #endif
     };
 } /* namespace System */

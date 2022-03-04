@@ -7,6 +7,7 @@
 
 #include "gc/GarbageCollector.h"
 #include "metadata/FieldLayout.h"
+#include "os/Atomic.h"
 #include "vm/Array.h"
 #include "vm/CCW.h"
 #include "vm/Class.h"
@@ -24,8 +25,6 @@
 #include "utils/StringUtils.h"
 #include <string>
 #include <deque>
-
-using namespace il2cpp::vm;
 
 namespace il2cpp
 {
@@ -47,14 +46,14 @@ namespace InteropServices
     intptr_t Marshal::AllocCoTaskMem(int32_t size)
     {
         intptr_t result;
-        result = (intptr_t)MarshalAlloc::Allocate(size);
+        result = (intptr_t)vm::MarshalAlloc::Allocate(size);
         return result;
     }
 
     intptr_t Marshal::AllocHGlobal(intptr_t size)
     {
         intptr_t result;
-        result = (intptr_t)MarshalAlloc::AllocateHGlobal((size_t)size);
+        result = (intptr_t)vm::MarshalAlloc::AllocateHGlobal((size_t)size);
         return result;
     }
 
@@ -77,12 +76,12 @@ namespace InteropServices
 
     void Marshal::FreeCoTaskMem(intptr_t ptr)
     {
-        MarshalAlloc::Free(reinterpret_cast<void*>(ptr));
+        vm::MarshalAlloc::Free(reinterpret_cast<void*>(ptr));
     }
 
     void Marshal::FreeHGlobal(intptr_t hglobal)
     {
-        MarshalAlloc::FreeHGlobal(reinterpret_cast<void*>(hglobal));
+        vm::MarshalAlloc::FreeHGlobal(reinterpret_cast<void*>(hglobal));
     }
 
     bool Marshal::IsComObject(Il2CppObject* o)
@@ -137,7 +136,7 @@ namespace InteropServices
     Il2CppDelegate* Marshal::GetDelegateForFunctionPointerInternal(intptr_t ptr, Il2CppReflectionType* t)
     {
         Il2CppClass* delegateType = il2cpp::vm::Class::FromIl2CppType(t->type);
-        return PlatformInvoke::MarshalFunctionPointerToDelegate(reinterpret_cast<void*>(ptr), delegateType);
+        return vm::PlatformInvoke::MarshalFunctionPointerToDelegate(reinterpret_cast<void*>(ptr), delegateType);
     }
 
     intptr_t Marshal::GetFunctionPointerForDelegateInternal(Il2CppDelegate* d)
@@ -162,7 +161,7 @@ namespace InteropServices
         if (pUnk == 0)
             return NULL;
 
-        return RCW::GetOrCreateFromIUnknown(reinterpret_cast<Il2CppIUnknown*>(pUnk), il2cpp_defaults.il2cpp_com_object_class);
+        return vm::RCW::GetOrCreateFromIUnknown(reinterpret_cast<Il2CppIUnknown*>(pUnk), il2cpp_defaults.il2cpp_com_object_class);
     }
 
     Il2CppString* Marshal::PtrToStringBSTR(intptr_t ptr)
@@ -178,16 +177,16 @@ namespace InteropServices
         char* value = (char*)ptr;
         if (value == NULL)
             return NULL;
-        return String::New(value);
+        return vm::String::New(value);
     }
 
     Il2CppString* Marshal::PtrToStringAnsi_mscorlib_System_String_mscorlib_System_IntPtr_mscorlib_System_Int32(intptr_t ptr, int32_t len)
     {
         char* value = (char*)ptr;
         if (value == NULL)
-            Exception::Raise(Exception::GetArgumentNullException("ptr"));
+            vm::Exception::Raise(vm::Exception::GetArgumentNullException("ptr"));
 
-        return String::NewLen(value, len);
+        return vm::String::NewLen(value, len);
     }
 
     Il2CppString* Marshal::PtrToStringUni_mscorlib_System_String_mscorlib_System_IntPtr(intptr_t ptr)
@@ -202,16 +201,16 @@ namespace InteropServices
         while (*t++)
             len++;
 
-        return String::NewUtf16(value, len);
+        return vm::String::NewUtf16(value, len);
     }
 
     Il2CppString* Marshal::PtrToStringUni_mscorlib_System_String_mscorlib_System_IntPtr_mscorlib_System_Int32(intptr_t ptr, int32_t len)
     {
         Il2CppChar* value = reinterpret_cast<Il2CppChar*>(ptr);
         if (value == NULL)
-            Exception::Raise(Exception::GetArgumentNullException("ptr"));
+            vm::Exception::Raise(vm::Exception::GetArgumentNullException("ptr"));
 
-        return String::NewUtf16(value, len);
+        return vm::String::NewUtf16(value, len);
     }
 
     Il2CppObject* Marshal::PtrToStructure(intptr_t ptr, Il2CppReflectionType* structureType)
@@ -220,31 +219,31 @@ namespace InteropServices
             return NULL;
 
         if (structureType == NULL)
-            Exception::Raise(Exception::GetArgumentNullException("structureType"));
+            vm::Exception::Raise(vm::Exception::GetArgumentNullException("structureType"));
 
-        Il2CppClass* type = Class::FromIl2CppType(structureType->type);
+        Il2CppClass* type = vm::Class::FromIl2CppType(structureType->type);
 
         Il2CppTypeEnum typeType = structureType->type->type;
 
-        if (typeType == IL2CPP_TYPE_STRING || typeType == IL2CPP_TYPE_SZARRAY || (typeType == IL2CPP_TYPE_CLASS && !Class::HasDefaultConstructor(type)))
+        if (typeType == IL2CPP_TYPE_STRING || typeType == IL2CPP_TYPE_SZARRAY || (typeType == IL2CPP_TYPE_CLASS && !vm::Class::HasDefaultConstructor(type)))
         {
-            Exception::Raise(Exception::GetMissingMethodException("No parameterless constructor defined for this object."));
+            vm::Exception::Raise(vm::Exception::GetMissingMethodException("No parameterless constructor defined for this object."));
         }
 
         if (type->interopData != NULL && type->interopData->pinvokeMarshalFromNativeFunction != NULL)
         {
-            Il2CppObject* result = Object::New(type);
+            Il2CppObject* result = vm::Object::New(type);
 
             if (typeType == IL2CPP_TYPE_CLASS)
             {
                 typedef void (*Constructor)(Il2CppObject*);
-                Constructor ctor = reinterpret_cast<Constructor>(Class::GetMethodFromName(type, ".ctor", 0)->methodPointer);
+                Constructor ctor = reinterpret_cast<Constructor>(vm::Class::GetMethodFromName(type, ".ctor", 0)->methodPointer);
                 ctor(result);
                 utils::MarshalingUtils::MarshalStructFromNative(reinterpret_cast<void*>(ptr), result, type->interopData);
             }
             else
             {
-                utils::MarshalingUtils::MarshalStructFromNative(reinterpret_cast<void*>(ptr), Object::Unbox(result), type->interopData);
+                utils::MarshalingUtils::MarshalStructFromNative(reinterpret_cast<void*>(ptr), vm::Object::Unbox(result), type->interopData);
             }
 
             return result;
@@ -255,13 +254,13 @@ namespace InteropServices
         {
             // We may also need to throw a NotSupportedException for an ArgIterator.
             if (structureType->type->type == IL2CPP_TYPE_VOID)
-                Exception::Raise(Exception::GetNotSupportedException("Cannot dynamically create an instance of System.Void."));
+                vm::Exception::Raise(vm::Exception::GetNotSupportedException("Cannot dynamically create an instance of System.Void."));
 
             // PtrToStructure is supposed to throw on enums
             if (!type->enumtype)
             {
-                Il2CppObject* result = Object::New(type);
-                memcpy(Object::Unbox(result), reinterpret_cast<void*>(ptr), type->native_size);
+                Il2CppObject* result = vm::Object::New(type);
+                memcpy(vm::Object::Unbox(result), reinterpret_cast<void*>(ptr), type->native_size);
                 return result;
             }
         }
@@ -269,9 +268,9 @@ namespace InteropServices
         // If we got this far, throw an exception
 
         if (type->generic_class != NULL || type->is_generic)
-            Exception::Raise(Exception::GetArgumentException("structure", "The specified object must not be an instance of a generic type."));
+            vm::Exception::Raise(vm::Exception::GetArgumentException("structure", "The specified object must not be an instance of a generic type."));
 
-        Exception::Raise(Exception::GetArgumentException("structure", "The specified structure must be blittable or have layout information."));
+        vm::Exception::Raise(vm::Exception::GetArgumentException("structure", "The specified structure must be blittable or have layout information."));
         return NULL;
     }
 
@@ -281,14 +280,14 @@ namespace InteropServices
             return;
 
         if (structure == NULL)
-            Exception::Raise(Exception::GetArgumentNullException("structure"));
+            vm::Exception::Raise(vm::Exception::GetArgumentNullException("structure"));
 
         Il2CppClass* type = structure->klass;
 
         // This is only legal for classes.
         if (type->byval_arg.type != IL2CPP_TYPE_CLASS)
         {
-            Exception::Raise(Exception::GetArgumentException("structure", "The specified structure must be an instance of a formattable class."));
+            vm::Exception::Raise(vm::Exception::GetArgumentException("structure", "The specified structure must be an instance of a formattable class."));
         }
 
         if (type->interopData != NULL && type->interopData->pinvokeMarshalFromNativeFunction != NULL)
@@ -298,9 +297,9 @@ namespace InteropServices
         }
 
         if (type->generic_class || type->is_generic)
-            Exception::Raise(Exception::GetArgumentException("structure", "The specified object must not be an instance of a generic type."));
+            vm::Exception::Raise(vm::Exception::GetArgumentException("structure", "The specified object must not be an instance of a generic type."));
 
-        Exception::Raise(Exception::GetArgumentException("structure", "The specified structure must be blittable or have layout information."));
+        vm::Exception::Raise(vm::Exception::GetArgumentException("structure", "The specified structure must be blittable or have layout information."));
     }
 
     int32_t Marshal::QueryInterfaceInternal(intptr_t pUnk, mscorlib_System_Guid * iid, intptr_t* ppv)
@@ -350,25 +349,29 @@ namespace InteropServices
         // There's a check in mscorlib before calling this internal icall, so assert instead of full check is OK here.
         IL2CPP_ASSERT(co->klass->is_import_or_windows_runtime);
 
-        // We can't really release the COM object directly, because it might have additional
-        // fields that cache different interfaces. So let's just call its finalizer here.
-        // In order to deal with the fact that this may get called from different threads
-        // at the same time, we (atomically) register a NULL finalizer, and if another finalizer
-        // was already registered, we call it. If there was no finalizer registered, it means
-        // that we lost the race and we should just carry on.
-        gc::GarbageCollector::FinalizerCallback oldFinalizer = gc::GarbageCollector::RegisterFinalizerWithCallback(co, NULL);
-        if (oldFinalizer != NULL)
-            oldFinalizer(co, NULL);
+        int32_t newRefCount = os::Atomic::Decrement(&static_cast<Il2CppComObject*>(co)->refCount);
+        if (newRefCount == 0)
+        {
+            // We can't really release the COM object directly, because it might have additional
+            // fields that cache different interfaces. So let's just call its finalizer here.
+            // In order to deal with the fact that this may get called from different threads
+            // at the same time, we (atomically) register a NULL finalizer, and if another finalizer
+            // was already registered, we call it. If there was no finalizer registered, it means
+            // that we lost the race and we should just carry on.
+            gc::GarbageCollector::FinalizerCallback oldFinalizer = gc::GarbageCollector::RegisterFinalizerWithCallback(co, NULL);
+            if (oldFinalizer != NULL)
+                oldFinalizer(co, NULL);
+        }
 
-        return 0;
+        return newRefCount;
     }
 
     int Marshal::SizeOf(Il2CppReflectionType* rtype)
     {
         if (rtype == NULL)
-            Exception::Raise(Exception::GetArgumentNullException("t"));
+            vm::Exception::Raise(vm::Exception::GetArgumentNullException("t"));
 
-        Il2CppClass* typeInfo = Class::FromIl2CppType(rtype->type);
+        Il2CppClass* typeInfo = vm::Class::FromIl2CppType(rtype->type);
 
         if (typeInfo->native_size != -1)
         {
@@ -381,12 +384,12 @@ namespace InteropServices
         // So let's figure what kind of exception to throw
 
         if (typeInfo->generic_class != NULL || typeInfo->is_generic)
-            Exception::Raise(Exception::GetArgumentException("t", "The t parameter is a generic type."));
+            vm::Exception::Raise(vm::Exception::GetArgumentException("t", "The t parameter is a generic type."));
 
         std::string exceptionMessage = utils::StringUtils::Printf("Type \'%s\' cannot be marshaled as an unmanaged structure; no meaningful size or offset can be computed.",
-                Type::GetName(rtype->type, IL2CPP_TYPE_NAME_FORMAT_FULL_NAME).c_str());
+            vm::Type::GetName(rtype->type, IL2CPP_TYPE_NAME_FORMAT_FULL_NAME).c_str());
 
-        Exception::Raise(Exception::GetArgumentException(NULL, exceptionMessage.c_str()));
+        vm::Exception::Raise(vm::Exception::GetArgumentException(NULL, exceptionMessage.c_str()));
         return 0;
     }
 
@@ -403,7 +406,7 @@ namespace InteropServices
         int32_t size = utils::StringUtils::GetLength(s);
         const Il2CppChar* utf16 = utils::StringUtils::GetChars(s);
         size_t bytes = (size + 1) * 2;
-        Il2CppChar* cstr = static_cast<Il2CppChar*>(MarshalAlloc::AllocateHGlobal(bytes));
+        Il2CppChar* cstr = static_cast<Il2CppChar*>(vm::MarshalAlloc::AllocateHGlobal(bytes));
         memcpy(cstr, utf16, bytes);
         return reinterpret_cast<intptr_t>(cstr);
     }
@@ -415,7 +418,7 @@ namespace InteropServices
 
         const Il2CppChar* utf16 = utils::StringUtils::GetChars(s);
         std::string str = il2cpp::utils::StringUtils::Utf16ToUtf8(utf16);
-        char *cstr = (char*)MarshalAlloc::AllocateHGlobal(str.size() + 1);
+        char *cstr = (char*)vm::MarshalAlloc::AllocateHGlobal(str.size() + 1);
         strcpy(cstr, str.c_str());
         return reinterpret_cast<intptr_t>(cstr);
     }
@@ -423,10 +426,10 @@ namespace InteropServices
     void Marshal::StructureToPtr(Il2CppObject* structure, intptr_t ptr, bool deleteOld)
     {
         if (structure == NULL)
-            Exception::Raise(Exception::GetArgumentNullException("structure"));
+            vm::Exception::Raise(vm::Exception::GetArgumentNullException("structure"));
 
         if (ptr == 0)
-            Exception::Raise(Exception::GetArgumentNullException("ptr"));
+            vm::Exception::Raise(vm::Exception::GetArgumentNullException("ptr"));
 
         Il2CppClass* type = structure->klass;
 
@@ -435,7 +438,7 @@ namespace InteropServices
             if (deleteOld)
                 utils::MarshalingUtils::MarshalFreeStruct(reinterpret_cast<void*>(ptr), type->interopData);
 
-            void* objectPtr = (type->byval_arg.type == IL2CPP_TYPE_CLASS) ? structure : Object::Unbox(structure);
+            void* objectPtr = (type->byval_arg.type == IL2CPP_TYPE_CLASS) ? structure : vm::Object::Unbox(structure);
             utils::MarshalingUtils::MarshalStructToNative(objectPtr, reinterpret_cast<void*>(ptr), type->interopData);
             return;
         }
@@ -447,7 +450,7 @@ namespace InteropServices
             // StructureToPtr is supposed to throw on strings and enums
             if (!type->enumtype && type->byval_arg.type != IL2CPP_TYPE_STRING)
             {
-                memcpy(reinterpret_cast<void*>(ptr), Object::Unbox(structure), type->native_size);
+                memcpy(reinterpret_cast<void*>(ptr), vm::Object::Unbox(structure), type->native_size);
                 return;
             }
         }
@@ -457,14 +460,14 @@ namespace InteropServices
 
         if (type->generic_class != NULL || type->is_generic)
         {
-            exception = Exception::GetArgumentException("structure", "The specified object must not be an instance of a generic type.");
+            exception = vm::Exception::GetArgumentException("structure", "The specified object must not be an instance of a generic type.");
         }
         else
         {
-            exception = Exception::GetArgumentException("structure", "The specified structure must be blittable or have layout information.");
+            exception = vm::Exception::GetArgumentException("structure", "The specified structure must be blittable or have layout information.");
         }
 
-        Exception::Raise(exception);
+        vm::Exception::Raise(exception);
     }
 
     template<typename T>
@@ -501,12 +504,12 @@ namespace InteropServices
     void Marshal::DestroyStructure(intptr_t ptr, Il2CppReflectionType* structureType)
     {
         if (ptr == 0)
-            Exception::Raise(Exception::GetArgumentNullException("ptr"));
+            vm::Exception::Raise(vm::Exception::GetArgumentNullException("ptr"));
 
         if (structureType == NULL)
-            Exception::Raise(Exception::GetArgumentNullException("structureType"));
+            vm::Exception::Raise(vm::Exception::GetArgumentNullException("structureType"));
 
-        Il2CppClass* type = Class::FromIl2CppType(structureType->type);
+        Il2CppClass* type = vm::Class::FromIl2CppType(structureType->type);
 
         // If cleanup function exists, it will call it and return true
         // In that case, we're done.
@@ -515,7 +518,7 @@ namespace InteropServices
 
         if (type->is_generic)
         {
-            Exception::Raise(Exception::GetArgumentException("structureType", "The specified type must not be an instance of a generic type."));
+            vm::Exception::Raise(vm::Exception::GetArgumentException("structureType", "The specified type must not be an instance of a generic type."));
         }
 
         // Enums are blittable, but they don't have layout information, therefore Marshal.DestroyStructure is supposed to throw
@@ -527,7 +530,7 @@ namespace InteropServices
         }
 
         // If we got this far, throw an exception
-        Exception::Raise(Exception::GetArgumentException("structureType", "The specified type must be blittable or have layout information."));
+        vm::Exception::Raise(vm::Exception::GetArgumentException("structureType", "The specified type must be blittable or have layout information."));
     }
 
     int32_t Marshal::GetLastWin32Error()
@@ -549,7 +552,7 @@ namespace InteropServices
     intptr_t Marshal::OffsetOf(Il2CppReflectionType* t, Il2CppString* fieldName)
     {
         std::string fieldNameToFind = utils::StringUtils::Utf16ToUtf8(fieldName->chars);
-        Il2CppClass* type = Class::FromIl2CppType(t->type);
+        Il2CppClass* type = vm::Class::FromIl2CppType(t->type);
 
         FieldInfo* field = vm::Class::GetFieldFromName(type, fieldNameToFind.c_str());
         if (field == NULL || (vm::Field::GetFlags(field) & FIELD_ATTRIBUTE_STATIC))
@@ -583,20 +586,23 @@ namespace InteropServices
                 // Determine how much the previous field added to the offset.
                 if (previousField != NULL)
                 {
-                    if (!Type::IsStruct(previousField->type))
+                    if (!vm::Type::IsStruct(previousField->type))
                     {
                         size_t managedOffset = field->offset - previousField->offset;
-                        if (type->packingSize == 0)
-                            offset += managedOffset;
-                        else if (managedOffset != 0) // overlapping fields have a zero offset
+                        if (managedOffset != 0) // overlapping fields have a zero offset
                         {
                             offset += vm::Class::GetFieldMarshaledSize(previousField);
-                            offset = RoundUpToMultiple(offset, std::min((int)type->packingSize, vm::Class::GetFieldMarshaledSize(field)));
                         }
                     }
                     else
                     {
-                        offset += Class::FromIl2CppType(previousField->type)->native_size;
+                        offset += vm::Class::FromIl2CppType(previousField->type)->native_size;
+                    }
+
+                    if (offset != 0)
+                    {
+                        int marshaledFieldAlignment = vm::Class::GetFieldMarshaledAlignment(field);
+                        offset = RoundUpToMultiple(offset, type->packingSize == 0 ? marshaledFieldAlignment : std::min((int)type->packingSize, marshaledFieldAlignment));
                     }
                 }
                 previousField = field;
@@ -628,23 +634,21 @@ namespace InteropServices
 
     intptr_t Marshal::ReAllocCoTaskMem(intptr_t ptr, int32_t size)
     {
-        return reinterpret_cast<intptr_t>(MarshalAlloc::ReAlloc(reinterpret_cast<void*>(ptr), size));
+        return reinterpret_cast<intptr_t>(vm::MarshalAlloc::ReAlloc(reinterpret_cast<void*>(ptr), size));
     }
 
     intptr_t Marshal::ReAllocHGlobal(intptr_t ptr, intptr_t size)
     {
         if (ptr == 0)
-            Exception::RaiseOutOfMemoryException();
+            vm::Exception::RaiseOutOfMemoryException();
 
-        return reinterpret_cast<intptr_t>(MarshalAlloc::ReAllocHGlobal(reinterpret_cast<void*>(ptr), (size_t)size));
+        return reinterpret_cast<intptr_t>(vm::MarshalAlloc::ReAllocHGlobal(reinterpret_cast<void*>(ptr), (size_t)size));
     }
 
     intptr_t Marshal::UnsafeAddrOfPinnedArrayElement(Il2CppArray* arr, int32_t index)
     {
         return reinterpret_cast<intptr_t>(il2cpp_array_addr_with_size(arr, il2cpp_array_element_size(arr->klass), index));
     }
-
-#if NET_4_0
 
     intptr_t Marshal::BufferToBSTR(Il2CppArray* ptr, int32_t slen)
     {
@@ -671,16 +675,12 @@ namespace InteropServices
         IL2CPP_UNREACHABLE;
     }
 
-#endif
-
-#if NET_4_0
     intptr_t Marshal::AllocCoTaskMemSize(intptr_t sizet)
     {
-        IL2CPP_NOT_IMPLEMENTED_ICALL(Marshal::AllocCoTaskMemSize);
-        IL2CPP_UNREACHABLE;
+        intptr_t result;
+        result = (intptr_t)vm::MarshalAlloc::Allocate(sizet);
+        return result;
     }
-
-#endif
 } /* namespace InteropServices */
 } /* namespace Runtime */
 } /* namespace System */

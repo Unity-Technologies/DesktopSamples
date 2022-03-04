@@ -6,8 +6,6 @@
 #include "vm/Reflection.h"
 #include "icalls/mscorlib/System.Diagnostics/StackTrace.h"
 
-using namespace il2cpp::vm;
-
 namespace il2cpp
 {
 namespace icalls
@@ -27,19 +25,19 @@ namespace Diagnostics
         if (ta == NULL)
         {
             /* Exception is not thrown yet */
-            return Array::New(il2cpp_defaults.stack_frame_class, 0);
+            return vm::Array::New(il2cpp_defaults.stack_frame_class, 0);
         }
 
-        len = Array::GetLength(ta);
+        len = vm::Array::GetLength(ta);
 
-        res = Array::New(il2cpp_defaults.stack_frame_class, len > skip ? len - skip : 0);
+        res = vm::Array::New(il2cpp_defaults.stack_frame_class, len > skip ? len - skip : 0);
 
         for (i = skip; i < len; i++)
         {
-            Il2CppStackFrame *sf = (Il2CppStackFrame*)Object::New(il2cpp_defaults.stack_frame_class);
+            Il2CppStackFrame *sf = (Il2CppStackFrame*)vm::Object::New(il2cpp_defaults.stack_frame_class);
             MethodInfo* method = il2cpp_array_get(ta, MethodInfo*, i);
 
-            IL2CPP_OBJECT_SETREF(sf, method, Reflection::GetMethodObject(method, NULL));
+            IL2CPP_OBJECT_SETREF(sf, method, vm::Reflection::GetMethodObject(method, NULL));
 
             il2cpp_array_setref(res, i, sf);
         }

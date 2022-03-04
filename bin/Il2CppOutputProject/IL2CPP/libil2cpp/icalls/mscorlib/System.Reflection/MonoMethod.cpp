@@ -1,6 +1,7 @@
 #include "il2cpp-config.h"
 #include <stddef.h>
 #include <string>
+#include "gc/WriteBarrier.h"
 #include "icalls/mscorlib/System.Reflection/MonoMethod.h"
 #include "il2cpp-tabledefs.h"
 #include "il2cpp-class-internals.h"
@@ -19,7 +20,6 @@
 #include "vm/Type.h"
 #include "vm/GenericClass.h"
 
-using namespace il2cpp::vm;
 using il2cpp::metadata::Il2CppTypeVector;
 
 namespace il2cpp
@@ -40,7 +40,7 @@ namespace Reflection
         if (klass == NULL)
             return m;
 
-        if (!(method->flags & METHOD_ATTRIBUTE_VIRTUAL) || Class::IsInterface(klass) || method->flags & METHOD_ATTRIBUTE_NEW_SLOT)
+        if (!(method->flags & METHOD_ATTRIBUTE_VIRTUAL) || vm::Class::IsInterface(klass) || method->flags & METHOD_ATTRIBUTE_NEW_SLOT)
             return m;
 
         /*if(klass->generic_class)
@@ -64,7 +64,7 @@ namespace Reflection
         {
             void *iterator = NULL;
 
-            for (result = Class::GetMethods(klass, &iterator); result != NULL; result = Class::GetMethods(klass, &iterator))
+            for (result = vm::Class::GetMethods(klass, &iterator); result != NULL; result = vm::Class::GetMethods(klass, &iterator))
                 if (result->slot == method->slot)
                     break;
         }
@@ -85,7 +85,7 @@ namespace Reflection
         // Only return true here if we are a generic instance method
         if (method->method->is_inflated)
         {
-            const Il2CppGenericContext* context = MetadataCache::GetMethodGenericContext(method->method);
+            const Il2CppGenericContext* context = vm::MetadataCache::GetMethodGenericContext(method->method);
             return context != NULL && context->method_inst != NULL;
         }
 
@@ -96,7 +96,7 @@ namespace Reflection
     {
         const MethodInfo *method = m->method;
 
-        IL2CPP_OBJECT_SETREF(m, name, String::New(method->name));
+        IL2CPP_OBJECT_SETREF(m, name, vm::String::New(method->name));
         return m->name;
     }
 
@@ -107,7 +107,7 @@ namespace Reflection
         //instanec on the fly and populate it with the data in the metadata. Turns out that if you call GetCustomAttributes() that ends
         //up calling this function. For now, we will just return an attribute, but not yet populate it with the correct data.
 
-        Il2CppClass* typeInfo = Class::FromName(il2cpp_defaults.corlib, "System.Runtime.InteropServices", "DllImportAttribute");
+        Il2CppClass* typeInfo = vm::Class::FromName(il2cpp_defaults.corlib, "System.Runtime.InteropServices", "DllImportAttribute");
         IL2CPP_ASSERT(typeInfo != NULL);
 
         return (mscorlib_System_Runtime_InteropServices_DllImportAttribute*)il2cpp::vm::Object::New(typeInfo);
@@ -120,12 +120,12 @@ namespace Reflection
         const MethodInfo* methodInfo = method->method;
         if (methodInfo->is_inflated)
         {
-            const Il2CppGenericContext* context = MetadataCache::GetMethodGenericContext(methodInfo);
+            const Il2CppGenericContext* context = vm::MetadataCache::GetMethodGenericContext(methodInfo);
             if (context && context->method_inst)
             {
                 const Il2CppGenericInst *inst = context->method_inst;
                 count = inst->type_argc;
-                res = Array::New(il2cpp_defaults.systemtype_class, count);
+                res = vm::Array::New(il2cpp_defaults.systemtype_class, count);
 
                 for (uint32_t i = 0; i < count; i++)
                     il2cpp_array_setref(res, i, il2cpp::vm::Reflection::GetTypeObject(inst->type_argv[i]));
@@ -134,26 +134,26 @@ namespace Reflection
             }
 
             // method is inflated because it's owner is a generic instance type, extract method definition out of the method
-            IL2CPP_ASSERT(methodInfo->is_generic);
+            IL2CPP_ASSERT(methodInfo->is_generic || methodInfo->is_inflated);
             methodInfo = methodInfo->genericMethod->methodDefinition;
         }
 
-        const Il2CppGenericContainer *container = MetadataCache::GetMethodGenericContainer(methodInfo);
+        Il2CppMetadataGenericContainerHandle containerHandle = vm::MetadataCache::GetGenericContainerFromMethod(methodInfo->methodMetadataHandle);
 
-        count = container != NULL ? container->type_argc : 0;
-        res = Array::New(il2cpp_defaults.systemtype_class, count);
+        count = vm::MetadataCache::GetGenericContainerCount(containerHandle);
+        res = vm::Array::New(il2cpp_defaults.systemtype_class, count);
 
         for (uint32_t i = 0; i < count; i++)
         {
-            const Il2CppGenericParameter *param = GenericContainer::GetGenericParameter(container, i);
-            Il2CppClass *pklass = Class::FromGenericParameter(param);
+            Il2CppMetadataGenericParameterHandle  param = vm::GenericContainer::GetGenericParameter(containerHandle, i);
+            Il2CppClass *pklass = vm::Class::FromGenericParameter(param);
             il2cpp_array_setref(res, i, il2cpp::vm::Reflection::GetTypeObject(&pklass->byval_arg));
         }
 
         return res;
     }
 
-    Il2CppObject * MonoMethod::InternalInvoke(Il2CppReflectionMethod * method, Il2CppObject * thisPtr, Il2CppArray * params, Il2CppObject * * exc)
+    Il2CppObject * MonoMethod::InternalInvoke(Il2CppReflectionMethod * method, Il2CppObject * thisPtr, Il2CppArray * params, Il2CppException * * exc)
     {
         IL2CPP_NOT_IMPLEMENTED_ICALL_NO_ASSERT(MonoMethod::InternalInvoke, "Audit and look over commented code. Work in progress.");
 /*
@@ -176,21 +176,21 @@ namespace Reflection
                 //  return NULL;
                 //}
 
-                if (!Object::IsInst(thisPtr, m->klass))
+                if (!vm::Object::IsInst(thisPtr, m->klass))
                 {
                     IL2CPP_ASSERT(0);
                     //mono_gc_wbarrier_generic_store (exc, (MonoObject*) mono_exception_from_name_msg (mono_defaults.corlib, "System.Reflection", "TargetException", "Object does not match target type."));
                     return NULL;
                 }
 
-                m = Object::GetVirtualMethod(thisPtr, m);
+                m = vm::Object::GetVirtualMethod(thisPtr, m);
             }
             else
 #if IL2CPP_ENABLE_MONO_BUG_EMULATION    // Mono doesn't throw on null 'this' if it's an instance constructor, and class libs depend on this behaviour
             if (strcmp(m->name, ".ctor"))
 #endif
             {
-                Exception::Raise(Exception::GetTargetException("Non-static method requires a target"));
+                vm::Exception::Raise(vm::Exception::GetTargetException("Non-static method requires a target"));
             }
         }
 
@@ -240,7 +240,7 @@ namespace Reflection
         Il2CppObject *result = il2cpp::vm::Runtime::InvokeArray(m, obj, params, &exception);
 
         if (exception)
-            Exception::Raise(exception);
+            vm::Exception::Raise(exception);
 
         return result;
     }
@@ -254,15 +254,15 @@ namespace Reflection
     {
         std::string message;
         message += "Failed to construct generic method '";
-        message += Type::GetName(&method->klass->byval_arg, IL2CPP_TYPE_NAME_FORMAT_FULL_NAME);
+        message += vm::Type::GetName(&method->klass->byval_arg, IL2CPP_TYPE_NAME_FORMAT_FULL_NAME);
         message += "::";
-        message += Method::GetName(method);
+        message += vm::Method::GetName(method);
         message += "' with generic arguments [";
         for (Il2CppTypeVector::const_iterator iter = genericArguments.begin(); iter != genericArguments.end(); ++iter)
         {
             if (iter != genericArguments.begin())
                 message += ", ";
-            message += Type::GetName(*iter, IL2CPP_TYPE_NAME_FORMAT_FULL_NAME);
+            message += vm::Type::GetName(*iter, IL2CPP_TYPE_NAME_FORMAT_FULL_NAME);
         }
         message += "] at runtime.";
 
@@ -273,9 +273,9 @@ namespace Reflection
     {
         std::string message;
         message += "The method '";
-        message += Type::GetName(&method->klass->byval_arg, IL2CPP_TYPE_NAME_FORMAT_FULL_NAME);
+        message += vm::Type::GetName(&method->klass->byval_arg, IL2CPP_TYPE_NAME_FORMAT_FULL_NAME);
         message += "::";
-        message += Method::GetName(method);
+        message += vm::Method::GetName(method);
         message += "' is not a generic method.";
 
         return message;
@@ -286,9 +286,9 @@ namespace Reflection
         const MethodInfo* genericMethodDefinition = method->method;
 
         if (!genericMethodDefinition->is_generic)
-            Exception::Raise(Exception::GetInvalidOperationException(FormatExceptionMessageForNonGenericMethod(genericMethodDefinition).c_str()));
+            vm::Exception::Raise(vm::Exception::GetInvalidOperationException(FormatExceptionMessageForNonGenericMethod(genericMethodDefinition).c_str()));
 
-        uint32_t arrayLength = Array::GetLength(genericArgumentTypes);
+        uint32_t arrayLength = vm::Array::GetLength(genericArgumentTypes);
         Il2CppTypeVector genericArguments;
         genericArguments.reserve(arrayLength);
 
@@ -298,11 +298,11 @@ namespace Reflection
             genericArguments.push_back(genericArgumentType->type);
         }
 
-        const MethodInfo* genericInstanceMethod = MetadataCache::GetGenericInstanceMethod(genericMethodDefinition, genericArguments);
+        const MethodInfo* genericInstanceMethod = vm::MetadataCache::GetGenericInstanceMethod(genericMethodDefinition, genericArguments);
 
         if (!genericInstanceMethod)
         {
-            Exception::Raise(Exception::GetNotSupportedException(FormatExceptionMessageForNonConstructableGenericMethod(genericMethodDefinition, genericArguments).c_str()));
+            vm::Exception::Raise(vm::Exception::GetNotSupportedException(FormatExceptionMessageForNonConstructableGenericMethod(genericMethodDefinition, genericArguments).c_str()));
             return NULL;
         }
 
@@ -317,14 +317,14 @@ namespace Reflection
         if (!method->method->is_inflated)
             return NULL;
 
-        const MethodInfo* methodDefinition = MetadataCache::GetGenericMethodDefinition(method->method);
+        const MethodInfo* methodDefinition = vm::MetadataCache::GetGenericMethodDefinition(method->method);
         IL2CPP_ASSERT(methodDefinition);
 
         if (!methodDefinition->is_generic)
             return NULL;
 
 
-        const Il2CppGenericContext* methodContext = MetadataCache::GetMethodGenericContext(method->method);
+        const Il2CppGenericContext* methodContext = vm::MetadataCache::GetMethodGenericContext(method->method);
         IL2CPP_ASSERT(methodContext);
 
         if (methodContext->class_inst)
@@ -335,7 +335,6 @@ namespace Reflection
         return il2cpp::vm::Reflection::GetMethodObject(const_cast<MethodInfo*>(methodDefinition), NULL);
     }
 
-#if NET_4_0
     int32_t MonoMethod::get_core_clr_security_level(Il2CppObject* _this)
     {
         IL2CPP_NOT_IMPLEMENTED_ICALL(MonoMethod::get_core_clr_security_level);
@@ -357,50 +356,63 @@ namespace Reflection
         if (klass == NULL)
             return method;
 
-        if (!(method2->flags & METHOD_ATTRIBUTE_VIRTUAL) || Class::IsInterface(klass) || method2->flags & METHOD_ATTRIBUTE_NEW_SLOT)
+        if (!(method2->flags & METHOD_ATTRIBUTE_VIRTUAL) || vm::Class::IsInterface(klass) || method2->flags & METHOD_ATTRIBUTE_NEW_SLOT)
             return method;
 
         /*if(klass->generic_class)
         klass = klass->generic_class->container_class;*/
 
-        if (definition)
+        const MethodInfo *result;
+        bool found = true;
+
+        do
         {
-            for (Il2CppClass* parent = klass->parent; parent != NULL; parent = parent->parent)
+            if (definition)
             {
-                if (parent->vtable_count <= method2->slot)
-                    break;
-                klass = parent;
+                for (Il2CppClass* parent = klass->parent; parent != NULL; parent = parent->parent)
+                {
+                    if (parent->vtable_count <= method2->slot)
+                        break;
+
+                    klass = parent;
+                }
             }
-        }
-        else
-        {
-            if (!klass->parent)
+            else
             {
-                IL2CPP_ASSERT(klass == il2cpp_defaults.object_class);
+                if (!klass->parent)
+                {
+                    IL2CPP_ASSERT(klass == il2cpp_defaults.object_class);
+                    return method;
+                }
+
+                klass = klass->parent;
+            }
+
+            if (klass == method2->klass)
                 return method;
+
+            il2cpp::vm::Class::Init(klass);
+
+            result = klass->vtable[method2->slot].method;
+
+            if (result == NULL)
+            {
+                void *iterator = NULL;
+                found = false;
+
+                for (result = vm::Class::GetMethods(klass, &iterator); result != NULL; result = vm::Class::GetMethods(klass, &iterator))
+                {
+                    if (result->slot == method2->slot)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                IL2CPP_ASSERT(!(definition && !found));
             }
-
-            klass = klass->parent;
         }
-
-        if (klass == method2->klass)
-            return method;
-
-        il2cpp::vm::Class::Init(klass);
-
-        const MethodInfo *result = klass->vtable[method2->slot].method;
-
-        if (result == NULL)
-        {
-            void *iterator = NULL;
-
-            for (result = Class::GetMethods(klass, &iterator); result != NULL; result = Class::GetMethods(klass, &iterator))
-                if (result->slot == method2->slot)
-                    break;
-        }
-
-        if (result == NULL)
-            return method;
+        while (!found);
 
         return il2cpp::vm::Reflection::GetMethodObject(result, klass);
     }
@@ -409,10 +421,9 @@ namespace Reflection
     {
         // we don't keep these around in metadata
         *flags = 0;
-        *dllName = *entryPoint = vm::String::Empty(); // TODO: Write barrier here!
+        gc::WriteBarrier::GenericStore(dllName, vm::String::Empty());
+        gc::WriteBarrier::GenericStore(entryPoint, vm::String::Empty());
     }
-
-#endif
 } /* namespace Reflection */
 } /* namespace System */
 } /* namespace mscorlib */

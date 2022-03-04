@@ -1,5 +1,3 @@
-#if NET_4_0
-
 #include "il2cpp-config.h"
 #include "SafeStringMarshal.h"
 #include "utils/StringUtils.h"
@@ -28,5 +26,3 @@ namespace Mono
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-
-#endif

@@ -33,9 +33,7 @@ namespace IO
     public:
         static uint32_t GetDriveTypeInternal(Il2CppString* rootPathName);
         static bool GetDiskFreeSpaceInternal(Il2CppString* pathName, uint64_t* freeBytesAvail, uint64_t* totalNumberOfBytes, uint64_t* totalNumberOfFreeBytes, MonoIOError* error);
-#if NET_4_0
         static Il2CppString* GetDriveFormat(Il2CppString* rootPathName);
-#endif
     };
 } /* namespace IO */
 } /* namespace System */

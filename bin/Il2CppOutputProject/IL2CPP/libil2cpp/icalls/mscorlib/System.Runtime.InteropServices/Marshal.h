@@ -77,19 +77,13 @@ namespace InteropServices
         static void copy_to_unmanaged(Il2CppArray * source, int32_t startIndex, intptr_t destination, int32_t length);
         static void WriteIntPtr(intptr_t ptr, int32_t ofs, intptr_t val);
 
-#if NET_4_0
         static intptr_t BufferToBSTR(Il2CppArray* ptr, int32_t slen);
-#endif
 
-#if NET_4_0
         static int32_t GetHRForException_WinRT(Il2CppException* e);
         static intptr_t GetRawIUnknownForComObjectNoAddRef(Il2CppObject* o);
         static Il2CppObject* GetNativeActivationFactory(Il2CppObject* type);
-#endif
 
-#if NET_4_0
         static intptr_t AllocCoTaskMemSize(intptr_t sizet);
-#endif
     };
 } /* namespace InteropServices */
 } /* namespace Runtime */

@@ -2,6 +2,9 @@
 
 #include "il2cpp-object-internals.h"
 
+#include "Baselib.h"
+#include "Cpp/Atomic.h"
+
 namespace il2cpp
 {
 namespace vm
@@ -19,7 +22,7 @@ namespace vm
 
     private:
         uint32_t m_GCHandle;
-        uint32_t m_RefCount;
+        baselib::atomic<uint32_t> m_RefCount;
     };
 }
 }

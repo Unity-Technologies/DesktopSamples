@@ -1,6 +1,6 @@
 #include "il2cpp-config.h"
 
-#if IL2CPP_USE_GENERIC_SOCKET_IMPL
+#if IL2CPP_USE_GENERIC_SOCKET_IMPL && IL2CPP_SUPPORT_SOCKETS
 
 #include "os/Generic/SocketImpl.h"
 

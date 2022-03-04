@@ -3,7 +3,7 @@
 #include "utils/dynamic_array.h"
 #include "il2cpp-object-internals.h"
 
-struct GPtrArray
+struct MonoGPtrArray
 {
     void *pdata;
     unsigned int len;
@@ -11,9 +11,9 @@ struct GPtrArray
 
 typedef il2cpp::utils::dynamic_array<void*> VoidPtrArray;
 
-GPtrArray* void_ptr_array_to_gptr_array(const VoidPtrArray& array);
-GPtrArray* empty_gptr_array();
-void free_gptr_array(GPtrArray *pArray);
+MonoGPtrArray* void_ptr_array_to_gptr_array(const VoidPtrArray& array);
+MonoGPtrArray* empty_gptr_array();
+void free_gptr_array(MonoGPtrArray *pArray);
 
 struct MonoGenericParameterInfo
 {

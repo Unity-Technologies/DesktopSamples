@@ -1,7 +1,6 @@
 #include "il2cpp-config.h"
 #include "il2cpp-vm-support.h"
 #include "os/WindowsRuntime.h"
-#include "vm/Exception.h"
 
 #if IL2CPP_USE_GENERIC_WINDOWSRUNTIME
 
@@ -44,6 +43,13 @@ namespace os
     }
 
 #endif
+
+    il2cpp_hresult_t WindowsRuntime::DuplicateHString(Il2CppHString hstring, Il2CppHString* duplicated)
+    {
+        NO_UNUSED_WARNING(hstring);
+        NO_UNUSED_WARNING(duplicated);
+        return IL2CPP_COR_E_PLATFORMNOTSUPPORTED;
+    }
 
     il2cpp_hresult_t WindowsRuntime::DeleteHString(Il2CppHString hstring)
     {

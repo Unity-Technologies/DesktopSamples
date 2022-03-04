@@ -52,9 +52,7 @@ namespace Diagnostics
 
     int64_t Process::GetProcessData(int32_t pid, int32_t data_type, int32_t* error)
     {
-        IL2CPP_NOT_IMPLEMENTED_ICALL(Process::GetProcessData);
-
-        return 0;
+        return os::Process::GetProcessData(pid, data_type, error);
     }
 
     int32_t Process::GetPriorityClass(intptr_t handle, int32_t* error)
@@ -73,9 +71,8 @@ namespace Diagnostics
 
     int64_t Process::Times(intptr_t handle, int32_t type)
     {
-        IL2CPP_NOT_IMPLEMENTED_ICALL(Process::Times);
-
-        return 0;
+        os::ProcessHandle *pHandle = (os::ProcessHandle*)handle;
+        return os::Process::Times(pHandle, type);
     }
 
     Il2CppString* Process::ProcessName_internal(intptr_t handle)
@@ -87,9 +84,8 @@ namespace Diagnostics
 
     int64_t Process::StartTime_internal(intptr_t handle)
     {
-        IL2CPP_NOT_IMPLEMENTED_ICALL(Process::StartTime_internal);
-
-        return 0;
+        os::ProcessHandle *pHandle = (os::ProcessHandle*)handle;
+        return os::Process::StartTime(pHandle);
     }
 
     bool Process::Kill_internal(intptr_t handle, int32_t signo)

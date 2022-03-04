@@ -5,7 +5,7 @@
 #include "os/Console.h"
 #include "os/File.h"
 
-#include <assert.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -22,6 +22,7 @@ namespace os
 {
 namespace Console
 {
+#if !RUNTIME_TINY
     static bool setupComplete = false;
     static int32_t s_terminalSize;
     static struct termios s_initialAttr;
@@ -329,6 +330,13 @@ namespace Console
         atexit(TtyShutdown);
 
         return true;
+    }
+
+#endif
+
+    const char* NewLine()
+    {
+        return "\n";
     }
 }
 }

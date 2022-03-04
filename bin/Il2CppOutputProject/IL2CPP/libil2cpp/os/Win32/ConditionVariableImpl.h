@@ -1,5 +1,4 @@
 #pragma once
-#if NET_4_0
 #if IL2CPP_THREADS_WIN32
 
 #include "utils/NonCopyable.h"
@@ -29,5 +28,4 @@ namespace os
 }
 }
 
-#endif
 #endif

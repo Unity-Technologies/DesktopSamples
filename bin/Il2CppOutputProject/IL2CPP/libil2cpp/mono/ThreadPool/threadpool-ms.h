@@ -1,5 +1,4 @@
 #pragma once
-#if NET_4_0
 
 #include "il2cpp-config.h"
 #include "mono/ThreadPool/ThreadPoolDataStructures.h"
@@ -38,8 +37,6 @@ LIBIL2CPP_CODEGEN_API bool ves_icall_System_Threading_ThreadPool_IsThreadPoolHos
 /* Internals */
 bool threadpool_ms_enqueue_work_item(Il2CppDomain *domain, Il2CppObject *work_item);
 
-extern ThreadPool* g_ThreadPool;
+extern ::ThreadPool* g_ThreadPool;
 bool worker_try_unpark();
 void hill_climbing_force_change(int16_t new_thread_count, ThreadPoolHeuristicStateTransition transition);
-
-#endif

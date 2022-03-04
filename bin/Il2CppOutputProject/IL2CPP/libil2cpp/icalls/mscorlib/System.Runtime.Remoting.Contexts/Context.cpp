@@ -1,4 +1,3 @@
-#if NET_4_0
 #include "il2cpp-config.h"
 #include "Context.h"
 
@@ -34,4 +33,3 @@ namespace Contexts
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

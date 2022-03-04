@@ -16,9 +16,7 @@ namespace System
     public:
         static int64_t GetNow(void);
         static int64_t GetTimeMonotonic();
-#if NET_4_0
         static int64_t GetSystemTimeAsFileTime();
-#endif
     };
 } /* namespace System */
 } /* namespace mscorlib */

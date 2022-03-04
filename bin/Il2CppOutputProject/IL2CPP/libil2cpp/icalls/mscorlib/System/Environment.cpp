@@ -14,6 +14,12 @@
 #include "vm/String.h"
 #include "vm/Exception.h"
 
+#if IL2CPP_TINY_DEBUGGER
+#include "os/CrashHelpers.h"
+#include "vm/StackTrace.h"
+#include "utils/Logging.h"
+#endif
+
 #include "utils/PathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Environment.h"
@@ -121,9 +127,9 @@ namespace System
         const char* frameworkVersion = vm::Runtime::GetFrameworkVersion();
 
         std::string path = utils::PathUtils::Combine(
-                vm::Runtime::GetConfigDir(), utils::PathUtils::Combine(
-                    utils::StringView<char>("mono"), utils::PathUtils::Combine(
-                        utils::StringView<char>(frameworkVersion, strlen(frameworkVersion)), utils::StringView<char>("machine.config"))));
+            vm::Runtime::GetConfigDir(), utils::PathUtils::Combine(
+                utils::StringView<char>("mono"), utils::PathUtils::Combine(
+                    utils::StringView<char>(frameworkVersion, strlen(frameworkVersion)), utils::StringView<char>("machine.config"))));
 
         return vm::String::NewWrapper(path.c_str());
     }
@@ -145,7 +151,7 @@ namespace System
     {
 #ifdef _MSC_VER
         return 2;
-#elif NET_4_0 && IL2CPP_TARGET_DARWIN
+#elif IL2CPP_TARGET_DARWIN
         // new Mono expects distinct platform value for OSX/iOS
         return 6;
 #else
@@ -193,7 +199,6 @@ namespace System
         return 0;
     }
 
-#if NET_4_0
     bool Environment::GetIs64BitOperatingSystem()
     {
         if (sizeof(void*) == 8)
@@ -226,8 +231,44 @@ namespace System
 
     Il2CppString* Environment::get_bundled_machine_config()
     {
-        IL2CPP_NOT_IMPLEMENTED_ICALL(Environment::get_bundled_machine_config);
-        IL2CPP_UNREACHABLE;
+        return NULL;
+    }
+
+#if IL2CPP_TINY_DEBUGGER
+    Il2CppString* Environment::GetStackTrace_internal()
+    {
+        std::string stackTrace = vm::StackTrace::GetStackTrace();
+        return vm::String::NewLen(stackTrace.c_str(), (uint32_t)stackTrace.length());
+    }
+
+    void Environment::FailFast_internal(Il2CppString* message)
+    {
+        bool messageWritten = false;
+        if (message != NULL)
+        {
+            std::string messageUtf8 = il2cpp::utils::StringUtils::Utf16ToUtf8(message->chars, message->length);
+            if (!messageUtf8.empty())
+            {
+                il2cpp::utils::Logging::Write(messageUtf8.c_str());
+                messageWritten = true;
+            }
+        }
+
+        if (!messageWritten)
+            il2cpp::utils::Logging::Write("No error message was provided. Hopefully the stack trace can provide some information.");
+
+        std::string managedStackTrace = vm::StackTrace::GetStackTrace();
+        if (!managedStackTrace.empty())
+        {
+            std::string managedStackTraceMessage = "Managed stack trace:\n" + managedStackTrace;
+            il2cpp::utils::Logging::Write(managedStackTraceMessage.c_str());
+        }
+        else
+        {
+            il2cpp::utils::Logging::Write("No managed stack trace exists. Make sure this is a development build to enable managed stack traces.");
+        }
+
+        il2cpp::os::CrashHelpers::Crash();
     }
 
 #endif

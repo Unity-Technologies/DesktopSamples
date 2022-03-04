@@ -1,7 +1,7 @@
 #pragma once
 
 #include "os/c-api/il2cpp-config-platforms.h"
-
+#if !defined(IL2CPP_EXPORT)
 #ifdef _MSC_VER
 # include <malloc.h>
 # define IL2CPP_EXPORT __declspec(dllexport)
@@ -12,4 +12,5 @@
 #else
 # define IL2CPP_EXPORT __attribute__ ((visibility ("default")))
 # define IL2CPP_IMPORT
+#endif
 #endif

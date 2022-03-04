@@ -8,8 +8,7 @@
  * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 #include "il2cpp-config.h"
-
-#if NET_4_0
+#include "gc/WriteBarrier.h"
 
 #ifndef DISABLE_SOCKETS
 
@@ -17,12 +16,19 @@
 #define IL2CPP_USE_PIPES_FOR_WAKEUP !(IL2CPP_TARGET_WINDOWS || IL2CPP_TARGET_XBOXONE || IL2CPP_TARGET_PS4 || IL2CPP_TARGET_PSP2)
 #endif
 
-#if !IL2CPP_USE_PIPES_FOR_WAKEUP
+#ifndef IL2CPP_USE_EVENTFD_FOR_WAKEUP
+#define IL2CPP_USE_EVENTFD_FOR_WAKEUP (0)
+#endif
+
+#if !IL2CPP_USE_PIPES_FOR_WAKEUP && !IL2CPP_USE_EVENTFD_FOR_WAKEUP
 #include "os/Win32/WindowsHeaders.h"
 #else
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
+#if IL2CPP_USE_EVENTFD_FOR_WAKEUP
+#include <sys/eventfd.h>
+#endif
 #endif
 
 #include <vector>
@@ -92,7 +98,7 @@ typedef struct {
 	int updates_size;
 	il2cpp::os::FastMutex updates_lock;
 	il2cpp::os::ConditionVariable updates_cond;
-#if IL2CPP_USE_PIPES_FOR_WAKEUP
+#if IL2CPP_USE_PIPES_FOR_WAKEUP || IL2CPP_USE_EVENTFD_FOR_WAKEUP
 	int32_t wakeup_pipes [2];
 #else
 	il2cpp::os::Socket* wakeup_pipes [2];
@@ -155,6 +161,13 @@ static void selector_thread_wakeup (void)
 			break;
 		if (written == -1)
 			break;
+#elif IL2CPP_USE_EVENTFD_FOR_WAKEUP
+		eventfd_t val = 1;
+		int32_t written = eventfd_write(threadpool_io->wakeup_pipes[0], val);
+		if (written == 0)
+			break;
+		if (written == -1)
+			break;
 #else
 		int32_t written = 0;
 		const il2cpp::os::WaitStatus status = threadpool_io->wakeup_pipes[1]->Send((const uint8_t*)&msg, 1, il2cpp::os::kSocketFlagsNone, &written);
@@ -180,6 +193,16 @@ static void selector_thread_wakeup_drain_pipes (void)
 	for (;;) {
 #if IL2CPP_USE_PIPES_FOR_WAKEUP
 		received = read (threadpool_io->wakeup_pipes [0], buffer, sizeof (buffer));
+		if (received == 0)
+			break;
+		if (received == -1) {
+			if (errno != EINTR && errno != EAGAIN)
+				IL2CPP_ASSERT(0 && "selector_thread_wakeup_drain_pipes: read () failed");
+			break;
+		}
+#elif IL2CPP_USE_EVENTFD_FOR_WAKEUP
+		eventfd_t val;
+		received = eventfd_read(threadpool_io->wakeup_pipes[0], &val);
 		if (received == 0)
 			break;
 		if (received == -1) {
@@ -252,7 +275,7 @@ static void wait_callback (int fd, int events, void* user_data)
 	if (il2cpp::vm::Runtime::IsShuttingDown ())
 		return;
 
-#if IL2CPP_USE_PIPES_FOR_WAKEUP
+#if IL2CPP_USE_PIPES_FOR_WAKEUP || IL2CPP_USE_EVENTFD_FOR_WAKEUP
 	if (fd == threadpool_io->wakeup_pipes [0]) {
 #else
 	if (fd == threadpool_io->wakeup_pipes [0]->GetDescriptor()) {
@@ -366,6 +389,7 @@ static void selector_thread (void* data)
 
 				//exists = mono_g_hash_table_lookup_extended (states, int_TO_POINTER (fd), &k, (void**) &list);
 				list->push_back((Il2CppObject*)job);
+				il2cpp::gc::GarbageCollector::SetWriteBarrier((void**)&(*list)[list->size()-1]);
 				states->insert(ThreadPoolStateHash::value_type(fd, list));
 				//mono_g_hash_table_replace (states, int_TO_POINTER (fd), list);
 
@@ -485,6 +509,9 @@ static void wakeup_pipes_init(void)
 		IL2CPP_ASSERT(0 && "wakeup_pipes_init: pipe () failed");
 	if (fcntl (threadpool_io->wakeup_pipes [0], F_SETFL, O_NONBLOCK) == -1)
 		IL2CPP_ASSERT(0 && "wakeup_pipes_init: fcntl () failed");
+#elif IL2CPP_USE_EVENTFD_FOR_WAKEUP
+	threadpool_io->wakeup_pipes[0] = eventfd(0, EFD_NONBLOCK);
+	threadpool_io->wakeup_pipes[1] = -1;
 #else
 	il2cpp::os::Socket serverSock(NULL);
 
@@ -531,6 +558,20 @@ static void wakeup_pipes_init(void)
 		IL2CPP_ASSERT(0 && "wakeup_pipes_init: SetBlocking () failed");
 	}
 
+	status = threadpool_io->wakeup_pipes[0]->SetSocketOption(il2cpp::os::kSocketOptionLevelTcp, il2cpp::os::kSocketOptionNameNoDelay, 1);
+	if (status == kWaitStatusFailure)
+	{
+		threadpool_io->wakeup_pipes[0]->Close();
+		IL2CPP_ASSERT(0 && "wakeup_pipes_init: SetSocketOption () failed");
+	}
+
+	status = threadpool_io->wakeup_pipes[1]->SetSocketOption(il2cpp::os::kSocketOptionLevelTcp, il2cpp::os::kSocketOptionNameNoDelay, 1);
+	if (status == kWaitStatusFailure)
+	{
+		threadpool_io->wakeup_pipes[1]->Close();
+		IL2CPP_ASSERT(0 && "wakeup_pipes_init: SetSocketOption () failed");
+	}
+
 	serverSock.Close();
 #endif
 }
@@ -540,7 +581,7 @@ static bool lazy_is_initialized()
 	return lazy_init_io_status.IsSet();
 }
 
-static void initialize(void* args)
+static void threadpool_ms_io_initialize(void* args)
 {
 	IL2CPP_ASSERT(!threadpool_io);
 	threadpool_io = new ThreadPoolIO();
@@ -561,7 +602,7 @@ static void initialize(void* args)
 
 	wakeup_pipes_init ();
 
-#if IL2CPP_USE_PIPES_FOR_WAKEUP
+#if IL2CPP_USE_PIPES_FOR_WAKEUP || IL2CPP_USE_EVENTFD_FOR_WAKEUP
 	if (!threadpool_io->backend.init ((int)threadpool_io->wakeup_pipes [0]))
 #else
 	if (!threadpool_io->backend.init ((int)threadpool_io->wakeup_pipes [0]->GetDescriptor()))
@@ -572,12 +613,12 @@ static void initialize(void* args)
 		IL2CPP_ASSERT(0 && "initialize: vm::Thread::CreateInternal () failed ");
 }
 
-static void lazy_initialize()
+static void threadpool_ms_io_lazy_initialize()
 {
-	il2cpp::utils::CallOnce(lazy_init_io_status, initialize, NULL);
+	il2cpp::utils::CallOnce(lazy_init_io_status, threadpool_ms_io_initialize, NULL);
 }
 
-static void cleanup (void)
+static void cleanup_ms_io (void)
 {
 	/* we make the assumption along the code that we are
 	 * cleaning up only if the runtime is shutting down */
@@ -591,7 +632,7 @@ static void cleanup (void)
 void threadpool_ms_io_cleanup (void)
 {
 	if (lazy_init_io_status.IsSet())
-		cleanup();
+		cleanup_ms_io();
 }
 
 void ves_icall_System_IOSelector_Add (intptr_t handle, Il2CppIOSelectorJob *job)
@@ -608,7 +649,7 @@ void ves_icall_System_IOSelector_Add (intptr_t handle, Il2CppIOSelectorJob *job)
 	/*if (mono_domain_is_unloading (mono_object_domain (job)))
 		return;*/
 
-	lazy_initialize ();
+	threadpool_ms_io_lazy_initialize ();
 
 	threadpool_io->updates_lock.Lock();
 
@@ -618,7 +659,7 @@ void ves_icall_System_IOSelector_Add (intptr_t handle, Il2CppIOSelectorJob *job)
 
 	update->type = UPDATE_ADD;
 	update->data.add.fd = (int)socketHandle.GetSocket()->GetDescriptor();
-	update->data.add.job = job;
+	il2cpp::gc::WriteBarrier::GenericStore(&update->data.add.job, job);
 	il2cpp::os::Atomic::FullMemoryBarrier(); /* Ensure this is safely published before we wake up the selector */
 
 	selector_thread_wakeup ();
@@ -675,5 +716,4 @@ void threadpool_ms_io_remove_socket (int fd)
 	IL2CPP_ASSERT(0 && "Should not be called");
 }
 
-#endif
 #endif

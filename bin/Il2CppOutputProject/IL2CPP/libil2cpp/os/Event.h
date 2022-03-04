@@ -21,6 +21,7 @@ namespace os
         ErrorCode Reset();
         WaitStatus Wait(bool interruptible = false);
         WaitStatus Wait(uint32_t ms, bool interruptible = false);
+        void* GetOSHandle();
 
     private:
         EventImpl* m_Event;
@@ -38,6 +39,7 @@ namespace os
         virtual WaitStatus Wait(bool interruptible) { return m_Event->Wait(interruptible); }
         virtual WaitStatus Wait(uint32_t ms, bool interruptible) { return m_Event->Wait(ms, interruptible); }
         virtual void Signal() { m_Event->Set(); }
+        virtual void* GetOSHandle() { return m_Event->GetOSHandle(); }
         Event& Get() { return *m_Event; }
 
     private:

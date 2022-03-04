@@ -1,4 +1,3 @@
-#if NET_4_0
 #pragma once
 
 #include "il2cpp-object-internals.h"
@@ -23,4 +22,3 @@ namespace Reflection
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

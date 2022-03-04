@@ -1,4 +1,3 @@
-#if NET_4_0
 #pragma once
 
 namespace il2cpp
@@ -24,4 +23,3 @@ namespace Emit
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

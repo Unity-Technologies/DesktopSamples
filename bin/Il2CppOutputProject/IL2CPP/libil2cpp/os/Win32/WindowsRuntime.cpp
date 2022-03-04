@@ -1,32 +1,17 @@
 #include "il2cpp-config.h"
+
+#if IL2CPP_TARGET_WINDOWS && !IL2CPP_USE_GENERIC_WINDOWSRUNTIME
+
 #include "il2cpp-class-internals.h"
 #include "il2cpp-string-types.h"
 #include "il2cpp-vm-support.h"
 #include "os/WindowsRuntime.h"
 #include "utils/Il2CppHStringReference.h"
 #include "utils/StringUtils.h"
-#include "vm/Array.h"
 #include "vm/CCW.h"
-#include "vm/Exception.h"
-#include "vm/String.h"
 #include "WindowsHeaders.h"
 
-#if IL2CPP_TARGET_WINDOWS && !IL2CPP_USE_GENERIC_WINDOWSRUNTIME
-
-#if LINK_TO_WINDOWSRUNTIME_LIBS
 #include <roerrorapi.h>
-#else
-
-typedef enum
-{
-    RO_ERROR_REPORTING_NONE = 0x00000000,
-    RO_ERROR_REPORTING_SUPPRESSEXCEPTIONS = 0x00000001,
-    RO_ERROR_REPORTING_FORCEEXCEPTIONS = 0x00000002,
-    RO_ERROR_REPORTING_USESETERRORINFO = 0x00000004,
-    RO_ERROR_REPORTING_SUPPRESSSETERRORINFO = 0x00000008,
-} RO_ERROR_REPORTING_FLAGS;
-
-#endif
 
 namespace il2cpp
 {
@@ -123,6 +108,26 @@ namespace os
         }
 
         return WindowsCreateString(str.Str(), static_cast<uint32_t>(str.Length()), hstring);
+#endif
+    }
+
+    il2cpp_hresult_t WindowsRuntime::DuplicateHString(Il2CppHString hstring, Il2CppHString* duplicated)
+    {
+#if LINK_TO_WINDOWSRUNTIME_LIBS
+        return WindowsDuplicateString(reinterpret_cast<HSTRING>(hstring), reinterpret_cast<HSTRING*>(duplicated));
+#else
+        typedef il2cpp_hresult_t(STDAPICALLTYPE* WindowsDuplicateStringFunc)(Il2CppHString hstring, Il2CppHString* duplicated);
+        static WindowsDuplicateStringFunc WindowsDuplicateString = NULL;
+
+        if (WindowsDuplicateString == NULL)
+        {
+            WindowsDuplicateString = ResolveAPI<WindowsDuplicateStringFunc>(L"api-ms-win-core-winrt-string-l1-1-0.dll", "WindowsDuplicateString");
+
+            if (WindowsDuplicateString == NULL)
+                return IL2CPP_COR_E_PLATFORMNOTSUPPORTED;
+        }
+
+        return WindowsDuplicateString(hstring, duplicated);
 #endif
     }
 
@@ -357,6 +362,8 @@ namespace os
             if (RoSetErrorReportingFlags == NULL)
                 return;
         }
+
+        const int RO_ERROR_REPORTING_USESETERRORINFO = 0x00000004;
 #endif
 
         il2cpp_hresult_t hr = RoSetErrorReportingFlags(RO_ERROR_REPORTING_USESETERRORINFO);

@@ -31,10 +31,8 @@ namespace Diagnostics
     public:
         static bool IsAttached_internal();
 
-#if NET_4_0
         static bool IsLogging();
         static void Log(int32_t level, Il2CppString* category, Il2CppString* message);
-#endif
     };
 } /* namespace Diagnostics */
 } /* namespace System */

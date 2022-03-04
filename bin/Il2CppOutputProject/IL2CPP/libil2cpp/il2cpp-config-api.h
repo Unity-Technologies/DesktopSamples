@@ -13,11 +13,25 @@
 
 /* Profiler */
 #ifndef IL2CPP_ENABLE_PROFILER
-#define IL2CPP_ENABLE_PROFILER 1
+#define IL2CPP_ENABLE_PROFILER !IL2CPP_TINY
+#endif
+
+#if IL2CPP_TARGET_ARMV7
+// On ARMv7 with Thumb instructions the lowest bit is always set.
+// With Thumb2 the second-to-lowest bit is also set. Mask both of
+// them off so that we can do a comparison properly based on the data
+// from the linker map file.
+#define IL2CPP_POINTER_SPARE_BITS 3
+#else
+// Some compilers align functions by default (MSVC), some do not (GCC).
+// Do not mask bits on platforms that do not absolutely require it.
+#define IL2CPP_POINTER_SPARE_BITS 0
 #endif
 
 #if IL2CPP_COMPILER_MSVC || defined(__ARMCC_VERSION)
 #define NORETURN __declspec(noreturn)
+#elif (IL2CPP_POINTER_SPARE_BITS == 0) && (defined(__clang__) || defined(__GNUC__))
+#define NORETURN __attribute__ ((noreturn))
 #else
 #define NORETURN
 #endif

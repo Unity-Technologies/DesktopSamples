@@ -8,11 +8,6 @@
 
 using il2cpp::vm::Class;
 
-#ifdef _MSC_VER
-# define ISNAN _isnan
-#else
-# define ISNAN isnan
-#endif
 
 namespace il2cpp
 {
@@ -57,7 +52,6 @@ namespace System
         il2cpp_array_set(arr, uint8_t, idx, value);
     }
 
-#if NET_4_0
     uint8_t Buffer::_GetByte(Il2CppArray* array, int32_t index)
     {
         return GetByteInternal(array, index);
@@ -77,8 +71,6 @@ namespace System
     {
         SetByteInternal(array, index, value);
     }
-
-#endif
 } /* namespace System */
 } /* namespace mscorlib */
 } /* namespace icalls */

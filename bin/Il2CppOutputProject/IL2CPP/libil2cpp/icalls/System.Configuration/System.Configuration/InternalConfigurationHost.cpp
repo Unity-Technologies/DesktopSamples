@@ -1,4 +1,3 @@
-#if NET_4_0
 #include "il2cpp-config.h"
 #include "InternalConfigurationHost.h"
 
@@ -25,4 +24,3 @@ namespace Configuration
 } // namespace System
 } // namespace icalls
 } // namespace il2cpp
-#endif

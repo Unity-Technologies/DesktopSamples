@@ -12,7 +12,11 @@
 #include "utils/StringUtils.h"
 #include "utils/PathUtils.h"
 
-static inline int Win32ErrorToErrorCode(DWORD win32ErrorCode)
+#if IL2CPP_TARGET_WINRT
+#include "os/WinRT/BrokeredFileSystem.h"
+#endif
+
+static inline int DirectoryWin32ErrorToErrorCode(DWORD win32ErrorCode)
 {
     return win32ErrorCode;
 }
@@ -53,7 +57,7 @@ namespace os
         }
         else
         {
-            *error = Win32ErrorToErrorCode(::GetLastError());
+            *error = DirectoryWin32ErrorToErrorCode(::GetLastError());
         }
 
         return directory;
@@ -67,7 +71,7 @@ namespace os
         if (::SetCurrentDirectory((LPWSTR)utf16Path.c_str()))
             return true;
 
-        *error = Win32ErrorToErrorCode(::GetLastError());
+        *error = DirectoryWin32ErrorToErrorCode(::GetLastError());
         return false;
     }
 
@@ -79,7 +83,17 @@ namespace os
         if (::CreateDirectory((LPWSTR)utf16Path.c_str(), NULL))
             return true;
 
-        *error = Win32ErrorToErrorCode(::GetLastError());
+        auto lastError = ::GetLastError();
+
+#if IL2CPP_TARGET_WINRT
+        if (lastError == ERROR_ACCESS_DENIED)
+        {
+            *error = BrokeredFileSystem::CreateDirectoryW(utf16Path);
+            return *error == kErrorCodeSuccess;
+        }
+#endif
+
+        *error = DirectoryWin32ErrorToErrorCode(lastError);
         return false;
     }
 
@@ -91,7 +105,17 @@ namespace os
         if (::RemoveDirectory((LPWSTR)utf16Path.c_str()))
             return true;
 
-        *error = Win32ErrorToErrorCode(::GetLastError());
+        auto lastError = ::GetLastError();
+
+#if IL2CPP_TARGET_WINRT
+        if (lastError == ERROR_ACCESS_DENIED)
+        {
+            *error = BrokeredFileSystem::RemoveDirectoryW(utf16Path);
+            return *error == kErrorCodeSuccess;
+        }
+#endif
+
+        *error = DirectoryWin32ErrorToErrorCode(lastError);
         return false;
     }
 
@@ -100,13 +124,20 @@ namespace os
         *error = kErrorCodeSuccess;
         std::set<std::string> files;
         WIN32_FIND_DATA ffd;
-        const UTF16String utf16Path(il2cpp::utils::StringUtils::Utf8ToUtf16(pathWithPattern.c_str()));
+        const UTF16String utf16Path(il2cpp::utils::StringUtils::Utf8ToUtf16(pathWithPattern));
 
         HANDLE handle = ::FindFirstFileExW((LPCWSTR)utf16Path.c_str(), FindExInfoStandard, &ffd, FindExSearchNameMatch, NULL, 0);
         if (INVALID_HANDLE_VALUE == handle)
         {
+            auto lastError = ::GetLastError();
+
+#if IL2CPP_TARGET_WINRT
+            if (lastError == ERROR_ACCESS_DENIED)
+                return BrokeredFileSystem::GetFileSystemEntries(utils::StringUtils::Utf8ToUtf16(path), utf16Path, attrs, mask, error);
+#endif
+
             // Following the Mono implementation, do not treat a directory with no files as an error.
-            int errorCode = Win32ErrorToErrorCode(::GetLastError());
+            int errorCode = DirectoryWin32ErrorToErrorCode(lastError);
             if (errorCode != ERROR_FILE_NOT_FOUND)
                 *error = errorCode;
             return files;
@@ -134,6 +165,7 @@ namespace os
 
     Directory::FindHandle::FindHandle(const utils::StringView<Il2CppNativeChar>& searchPathWithPattern) :
         osHandle(INVALID_HANDLE_VALUE),
+        handleFlags(os::kNoFindHandleFlags),
         directoryPath(il2cpp::utils::PathUtils::DirectoryName(searchPathWithPattern)),
         pattern(il2cpp::utils::PathUtils::Basename(searchPathWithPattern))
     {
@@ -150,7 +182,17 @@ namespace os
 
         if (osHandle != INVALID_HANDLE_VALUE)
         {
-            result = ::FindClose(osHandle);
+#if IL2CPP_TARGET_WINRT
+            if (handleFlags & kUseBrokeredFileSystem)
+            {
+                result = BrokeredFileSystem::FindClose(osHandle);
+            }
+            else
+#endif
+            {
+                result = ::FindClose(osHandle);
+            }
+
             osHandle = INVALID_HANDLE_VALUE;
         }
 
@@ -171,12 +213,24 @@ namespace os
         }
         else
         {
-            return static_cast<os::ErrorCode>(GetLastError());
+            auto lastError = GetLastError();
+
+#if IL2CPP_TARGET_WINRT
+            if (lastError == ERROR_ACCESS_DENIED)
+                return BrokeredFileSystem::FindFirstFileW(findHandle, searchPathWithPattern, resultFileName, resultAttributes);
+#endif
+
+            return static_cast<os::ErrorCode>(lastError);
         }
     }
 
     os::ErrorCode Directory::FindNextFile(FindHandle* findHandle, Il2CppNativeString* resultFileName, int32_t* resultAttributes)
     {
+#if IL2CPP_TARGET_WINRT
+        if (findHandle->handleFlags & kUseBrokeredFileSystem)
+            return BrokeredFileSystem::FindNextFileW(findHandle, resultFileName, resultAttributes);
+#endif
+
         WIN32_FIND_DATA findData;
         if (FindNextFileW(findHandle->osHandle, &findData) == FALSE)
             return static_cast<os::ErrorCode>(GetLastError());

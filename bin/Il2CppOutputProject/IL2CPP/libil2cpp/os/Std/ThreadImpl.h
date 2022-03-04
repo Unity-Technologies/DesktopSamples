@@ -19,7 +19,7 @@ namespace os
         ThreadImpl();
         ~ThreadImpl();
         uint64_t Id();
-        ErrorCode Run(Thread::StartFunc func, void* arg);
+        ErrorCode Run(Thread::StartFunc func, void* arg, int64_t affinityMask);
         WaitStatus Join();
         WaitStatus Join(uint32_t ms);
         static WaitStatus Sleep(uint32_t milliseconds);

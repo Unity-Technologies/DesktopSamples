@@ -1,10 +1,17 @@
+#include "il2cpp-config.h"
+
+#if !RUNTIME_TINY
+
 #include "MemoryMappedFile.h"
+
+#include "Baselib.h"
+#include "Cpp/ReentrantLock.h"
 
 namespace il2cpp
 {
 namespace utils
 {
-    static os::FastMutex s_Mutex;
+    static baselib::ReentrantLock s_Mutex;
     static std::map<void*, os::FileHandle*> s_MappedAddressToMappedFileObject;
     static std::map<void*, int64_t> s_MappedAddressToMappedLength;
 
@@ -33,10 +40,12 @@ namespace utils
         if (error != 0)
             return NULL;
 
-        void* address = os::MemoryMappedFile::View(mappedFileHandle, &length, offset, (os::MemoryMappedFileAccess)access, &error);
+        int64_t actualOffset = offset;
+        void* address = os::MemoryMappedFile::View(mappedFileHandle, &length, offset, (os::MemoryMappedFileAccess)access, &actualOffset, &error);
 
         if (address != NULL)
         {
+            address = (uint8_t*)address + (offset - actualOffset);
             s_MappedAddressToMappedFileObject[address] = mappedFileHandle;
             s_MappedAddressToMappedLength[address] = length;
         }
@@ -74,3 +83,5 @@ namespace utils
     }
 }
 }
+
+#endif

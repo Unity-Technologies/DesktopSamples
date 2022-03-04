@@ -17,7 +17,6 @@ namespace Reflection
         IL2CPP_NOT_IMPLEMENTED_ICALL(MonoGenericClass::initialize);
     }
 
-#if NET_4_0
     void MonoGenericClass::initialize40(Il2CppObject* _this, Il2CppArray* fields)
     {
         IL2CPP_NOT_IMPLEMENTED_ICALL(MonoGenericClass::initialize40);
@@ -29,8 +28,6 @@ namespace Reflection
         IL2CPP_NOT_IMPLEMENTED_ICALL(MonoGenericClass::register_with_runtime);
         IL2CPP_UNREACHABLE;
     }
-
-#endif
 } /* namespace Reflection */
 } /* namespace System */
 } /* namespace mscorlib */

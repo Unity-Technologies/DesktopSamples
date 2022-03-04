@@ -5,6 +5,7 @@
 #include "vm/Runtime.h"
 #include "vm/Thread.h"
 #include "gc/GarbageCollector.h"
+#include "gc/WriteBarrier.h"
 #include "il2cpp-class-internals.h"
 #include "il2cpp-object-internals.h"
 
@@ -41,7 +42,7 @@ namespace vm
         context->domain_id = domain->domain_id;
         context->context_id = 0;
 
-        domain->default_context = context;
+        gc::WriteBarrier::GenericStore(&domain->default_context, context);
     }
 
     void Domain::ContextSet(Il2CppAppContext* context)

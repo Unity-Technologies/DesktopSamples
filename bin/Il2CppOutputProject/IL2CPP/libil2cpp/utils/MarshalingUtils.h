@@ -1,7 +1,8 @@
 #pragma once
 
 #include "il2cpp-config.h"
-#include "il2cpp-class-internals.h"
+
+struct Il2CppInteropData;
 
 namespace il2cpp
 {

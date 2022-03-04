@@ -4,6 +4,17 @@
 #include "il2cpp-config.h"
 #include "il2cpp-object-internals.h"
 
+#undef CopyFile
+#undef DeleteFile
+#undef MoveFile
+#undef ReplaceFile
+#undef GetFileAttributes
+#undef SetFileAttributes
+#undef CreatePipe
+#undef GetTempPath
+#undef FindNextFile
+#undef FindFirstFile
+
 struct Il2CppArray;
 struct Il2CppString;
 
@@ -22,9 +33,6 @@ namespace IO
 {
     struct FileStat
     {
-#if !NET_4_0
-        Il2CppString *name;
-#endif
         int32_t attributes;
         int64_t length;
         int64_t creation_time;
@@ -84,18 +92,14 @@ namespace IO
         static bool DuplicateHandle40(intptr_t source_process_handle, intptr_t source_handle, intptr_t target_process_handle, intptr_t* target_handle, int32_t access, int32_t inherit, int32_t options, MonoIOError* error);
         static bool RemapPath(Il2CppString* path, Il2CppString** newPath);
 
-#if NET_4_0
         static int32_t FindClose(intptr_t handle);
         static Il2CppString* FindFirst(Il2CppString* path, Il2CppString* pathWithPattern, int32_t* resultAttributes, MonoIOError* error, intptr_t* handle);
         static Il2CppString* FindNext(intptr_t handle, int32_t* result_attr, MonoIOError* error);
         static void DumpHandles();
-#endif
 
-#if NET_4_0
         static bool FindCloseFile(intptr_t hnd);
         static bool FindNextFile(intptr_t hnd, Il2CppString** fileName, int32_t* fileAttr, int32_t* error);
         static intptr_t FindFirstFile(Il2CppChar* path_with_pattern, Il2CppString** fileName, int32_t* fileAttr, int32_t* error);
-#endif
     };
 } /* namespace IO */
 } /* namespace System */

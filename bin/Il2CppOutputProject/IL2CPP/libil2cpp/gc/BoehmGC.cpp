@@ -5,9 +5,11 @@
 #include <stdint.h>
 #include "gc_wrapper.h"
 #include "GarbageCollector.h"
+#include "WriteBarrierValidation.h"
 #include "vm/Profiler.h"
 #include "utils/Il2CppHashMap.h"
 #include "utils/HashUtils.h"
+#include "il2cpp-object-internals.h"
 
 static bool s_GCInitialized = false;
 
@@ -17,50 +19,136 @@ static bool s_PendingGC = false;
 
 #if IL2CPP_ENABLE_PROFILER
 using il2cpp::vm::Profiler;
-static void on_gc_event(GCEventType eventType);
+static void on_gc_event(GC_EventType eventType);
 static void on_heap_resize(GC_word newSize);
 #endif
 
+#if !RUNTIME_TINY
 static GC_push_other_roots_proc default_push_other_roots;
 typedef Il2CppHashMap<char*, char*, il2cpp::utils::PassThroughHash<char*> > RootMap;
 static RootMap s_Roots;
 
 static void push_other_roots(void);
 
+#if !IL2CPP_ENABLE_WRITE_BARRIER_VALIDATION
+#define ELEMENT_CHUNK_SIZE 256
+#define VECTOR_PROC_INDEX 6
+
+#define BYTES_PER_WORD (sizeof(GC_word))
+
+#include <gc_vector.h>
+
+GC_ms_entry* GC_gcj_vector_proc(GC_word* addr, GC_ms_entry* mark_stack_ptr,
+    GC_ms_entry* mark_stack_limit, GC_word env)
+{
+    Il2CppArraySize* a = NULL;
+    if (env)
+    {
+        IL2CPP_ASSERT(env == 1);
+
+        a = (Il2CppArraySize*)GC_base(addr);
+    }
+    else
+    {
+        IL2CPP_ASSERT(addr == GC_base(addr));
+
+        a = (Il2CppArraySize*)addr;
+    }
+
+    if (!a->max_length)
+        return mark_stack_ptr;
+
+    il2cpp_array_size_t length = a->max_length;
+    Il2CppClass* array_type = a->vtable->klass;
+    Il2CppClass* element_type = array_type->element_class;
+    GC_descr element_desc = (GC_descr)element_type->gc_desc;
+
+    IL2CPP_ASSERT((element_desc & GC_DS_TAGS) == GC_DS_BITMAP);
+    IL2CPP_ASSERT(element_type->valuetype);
+
+    int words_per_element = array_type->element_size / BYTES_PER_WORD;
+    GC_word* actual_start = (GC_word*)a->vector;
+
+    /* start at first element or resume from last iteration */
+    GC_word* start = env ? addr : actual_start;
+    /* end at last element or max chunk size */
+    GC_word* actual_end = actual_start + length * words_per_element;
+
+    return GC_gcj_vector_mark_proc(mark_stack_ptr, mark_stack_limit, element_desc, start, actual_end, words_per_element);
+}
+
+#endif // !IL2CPP_ENABLE_WRITE_BARRIER_VALIDATION
+
+#endif // !RUNTIME_TINY
+
 void
 il2cpp::gc::GarbageCollector::Initialize()
 {
     if (s_GCInitialized)
         return;
+
+#if IL2CPP_ENABLE_WRITE_BARRIER_VALIDATION
+    il2cpp::gc::WriteBarrierValidation::Setup();
+#endif
     // This tells the GC that we are not scanning dynamic library data segments and that
     // the GC tracked data structures need ot be manually pushed and marked.
     // Call this before GC_INIT since the initialization logic uses this value.
     GC_set_no_dls(1);
 
+#if !IL2CPP_DEVELOPMENT
+    // Turn off GC logging and warnings for non-development builds
+    GC_set_warn_proc(GC_ignore_warn_proc);
+#endif
+
+#if IL2CPP_ENABLE_WRITE_BARRIERS
+    GC_enable_incremental();
+#if IL2CPP_INCREMENTAL_TIME_SLICE
+    GC_set_time_limit(IL2CPP_INCREMENTAL_TIME_SLICE);
+#endif
+#endif
+
+#if !RUNTIME_TINY
     default_push_other_roots = GC_get_push_other_roots();
     GC_set_push_other_roots(push_other_roots);
+#endif // !RUNTIME_TINY
 
 #if IL2CPP_ENABLE_PROFILER
-    GC_set_on_event(&on_gc_event);
+    GC_set_on_collection_event(&on_gc_event);
     GC_set_on_heap_resize(&on_heap_resize);
 #endif
 
     GC_INIT();
 #if defined(GC_THREADS)
     GC_set_finalize_on_demand(1);
+#if !RUNTIME_TINY
     GC_set_finalizer_notifier(&il2cpp::gc::GarbageCollector::NotifyFinalizers);
+#endif
     // We need to call this if we want to manually register threads, i.e. GC_register_my_thread
+    #if !IL2CPP_TARGET_JAVASCRIPT
     GC_allow_register_threads();
+    #endif
 #endif
 #ifdef GC_GCJ_SUPPORT
     GC_init_gcj_malloc(0, NULL);
+#endif
+
+#if !RUNTIME_TINY && !IL2CPP_ENABLE_WRITE_BARRIER_VALIDATION
+    GC_init_gcj_vector(VECTOR_PROC_INDEX, (void*)GC_gcj_vector_proc);
 #endif
     s_GCInitialized = true;
 }
 
 void il2cpp::gc::GarbageCollector::UninitializeGC()
 {
+#if IL2CPP_ENABLE_WRITE_BARRIER_VALIDATION
+    il2cpp::gc::WriteBarrierValidation::Run();
+#endif
     GC_deinit();
+#if IL2CPP_ENABLE_RELOAD
+    s_GCInitialized = false;
+    default_push_other_roots = NULL;
+    s_Roots.clear();
+#endif
 }
 
 int32_t
@@ -104,6 +192,21 @@ il2cpp::gc::GarbageCollector::CollectALittle()
 #endif
 }
 
+void
+il2cpp::gc::GarbageCollector::StartIncrementalCollection()
+{
+    GC_start_incremental_collection();
+}
+
+#if IL2CPP_ENABLE_WRITE_BARRIERS
+void
+il2cpp::gc::GarbageCollector::SetWriteBarrier(void **ptr)
+{
+    GC_END_STUBBORN_CHANGE(ptr);
+}
+
+#endif
+
 int64_t
 il2cpp::gc::GarbageCollector::GetUsedHeapSize(void)
 {
@@ -129,9 +232,39 @@ il2cpp::gc::GarbageCollector::Enable()
 }
 
 bool
+il2cpp::gc::GarbageCollector::IsDisabled()
+{
+    return GC_is_disabled();
+}
+
+void
+il2cpp::gc::GarbageCollector::SetMode(Il2CppGCMode mode)
+{
+    switch (mode)
+    {
+        case IL2CPP_GC_MODE_ENABLED:
+            if (GC_is_disabled())
+                GC_enable();
+            GC_set_disable_automatic_collection(false);
+            break;
+
+        case IL2CPP_GC_MODE_DISABLED:
+            if (!GC_is_disabled())
+                GC_disable();
+            break;
+
+        case IL2CPP_GC_MODE_MANUAL:
+            if (GC_is_disabled())
+                GC_enable();
+            GC_set_disable_automatic_collection(true);
+            break;
+    }
+}
+
+bool
 il2cpp::gc::GarbageCollector::RegisterThread(void *baseptr)
 {
-#if defined(GC_THREADS)
+#if defined(GC_THREADS) && !IL2CPP_TARGET_JAVASCRIPT
     struct GC_stack_base sb;
     int res;
 
@@ -157,7 +290,7 @@ il2cpp::gc::GarbageCollector::RegisterThread(void *baseptr)
 bool
 il2cpp::gc::GarbageCollector::UnregisterThread()
 {
-#if defined(GC_THREADS)
+#if defined(GC_THREADS) && !IL2CPP_TARGET_JAVASCRIPT
     int res;
 
     res = GC_unregister_my_thread();
@@ -222,7 +355,15 @@ il2cpp::gc::GarbageCollector::MakeDescriptorForObject(size_t *bitmap, int numbit
     if (numbits >= 30)
         return GC_NO_DESCRIPTOR;
     else
-        return (void*)GC_make_descriptor((GC_bitmap)bitmap, numbits);
+    {
+        GC_descr desc = GC_make_descriptor((GC_bitmap)bitmap, numbits);
+        // we should always have a GC_DS_BITMAP descriptor, as we:
+        // 1) Always want a precise marker.
+        // 2) Can never be GC_DS_LENGTH since we always have an object header
+        //    at the beginning of the allocation.
+        IL2CPP_ASSERT((desc & GC_DS_TAGS) == GC_DS_BITMAP || (desc & GC_DS_TAGS) == (GC_descr)GC_NO_DESCRIPTOR);
+        return (void*)desc;
+    }
 #else
     return 0;
 #endif
@@ -248,6 +389,15 @@ void il2cpp::gc::GarbageCollector::StartWorld()
     GC_start_world_external();
 }
 
+#if RUNTIME_TINY
+void*
+il2cpp::gc::GarbageCollector::Allocate(size_t size)
+{
+    return GC_MALLOC(size);
+}
+
+#endif
+
 void*
 il2cpp::gc::GarbageCollector::AllocateFixed(size_t size, void *descr)
 {
@@ -271,10 +421,15 @@ il2cpp::gc::GarbageCollector::FreeFixed(void* addr)
     GC_FREE(addr);
 }
 
+#if !RUNTIME_TINY
 int32_t
 il2cpp::gc::GarbageCollector::InvokeFinalizers()
 {
+#if IL2CPP_TINY
+    return 0; // The Tiny profile does not have finalizers
+#else
     return (int32_t)GC_invoke_finalizers();
+#endif
 }
 
 bool
@@ -283,9 +438,29 @@ il2cpp::gc::GarbageCollector::HasPendingFinalizers()
     return GC_should_invoke_finalizers() != 0;
 }
 
+#endif
+
+int64_t
+il2cpp::gc::GarbageCollector::GetMaxTimeSliceNs()
+{
+    return GC_get_time_limit_ns();
+}
+
+void
+il2cpp::gc::GarbageCollector::SetMaxTimeSliceNs(int64_t maxTimeSlice)
+{
+    GC_set_time_limit_ns(maxTimeSlice);
+}
+
+bool
+il2cpp::gc::GarbageCollector::IsIncremental()
+{
+    return GC_is_incremental_mode();
+}
+
 #if IL2CPP_ENABLE_PROFILER
 
-void on_gc_event(GCEventType eventType)
+void on_gc_event(GC_EventType eventType)
 {
     Profiler::GCEvent((Il2CppGCEvent)eventType);
 }
@@ -317,6 +492,8 @@ typedef struct
     char *start;
     char *end;
 } RootData;
+
+#if !RUNTIME_TINY
 
 static void*
 register_root(void* arg)
@@ -355,5 +532,7 @@ push_other_roots(void)
     if (default_push_other_roots)
         default_push_other_roots();
 }
+
+#endif // !RUNTIME_TINY
 
 #endif

@@ -1,5 +1,7 @@
 #include "il2cpp-config.h"
 #include "utils/StringUtils.h"
+#include "gc/GarbageCollector.h"
+#include "gc/WriteBarrier.h"
 #include "vm/Class.h"
 #include "vm/GenericClass.h"
 #include "vm/Field.h"
@@ -15,8 +17,6 @@
 #include "utils/MemoryRead.h"
 #include "vm-utils/BlobReader.h"
 #include "Thread.h"
-
-using namespace il2cpp::utils;
 
 namespace il2cpp
 {
@@ -140,7 +140,7 @@ namespace vm
         const char* data;
 
         data = Class::GetFieldDefaultValue(field, &type);
-        BlobReader::GetConstantValueFromBlob(type->type, data, value);
+        utils::BlobReader::GetConstantValueFromBlob(type->type, data, value);
     }
 
     void Field::StaticGetValue(FieldInfo *field, void *value)
@@ -155,7 +155,6 @@ namespace vm
         StaticGetValueInternal(field, value, threadStaticData);
     }
 
-#if NET_4_0
     void Field::StaticGetValueForThread(FieldInfo* field, void* value, Il2CppInternalThread* thread)
     {
         // ensure parent is initialized so that static fields memory has been allocated
@@ -167,8 +166,6 @@ namespace vm
 
         StaticGetValueInternal(field, value, threadStaticData);
     }
-
-#endif
 
     void Field::StaticGetValueInternal(FieldInfo* field, void* value, void* threadStaticData)
     {
@@ -230,10 +227,9 @@ namespace vm
 
     void Field::SetInstanceFieldValueObject(Il2CppObject* objectInstance, FieldInfo* field, Il2CppObject* value)
     {
-        assert(!(field->type->attrs & FIELD_ATTRIBUTE_LITERAL));
-        assert(!Class::FromIl2CppType(field->type)->valuetype);
-        *reinterpret_cast<Il2CppObject**>(reinterpret_cast<uint8_t*>(objectInstance) + field->offset) = value;
-        // Object write barrier needed here
+        IL2CPP_ASSERT(!(field->type->attrs & FIELD_ATTRIBUTE_LITERAL));
+        IL2CPP_ASSERT(!Class::FromIl2CppType(field->type)->valuetype);
+        gc::WriteBarrier::GenericStore(reinterpret_cast<uint8_t*>(objectInstance) + field->offset, value);
     }
 
     void Field::SetValueRaw(const Il2CppType *type, void *dest, void *value, bool deref_pointer)
@@ -272,7 +268,7 @@ namespace vm
                 *p = value ? *(Il2CppChar*)value : 0;
                 return;
             }
-#if SIZEOF_VOID_P == 4
+#if IL2CPP_SIZEOF_VOID_P == 4
             case IL2CPP_TYPE_I:
             case IL2CPP_TYPE_U:
 #endif
@@ -283,7 +279,7 @@ namespace vm
                 *p = value ? *(int32_t*)value : 0;
                 return;
             }
-#if SIZEOF_VOID_P == 8
+#if IL2CPP_SIZEOF_VOID_P == 8
             case IL2CPP_TYPE_I:
             case IL2CPP_TYPE_U:
 #endif
@@ -311,8 +307,7 @@ namespace vm
             case IL2CPP_TYPE_CLASS:
             case IL2CPP_TYPE_OBJECT:
             case IL2CPP_TYPE_ARRAY:
-                *(void**)dest = (deref_pointer ? *(void**)value : value);
-                //mono_gc_wbarrier_generic_store (dest, deref_pointer? *(void**)value: value);
+                gc::WriteBarrier::GenericStore(dest, (deref_pointer ? *(void**)value : value));
                 return;
             case IL2CPP_TYPE_FNPTR:
             case IL2CPP_TYPE_PTR:
@@ -339,7 +334,7 @@ namespace vm
                     else
                     {
                         memcpy(dest, value, size);
-                        //mono_gc_wbarrier_value_copy (dest, value, size, klass);
+                        gc::GarbageCollector::SetWriteBarrier(reinterpret_cast<void**>(dest), size);
                     }
                 }
                 return;

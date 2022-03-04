@@ -1,6 +1,6 @@
 #include "il2cpp-config.h"
 
-#if IL2CPP_TARGET_POSIX
+#if IL2CPP_TARGET_POSIX && !RUNTIME_TINY
 
 #include <sys/errno.h>
 
@@ -17,7 +17,6 @@ namespace posix
         int32_t ret = 0;
         time_t start = time(NULL);
 
-        timeout = (timeout >= 0) ? (timeout / 1000) : -1;
         do
         {
             ret = poll(handles, numHandles, timeout);
@@ -35,7 +34,27 @@ namespace posix
                 errno = err;
             }
         }
+#if IL2CPP_TARGET_LINUX
+        while (ret == -1 && (errno == EINTR || errno == EAGAIN));
+#else
         while (ret == -1 && errno == EINTR);
+#endif
+
+#if IL2CPP_TARGET_LINUX
+        // On Linux, socket will report POLLERR if the other end has been closed, in addition to normal POLLHUP
+        // From man page:
+        // POLLERR
+        //   Error condition(only returned in revents; ignored in events).
+        //   This bit is also set for a file descriptor referring to the
+        //   write end of a pipe when the read end has been closed.
+        //
+        // Mac and Windows doesn't do it, so we zero out that bit if POLLHUP is set on Linux to get consistent behaviour
+        for (int i = 0; i < numHandles; i++)
+        {
+            if ((handles[i].revents & POLLERR) && (handles[i].revents & POLLHUP))
+                handles[i].revents &= ~POLLERR & handles[i].events;
+        }
+#endif
 
         return ret;
     }

@@ -1,6 +1,5 @@
 #if ENABLE_UNIT_TESTS
 #include "os/c-api/il2cpp-config-platforms.h"
-#if NET_4_0
 
 #include "UnitTest++.h"
 
@@ -24,5 +23,4 @@ SUITE(CpuInfo)
 
 #endif // IL2CPP_PLATFORM_SUPPORTS_CPU_INFO
 
-#endif // NET_4_0
 #endif // ENABLE_UNIT_TESTS

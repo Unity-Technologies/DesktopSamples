@@ -1,6 +1,6 @@
 #include "il2cpp-config.h"
 
-#if IL2CPP_TARGET_WINDOWS
+#if IL2CPP_TARGET_WINDOWS && !RUNTIME_TINY
 
 #include "DllMain.h"
 #include "ThreadImpl.h"
@@ -21,7 +21,7 @@ __declspec(dllimport) extern void Libil2cppLackeySetDllMain(DllMainFunc dllMain)
 
 void il2cpp::os::InitializeDllMain()
 {
-#if LIBIL2CPP_IS_IN_EXECUTABLE
+#if LIBIL2CPP_IS_IN_EXECUTABLE && !IL2CPP_TINY
     Libil2cppLackeySetDllMain(DllMain);
 #endif
 }

@@ -1,10 +1,15 @@
+#include "il2cpp-config.h"
+
+#if !RUNTIME_TINY
+
 #include "NativeDelegateMethodCache.h"
+#include "os/Mutex.h"
 
 namespace il2cpp
 {
 namespace utils
 {
-    il2cpp::os::FastMutex NativeDelegateMethodCache::m_CacheMutex;
+    baselib::ReentrantLock NativeDelegateMethodCache::m_CacheMutex;
     NativeDelegateMap NativeDelegateMethodCache::m_NativeDelegateMethods;
 
     const VmMethod* NativeDelegateMethodCache::GetNativeDelegate(Il2CppMethodPointer nativeFunctionPointer)
@@ -25,3 +30,5 @@ namespace utils
     }
 } // namespace utils
 } // namespace il2cpp
+
+#endif

@@ -4,7 +4,7 @@
 #include "il2cpp-config.h"
 #include "../Allocator.h"
 
-#if IL2CPP_TARGET_PS4
+#if IL2CPP_TARGET_PS4 || IL2CPP_TARGET_PS5
 size_t g_args;
 const void *g_argp;
 #endif
@@ -15,7 +15,7 @@ const void *g_argp;
 
 extern "C"
 {
-void printf_console_log(const char* log, va_list list) {}
+    void printf_console_log(const char* log, va_list list) {}
 }
 
 // We can't use Il2CppNativeChar here due to an old bug in clang handling typdefs in main.
@@ -33,6 +33,8 @@ int main(int argc, const char* const argv[])
 
 #if IL2CPP_TARGET_WINDOWS_DESKTOP
 #include <windows.h>
+#elif IL2CPP_TARGET_WINDOWS_GAMES
+#include <windows.h>
 #else
 #include "ActivateApp.h"
 #endif
@@ -45,6 +47,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
     int returnValue = main(argc, argv);
     LocalFree(argv);
     return returnValue;
+#elif IL2CPP_TARGET_WINDOWS_GAMES
+    int result = main(__argc, __wargv);
+    return result;
 #else
     return WinRT::Activate(main);
 #endif
@@ -56,11 +61,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 //Needed to correct linker error since we don't compile with the GC that has the sig wrappers
 extern "C"
 {
-extern int __real_sigaction(int signum, const struct sigaction *action, struct sigaction *old_action);
-int __wrap_sigaction(int signum, const struct sigaction *action, struct sigaction *old_action)
-{
-    return __real_sigaction(signum, action, old_action);
-}
+    extern int __real_sigaction(int signum, const struct sigaction *action, struct sigaction *old_action);
+    int __wrap_sigaction(int signum, const struct sigaction *action, struct sigaction *old_action)
+    {
+        return __real_sigaction(signum, action, old_action);
+    }
 }
 #endif
 

@@ -1,4 +1,7 @@
 #include "il2cpp-config.h"
+
+#if !RUNTIME_TINY
+
 #include <stdint.h>
 #include "BlobReader.h"
 #include "utils/MemoryRead.h"
@@ -68,3 +71,5 @@ namespace utils
     }
 } /* utils */
 } /* il2cpp */
+
+#endif

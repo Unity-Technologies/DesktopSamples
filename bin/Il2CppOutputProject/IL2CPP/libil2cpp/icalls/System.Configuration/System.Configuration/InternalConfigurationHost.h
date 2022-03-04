@@ -1,7 +1,5 @@
 #pragma once
 
-#if NET_4_0
-
 namespace il2cpp
 {
 namespace icalls
@@ -25,5 +23,3 @@ namespace Configuration
 } // namespace System
 } // namespace icalls
 } // namespace il2cpp
-
-#endif

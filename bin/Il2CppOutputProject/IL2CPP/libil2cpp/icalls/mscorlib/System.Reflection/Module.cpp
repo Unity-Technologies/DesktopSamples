@@ -28,7 +28,7 @@ namespace Reflection
         for (vm::TypeVector::const_iterator type = types.begin(); type != types.end(); ++type)
         {
             Il2CppReflectionType* reflectionType = vm::Reflection::GetTypeObject(&(*type)->byval_arg);
-            il2cpp_array_set(result, Il2CppReflectionType*, index, reflectionType);
+            il2cpp_array_setref(result, index, reflectionType);
             index++;
         }
 

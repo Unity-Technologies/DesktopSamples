@@ -19,7 +19,7 @@ namespace System
     {
         Il2CppClass* typeInfo = vm::Class::FromIl2CppType(type->type);
 
-        if (typeInfo == NULL)
+        if (typeInfo == NULL || il2cpp::vm::Class::IsNullable(typeInfo))
             return NULL;
 
         il2cpp::vm::Class::Init(typeInfo);

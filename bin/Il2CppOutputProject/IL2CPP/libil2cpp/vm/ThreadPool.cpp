@@ -11,7 +11,6 @@
 #include "vm/Thread.h"
 #include "vm/ThreadPool.h"
 #include "vm/WaitHandle.h"
-#include "os/Atomic.h"
 #include "os/Environment.h"
 #include "os/Event.h"
 #include "os/Mutex.h"
@@ -28,6 +27,10 @@
 #include <list>
 #include <limits>
 #include <algorithm>
+
+#include "Baselib.h"
+#include "Cpp/Atomic.h"
+#include "Cpp/ReentrantLock.h"
 
 #if IL2CPP_TARGET_POSIX
 #include <unistd.h>
@@ -121,7 +124,7 @@ namespace vm
 /// network requests. It's basically a separate staging step for socket AsyncResults.
     struct SocketPollingThread
     {
-        os::FastMutex mutex;
+        baselib::ReentrantLock mutex;
         AsyncResultQueue queue;
         os::Thread* thread;
         os::Event threadStartupAcknowledged;
@@ -189,6 +192,7 @@ namespace vm
             {
                 os::FastAutoLock lock(&mutex);
                 queue.push(asyncResult);
+                gc::GarbageCollector::SetWriteBarrier((void**)&queue.back());
             }
 
             // Interrupt polling thread to pick up new request.
@@ -238,13 +242,13 @@ namespace vm
 
         /// Number of threads currently waiting for new work.
         /// NOTE: Changed atomically.
-        volatile int32_t numIdleThreads;
+        baselib::atomic<uint32_t> numIdleThreads;
 
         /// Semaphore that worker threads listen on.
         os::Semaphore signalThreads;
 
         /// Mutex for queue and threads vector.
-        os::FastMutex mutex;
+        baselib::ReentrantLock mutex;
 
         /// Queue of pending items.
         /// NOTE: Requires lock on mutex.
@@ -356,12 +360,7 @@ namespace vm
         }
 #endif
 
-#if !NET_4_0
-        // Acquire socket.
-        socketHandle.Acquire(os::PointerToSocketHandle(reinterpret_cast<void*>(socketAsyncResult->handle)));
-#else
         IL2CPP_ASSERT(false && "Todo .net 4");
-#endif
         request.fd = socketHandle.IsValid() ? socketHandle.GetSocket()->GetDescriptor() : -1;
     }
 
@@ -398,6 +397,7 @@ namespace vm
 
             // Push back dummy values to asyncResults and socketHandles so their indices match pollrequest indices
             asyncResults.push_back(NULL);
+            gc::GarbageCollector::SetWriteBarrier((void**)asyncResults.data(), asyncResults.size() * sizeof(Il2CppAsyncResult));
             socketHandles.push_back(os::SocketHandleWrapper());
         }
 #endif
@@ -422,6 +422,7 @@ namespace vm
                 os::SocketHandleWrapper& socketHandle = socketHandles.back();
 
                 asyncResults.push_back(asyncResult);
+                gc::GarbageCollector::SetWriteBarrier((void**)asyncResults.data(), asyncResults.size() * sizeof(Il2CppAsyncResult));
 
                 // Add the request to the list.
                 NativePollRequest pollRequest;
@@ -470,6 +471,7 @@ namespace vm
 
                     pollRequests.erase(pollRequests.begin() + i);
                     asyncResults.erase(asyncResults.begin() + i);
+                    gc::GarbageCollector::SetWriteBarrier((void**)asyncResults.data(), asyncResults.size() * sizeof(Il2CppAsyncResult));
                     socketHandles.erase(socketHandles.begin() + i);
                 }
                 else
@@ -658,8 +660,9 @@ namespace vm
         {
             os::FastAutoLock lock(&mutex);
             queue.push(asyncResult);
+            gc::GarbageCollector::SetWriteBarrier((void**)&queue.back());
             IL2CPP_ASSERT(numIdleThreads >= 0);
-            if (queue.size() > static_cast<uint32_t>(numIdleThreads))
+            if (queue.size() > numIdleThreads)
                 forceNewThread = true;
         }
 
@@ -711,27 +714,14 @@ namespace vm
         int32_t offset = socketAsyncResult->offset;
         int32_t count = socketAsyncResult->size;
 
-#if !NET_4_0
-        // Perform send/receive.
-        switch (socketAsyncResult->operation)
-        {
-            case AIO_OP_RECEIVE:
-                socketAsyncResult->total = icalls::System::System::Net::Sockets::Socket::Receive
-                        (socketAsyncResult->handle, buffer, offset, count, flags, &socketAsyncResult->error);
-                break;
-
-            case AIO_OP_SEND:
-                socketAsyncResult->total = icalls::System::System::Net::Sockets::Socket::Send
-                        (socketAsyncResult->handle, buffer, offset, count, flags, &socketAsyncResult->error);
-                break;
-        }
-#else
         IL2CPP_ASSERT(false && "TO DO .net 4");
-#endif
     }
 
     void ThreadPoolCompartment::WorkerThreadRunLoop()
     {
+#if IL2CPP_TINY
+        IL2CPP_ASSERT(0 && "This function should never be called with the Tiny profile");
+#else
         bool waitingToTerminate = false;
 
         // Pump AsyncResults until we're killed.
@@ -761,12 +751,12 @@ namespace vm
                 // No item so wait for signal. We need to allow interruptions here as we don't yet
                 // have proper abort support and the runtime currently uses interruptions to get
                 // background threads to exit.
-                os::Atomic::Increment(&numIdleThreads);
+                numIdleThreads++;
                 if (waitingToTerminate)
                     signalThreads.Wait(kGracePeriodBeforeExtranenousWorkerThreadTerminates, true);
                 else
                     signalThreads.Wait(true);
-                os::Atomic::Decrement(&numIdleThreads);
+                numIdleThreads--;
 
                 // Try again.
                 continue;
@@ -799,7 +789,7 @@ namespace vm
             void** byRefArgs = 0;
             if (byRefArgsCount > 0)
             {
-                asyncCall->out_args = vm::Array::New(il2cpp_defaults.object_class, byRefArgsCount);
+                IL2CPP_OBJECT_SETREF(asyncCall, out_args, vm::Array::New(il2cpp_defaults.object_class, byRefArgsCount));
                 byRefArgs = (void**)il2cpp_array_addr(asyncCall->out_args, Il2CppObject*, 0);
             }
 
@@ -818,12 +808,12 @@ namespace vm
                     if (isValueType)
                     {
                         // Value types are always boxed
-                        byRefArgs[byRefIndex] = il2cpp_object_unbox((Il2CppObject*)argsPtr[i]);
+                        il2cpp_array_setref(asyncCall->out_args, byRefIndex, il2cpp_object_unbox((Il2CppObject*)argsPtr[i]));
                         params[i] = byRefArgs[byRefIndex++];
                     }
                     else
                     {
-                        byRefArgs[byRefIndex] = argsPtr[i];
+                        il2cpp_array_setref(asyncCall->out_args, byRefIndex, argsPtr[i]);
                         params[i] = &byRefArgs[byRefIndex++];
                     }
                 }
@@ -841,12 +831,8 @@ namespace vm
             gc::GCHandle::Free(argsGCHandle);
 
             // Store result.
-            asyncCall->res = result;
-#if !NET_4_0
-            asyncCall->msg = exception;
-#else
-            asyncCall->msg = (Il2CppMethodMessage*)exception;
-#endif
+            IL2CPP_OBJECT_SETREF(asyncCall, res, result);
+            IL2CPP_OBJECT_SETREF(asyncCall, msg, (Il2CppMethodMessage*)exception);
             os::Atomic::FullMemoryBarrier();
             asyncResult->completed = true;
 
@@ -856,11 +842,7 @@ namespace vm
             {
                 void* args[1] = { asyncResult };
                 il2cpp_runtime_invoke(asyncCallback->method, asyncCallback->target, args, &exception);
-#if !NET_4_0
-                asyncCall->msg = exception;
-#else
-                asyncCall->msg = (Il2CppMethodMessage*)exception;
-#endif
+                IL2CPP_OBJECT_SETREF(asyncCall, msg, (Il2CppMethodMessage*)exception);
             }
 
             // Signal wait handle, if there's one.
@@ -873,6 +855,7 @@ namespace vm
 
             il2cpp_monitor_exit(&asyncResult->base);
         }
+#endif
     }
 
     static void WorkerThreadEntryPoint(void* data)
@@ -921,225 +904,38 @@ namespace vm
 
     void ThreadPool::Initialize()
     {
-#if NET_4_0
         NOT_SUPPORTED_IL2CPP(ThreadPool::Initialize, "vm::ThreadPool is not supported in .NET 4.5, use threadpool-ms instead");
-#else
-        g_SocketPollingThread = new SocketPollingThread();
-        g_ThreadPoolCompartments[kWorkerThreadPool] = new ThreadPoolCompartment();
-        g_ThreadPoolCompartments[kAsyncIOPool] = new ThreadPoolCompartment();
-
-        g_ThreadPoolCompartments[kWorkerThreadPool]->compartmentName = "Worker Pool";
-        g_ThreadPoolCompartments[kAsyncIOPool]->compartmentName = "Async I/O Pool";
-
-        int numCores = os::Environment::GetProcessorCount();
-        g_ThreadPoolCompartments[kWorkerThreadPool]->minThreads = numCores;
-        g_ThreadPoolCompartments[kWorkerThreadPool]->maxThreads = 20 + THREADS_PER_CORE * numCores;
-        g_ThreadPoolCompartments[kAsyncIOPool]->minThreads = g_ThreadPoolCompartments[kWorkerThreadPool]->minThreads;
-        g_ThreadPoolCompartments[kAsyncIOPool]->maxThreads = g_ThreadPoolCompartments[kWorkerThreadPool]->maxThreads;
-#endif
     }
 
     void ThreadPool::Shutdown()
     {
-#if NET_4_0
         NOT_SUPPORTED_IL2CPP(ThreadPool::Shutdown, "vm::ThreadPool is not supported in .NET 4.5, use threadpool-ms instead");
-#else
-        g_SocketPollingThread->Terminate();
-        // avoid cleaning up until we properly handle race condition from other threads queueing jobs
-        // delete g_SocketPollingThread;
-        // g_SocketPollingThread = NULL;
-#endif
     }
 
     ThreadPool::Configuration ThreadPool::GetConfiguration()
     {
-#if NET_4_0
         NOT_SUPPORTED_IL2CPP(ThreadPool::GetConfiguration, "vm::ThreadPool is not supported in .NET 4.5, use threadpool-ms instead");
         IL2CPP_UNREACHABLE;
         return Configuration();
-#else
-        Configuration configuration;
-
-        configuration.availableThreads = g_ThreadPoolCompartments[kWorkerThreadPool]->numIdleThreads;
-        configuration.availableAsyncIOThreads = g_ThreadPoolCompartments[kAsyncIOPool]->numIdleThreads;
-        configuration.minThreads = g_ThreadPoolCompartments[kWorkerThreadPool]->minThreads;
-        configuration.maxThreads = g_ThreadPoolCompartments[kWorkerThreadPool]->maxThreads;
-        configuration.minAsyncIOThreads = g_ThreadPoolCompartments[kAsyncIOPool]->minThreads;
-        configuration.maxAsyncIOThreads = g_ThreadPoolCompartments[kAsyncIOPool]->maxThreads;
-
-        return configuration;
-#endif
     }
 
     void ThreadPool::SetConfiguration(const Configuration& configuration)
     {
-#if NET_4_0
         NOT_SUPPORTED_IL2CPP(ThreadPool::SetConfiguration, "vm::ThreadPool is not supported in .NET 4.5, use threadpool-ms instead");
-#else
-        IL2CPP_ASSERT(configuration.maxThreads >= configuration.minThreads && "Invalid configuration");
-        IL2CPP_ASSERT(configuration.maxAsyncIOThreads >= configuration.minAsyncIOThreads && "Invalid configuration");
-        IL2CPP_ASSERT(configuration.minThreads > 0 && "Invalid configuration");
-        IL2CPP_ASSERT(configuration.minAsyncIOThreads > 0 && "Invalid configuration");
-        IL2CPP_ASSERT(configuration.maxThreads > 0 && "Invalid configuration");
-        IL2CPP_ASSERT(configuration.maxAsyncIOThreads > 0 && "Invalid configuration");
-
-        g_ThreadPoolCompartments[kWorkerThreadPool]->minThreads = configuration.minThreads;
-        g_ThreadPoolCompartments[kWorkerThreadPool]->maxThreads = configuration.maxThreads;
-        g_ThreadPoolCompartments[kAsyncIOPool]->minThreads = configuration.minAsyncIOThreads;
-        g_ThreadPoolCompartments[kAsyncIOPool]->maxThreads = configuration.maxAsyncIOThreads;
-
-        // Get our worker threads to respond and exit, if necessary.
-        // The method here isn't very smart and in fact won't even work reliably as idle worker
-        // threads will steal the signal from threads that are currently busy.
-        g_ThreadPoolCompartments[kWorkerThreadPool]->SignalAllThreads();
-        g_ThreadPoolCompartments[kAsyncIOPool]->SignalAllThreads();
-#endif
     }
 
     Il2CppAsyncResult* ThreadPool::Queue(Il2CppDelegate* delegate, void** params, Il2CppDelegate* asyncCallback, Il2CppObject* state)
     {
-#if NET_4_0
         NOT_SUPPORTED_IL2CPP(ThreadPool::Queue, "vm::ThreadPool is not supported in .NET 4.5, use threadpool-ms instead");
         IL2CPP_UNREACHABLE;
         return NULL;
-#else
-        // Create AsyncCall.
-        Il2CppAsyncCall* asyncCall = (Il2CppAsyncCall*)il2cpp::vm::Object::New(il2cpp_defaults.async_call_class);
-        asyncCall->cb_target = asyncCallback;
-        asyncCall->state = state;
-
-        // Copy arguments.
-        const uint8_t parametersCount = delegate->method->parameters_count;
-        IL2CPP_ASSERT(!params[parametersCount] && "Expecting NULL as last element of the params array!");
-
-        Il2CppArray* args = vm::Array::New(il2cpp_defaults.object_class, parametersCount);
-        for (uint8_t i = 0; i < parametersCount; ++i)
-            il2cpp_array_setref(args, i, params[i]);
-
-        // Create AsyncResult.
-        Il2CppAsyncResult* asyncResult = (Il2CppAsyncResult*)il2cpp::vm::Object::New(il2cpp_defaults.asyncresult_class);
-        asyncResult->async_delegate = delegate;
-
-        // NOTE: we store a GC handle here because .data is an IntPtr on the managed side and it won't be scanned by the GC.
-        asyncResult->data = (void*)(uintptr_t)gc::GCHandle::New((Il2CppObject*)args, true);
-        asyncResult->object_data = asyncCall;
-        asyncResult->async_state = state;
-
-        // See which compartment we should process this request with and whether we
-        // need to first pipe it through the socket polling stage.
-        if (IsProcessAsyncCall(delegate))
-        {
-            NOT_SUPPORTED_IL2CPP(AsyncReadHandler, "Async Process operations are not supported by Il2Cpp");
-        }
-        else if (IsSocketAsyncCall(delegate))
-        {
-            Il2CppSocketAsyncResult* socketAsyncResult = GetSocketAsyncResult(asyncResult);
-            socketAsyncResult->ares = asyncResult;
-
-            // Apparently, using poll/WSAPoll to listen for connect() isn't reliable, so
-            // we bypass the polling stage in that case.
-            // Also, Mono has some AIO_OP_xxx operations that are only defined in C# and are not
-            // meant to go through the polling stage.
-            if ((socketAsyncResult->operation == AIO_OP_CONNECT && socketAsyncResult->blocking)
-                || !IsSocketAsyncOperation(asyncResult))
-            {
-                g_ThreadPoolCompartments[kAsyncIOPool]->QueueWorkItem(asyncResult);
-            }
-            else
-            {
-                // Give it to polling thread.
-                SpawnSocketPollingThreadIfNeeded();
-                g_SocketPollingThread->QueueRequest(asyncResult);
-            }
-        }
-        else if (IsFileStreamAsyncCall(delegate))
-        {
-            g_ThreadPoolCompartments[kAsyncIOPool]->QueueWorkItem(asyncResult);
-        }
-        else
-        {
-            g_ThreadPoolCompartments[kWorkerThreadPool]->QueueWorkItem(asyncResult);
-        }
-
-        return asyncResult;
-#endif
     }
 
     Il2CppObject* ThreadPool::Wait(Il2CppAsyncResult* asyncResult, void** outArgs)
     {
-#if NET_4_0
         NOT_SUPPORTED_IL2CPP(ThreadPool::Wait, "vm::ThreadPool is not supported in .NET 4.5, use threadpool-ms instead");
         IL2CPP_UNREACHABLE;
         return NULL;
-#else
-        // Need lock already here to ensure only a single call to EndInvoke() gets to be the first one.
-        il2cpp_monitor_enter(&asyncResult->base);
-
-        // Throw if this result has already been waited on.
-        if (asyncResult->endinvoke_called)
-        {
-            il2cpp_monitor_exit(&asyncResult->base);
-            Exception::Raise(Exception::GetInvalidOperationException
-                    ("Cannot call EndInvoke() repeatedly or concurrently on the same AsyncResult!"));
-        }
-
-        asyncResult->endinvoke_called = 1;
-
-        // Wait if the AsyncResult hasn't yet been processed.
-        if (!asyncResult->completed)
-        {
-            if (!asyncResult->handle)
-                asyncResult->handle = WaitHandle::NewManualResetEvent(false);
-            os::Handle* osHandle = WaitHandle::GetPlatformHandle(asyncResult->handle);
-
-            il2cpp_monitor_exit(&asyncResult->base);
-
-            osHandle->Wait();
-        }
-        else
-            il2cpp_monitor_exit(&asyncResult->base);
-
-        // Raise exception now if the delegate threw while we were running it on
-        // the worker thread.
-        Il2CppAsyncCall* asyncCall = asyncResult->object_data;
-        if (asyncCall->msg != NULL)
-            il2cpp_raise_exception((Il2CppException*)asyncCall->msg);
-
-        // Copy out arguments.
-        if (asyncCall->out_args != NULL)
-        {
-            void** outArgsPtr = (void**)il2cpp_array_addr(asyncCall->out_args, Il2CppObject*, 0);
-            Il2CppDelegate* delegate = asyncResult->async_delegate;
-            const uint8_t paramsCount = delegate->method->parameters_count;
-
-            uint8_t index = 0;
-            for (uint8_t i = 0; i < paramsCount; ++i)
-            {
-                Il2CppType* paramType = (Il2CppType*)delegate->method->parameters[i].parameter_type;
-                const Il2CppClass* paramClass = il2cpp_class_from_type(paramType);
-
-                if (!paramType->byref)
-                    continue;
-
-                const bool isValueType = il2cpp_class_is_valuetype(paramClass);
-                if (isValueType)
-                {
-                    IL2CPP_ASSERT(paramClass->native_size > 0 && "EndInvoke: Invalid native_size found when trying to copy a value type in the out_args.");
-
-                    // NOTE(gab): in case of value types, we need to copy the data over.
-                    memcpy(outArgs[index], outArgsPtr[index], paramClass->native_size);
-                }
-                else
-                {
-                    *((void**)outArgs[index]) = outArgsPtr[index];
-                }
-
-                ++index;
-            }
-        }
-
-        return asyncResult->object_data->res;
-#endif
     }
 } /* namespace vm */
 } /* namespace il2cpp */

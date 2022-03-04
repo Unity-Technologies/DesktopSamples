@@ -1,4 +1,3 @@
-#if NET_4_0
 #include "il2cpp-config.h"
 #include "RuntimeFieldHandle.h"
 #include "icalls/mscorlib/System.Reflection/MonoField.h"
@@ -47,4 +46,3 @@ namespace System
 } // namespace mscorlib
 } // namespace icalls
 } // namespace il2cpp
-#endif

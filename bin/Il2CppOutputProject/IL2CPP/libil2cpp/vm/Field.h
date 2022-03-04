@@ -29,9 +29,7 @@ namespace vm
         static void SetValue(Il2CppObject *obj, const FieldInfo *field, void *value);
         static void StaticGetValue(FieldInfo *field, void *value);
         static void StaticGetValueInternal(FieldInfo *field, void *value, void *threadStaticData);
-#if NET_4_0
         static void StaticGetValueForThread(FieldInfo *field, void *value, Il2CppInternalThread *thread);
-#endif
         static void StaticSetValue(FieldInfo *field, void *value);
         static void StaticSetValueForThread(FieldInfo *field, void *value, Il2CppThread *thread);
         static void SetInstanceFieldValueObject(Il2CppObject* objectInstance, FieldInfo* field, Il2CppObject* value);

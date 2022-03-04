@@ -817,6 +817,14 @@ inflate_generic_type (MonoImage *image, MonoType *type, MonoGenericContext *cont
 		nt->data.generic_class = gclass;
 		return nt;
 	}
+	case MONO_TYPE_PTR: {
+		MonoType *nt, *inflated = inflate_generic_type (image, type->data.type, context, error);
+		if (!inflated || !mono_error_ok (error))
+			return NULL;
+		nt = mono_metadata_type_dup (image, type);
+		nt->data.type = inflated;
+		return nt;
+	}
 	default:
 		return NULL;
 	}
@@ -7705,7 +7713,7 @@ find_nocase (gpointer key, gpointer value, gpointer user_data)
 	char *name = (char*)key;
 	FindUserData *data = (FindUserData*)user_data;
 
-	if (!data->value && (mono_utf8_strcasecmp (name, (char*)data->key) == 0))
+	if (!data->value && (NULL == data->key || (mono_utf8_strcasecmp (name, (char*)data->key) == 0)))
 		data->value = value;
 }
 
@@ -7800,7 +7808,7 @@ mono_class_from_name_case_checked (MonoImage *image, const char *name_space, con
 			continue;
 		n = mono_metadata_string_heap (image, cols [MONO_TYPEDEF_NAME]);
 		nspace = mono_metadata_string_heap (image, cols [MONO_TYPEDEF_NAMESPACE]);
-		if (mono_utf8_strcasecmp (n, name) == 0 && mono_utf8_strcasecmp (nspace, name_space) == 0)
+		if (mono_utf8_strcasecmp (n, name) == 0 && (NULL == name_space || (mono_utf8_strcasecmp (nspace, name_space) == 0)))
 			return mono_class_get_checked (image, MONO_TOKEN_TYPE_DEF | i, error);
 	}
 	return NULL;
@@ -9685,6 +9693,7 @@ mono_field_get_flags (MonoClassField *field)
 guint32
 mono_field_get_offset (MonoClassField *field)
 {
+	mono_class_setup_fields(field->parent);
 	return field->offset;
 }
 

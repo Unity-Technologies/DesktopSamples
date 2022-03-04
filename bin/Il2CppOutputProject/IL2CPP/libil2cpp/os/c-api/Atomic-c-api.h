@@ -3,121 +3,100 @@
 #include "il2cpp-config-platforms.h"
 #include <stdint.h>
 
-#if defined(__cplusplus)
-extern "C" {
+#include "Baselib.h"
+#include "C/Baselib_Atomic_TypeSafe.h"
+
+inline void UnityPalFullMemoryBarrier()
+{
+    Baselib_atomic_thread_fence_seq_cst();
+}
+
+inline int32_t UnityPalAdd(int32_t* location1, int32_t value)
+{
+    return Baselib_atomic_fetch_add_32_seq_cst(location1, value) + value;
+}
+
+#if IL2CPP_ENABLE_INTERLOCKED_64_REQUIRED_ALIGNMENT
+inline int64_t UnityPalAdd64(int64_t* location1, int64_t value)
+{
+    return Baselib_atomic_fetch_add_64_seq_cst(location1, value) + value;
+}
+
 #endif
 
-static inline int32_t UnityPalCompareExchange(volatile int32_t* dest, int32_t exchange, int32_t comparand);
-static inline int64_t UnityPalCompareExchange64(volatile int64_t* dest, int64_t exchange, int64_t comparand);
-static inline void* UnityPalCompareExchangePointer(void* volatile* dest, void* exchange, void* comparand);
-static inline int32_t UnityPalAdd(volatile int32_t* location1, int32_t value);
-static inline int64_t UnityPalAdd64(volatile int64_t* location1, int64_t value);
-static inline int32_t UnityPalIncrement(volatile int32_t* value);
-static inline int64_t UnityPalIncrement64(volatile int64_t* value);
-static inline int32_t UnityPalDecrement(volatile int32_t* value);
-static inline int64_t UnityPalDecrement64(volatile int64_t* value);
-static inline int32_t UnityPalExchange(volatile int32_t* dest, int32_t exchange);
-static inline int64_t UnityPalExchange64(volatile int64_t* dest, int64_t exchange);
-static inline void* UnityPalExchangePointer(void* volatile* dest, void* exchange);
-static inline int64_t UnityPalRead64(volatile int64_t* addr);
-
-#if defined(__cplusplus)
+inline int32_t UnityPalIncrement(int32_t* value)
+{
+    return Baselib_atomic_fetch_add_32_seq_cst(value, 1) + 1;
 }
+
+#if IL2CPP_ENABLE_INTERLOCKED_64_REQUIRED_ALIGNMENT
+inline int64_t UnityPalIncrement64(int64_t* value)
+{
+    return Baselib_atomic_fetch_add_64_seq_cst(value, 1) + 1;
+}
+
 #endif
 
-#if !IL2CPP_SUPPORT_THREADS
-
-inline int32_t UnityPalAdd(volatile int32_t* location1, int32_t value)
+inline int32_t UnityPalDecrement(int32_t* value)
 {
-    return *location1 += value;
+    return Baselib_atomic_fetch_add_32_seq_cst(value, -1) - 1;
 }
 
-inline int64_t UnityPalAdd64(volatile int64_t* location1, int64_t value)
+#if IL2CPP_ENABLE_INTERLOCKED_64_REQUIRED_ALIGNMENT
+inline int64_t UnityPalDecrement64(int64_t* value)
 {
-    return *location1 += value;
+    return Baselib_atomic_fetch_add_64_seq_cst(value, -1) - 1;
 }
 
-inline int32_t UnityPalIncrement(volatile int32_t* value)
+#endif
+
+inline int32_t UnityPalCompareExchange(int32_t* dest, int32_t exchange, int32_t comparand)
 {
-    return ++(*value);
+    Baselib_atomic_compare_exchange_strong_32_seq_cst_seq_cst(dest, &comparand, exchange);
+    return comparand;
 }
 
-inline int64_t UnityPalIncrement64(volatile int64_t* value)
+inline int64_t UnityPalCompareExchange64(int64_t* dest, int64_t exchange, int64_t comparand)
 {
-    return ++(*value);
-}
-
-inline int32_t UnityPalDecrement(volatile int32_t* value)
-{
-    return --(*value);
-}
-
-inline int64_t UnityPalDecrement64(volatile int64_t* value)
-{
-    return --(*value);
-}
-
-inline int32_t UnityPalCompareExchange(volatile int32_t* dest, int32_t exchange, int32_t comparand)
-{
-    int32_t orig = *dest;
-    if (*dest == comparand)
-        *dest = exchange;
-
-    return orig;
-}
-
-inline int64_t UnityPalCompareExchange64(volatile int64_t* dest, int64_t exchange, int64_t comparand)
-{
-    int64_t orig = *dest;
-    if (*dest == comparand)
-        *dest = exchange;
-
-    return orig;
+    Baselib_atomic_compare_exchange_strong_64_seq_cst_seq_cst(dest, &comparand, exchange);
+    return comparand;
 }
 
 inline void* UnityPalCompareExchangePointer(void* volatile* dest, void* exchange, void* comparand)
 {
-    void* orig = *dest;
-    if (*dest == comparand)
-        *dest = exchange;
-
-    return orig;
+    Baselib_atomic_compare_exchange_strong_ptr_seq_cst_seq_cst((intptr_t*)dest, (intptr_t*)&comparand, (intptr_t)exchange);
+    return comparand;
 }
 
-inline int64_t UnityPalExchange64(volatile int64_t* dest, int64_t exchange)
+inline int32_t UnityPalExchange(int32_t* dest, int32_t exchange)
 {
-    int64_t orig = *dest;
-    *dest = exchange;
-    return orig;
+    return Baselib_atomic_exchange_32_seq_cst(dest, exchange);
 }
 
-inline int32_t UnityPalExchange(volatile int32_t* dest, int32_t exchange)
+#if IL2CPP_ENABLE_INTERLOCKED_64_REQUIRED_ALIGNMENT
+inline int64_t UnityPalExchange64(int64_t* dest, int64_t exchange)
 {
-    int32_t orig = *dest;
-    *dest = exchange;
-    return orig;
+    return Baselib_atomic_exchange_64_seq_cst(dest, exchange);
 }
+
+#endif
 
 inline void* UnityPalExchangePointer(void* volatile* dest, void* exchange)
 {
-    void* orig = *dest;
-    *dest = exchange;
-    return orig;
+    return (void*)Baselib_atomic_exchange_ptr_seq_cst((intptr_t*)dest, (intptr_t)exchange);
 }
 
-int64_t UnityPalRead64(volatile int64_t* addr)
+inline int64_t UnityPalRead64(int64_t* addr)
 {
-    return *addr;
+    return Baselib_atomic_fetch_add_64_seq_cst(addr, 0);
 }
 
-#elif IL2CPP_TARGET_WINDOWS
-#include "Win32/AtomicImpl-c-api.h"
-#elif IL2CPP_TARGET_PS4
-#include "PS4/AtomicImpl-c-api.h"  // has to come earlier than posix
-#elif IL2CPP_TARGET_PSP2
-#include "PSP2/AtomicImpl-c-api.h"
-#elif IL2CPP_TARGET_POSIX
-#include "Posix/AtomicImpl-c-api.h"
-#else
-#include "AtomicImpl-c-api.h"
-#endif
+inline intptr_t UnityPalReadPtrVal(intptr_t* addr)
+{
+    return Baselib_atomic_fetch_add_ptr_seq_cst(addr, 0);
+}
+
+inline int32_t UnityPalLoadRelaxed(const int32_t* addr)
+{
+    return Baselib_atomic_load_32_relaxed(addr);
+}

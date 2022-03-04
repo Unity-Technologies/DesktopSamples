@@ -9,7 +9,7 @@ namespace gc
     class WriteBarrier
     {
     public:
-        static void GenericStore(void* ptr, Il2CppObject* value);
+        static void GenericStore(void* ptr, void* value);
     };
 } /* gc */
 } /* il2cpp */

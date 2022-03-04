@@ -10,9 +10,7 @@ namespace utils
     {
     public:
         static NORETURN void Abort();
-#if !defined(RUNTIME_MONO)
         static void SetDataDir(const char *path);
-#endif
         static std::string GetDataDir();
     };
 } // utils

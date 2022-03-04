@@ -26,7 +26,9 @@ namespace os
     {
         WCHAR tempPath[MAX_PATH + 1];
         ::GetTempPathW(sizeof(tempPath) / sizeof(tempPath[0]), tempPath);
+#if !IL2CPP_TARGET_WINDOWS_GAMES
         ::GetLongPathNameW(tempPath, tempPath, sizeof(tempPath) / sizeof(tempPath[0]));
+#endif // !IL2CPP_TARGET_WINDOWS_GAMES
 
         return utils::StringUtils::Utf16ToUtf8(tempPath);
     }

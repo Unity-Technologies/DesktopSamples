@@ -1,6 +1,9 @@
 #include "il2cpp-api.h"
 #include "il2cpp-object-internals.h"
+#include "il2cpp-runtime-stats.h"
 
+#include "os/StackTrace.h"
+#include "os/Image.h"
 #include "vm/Array.h"
 #include "vm/Assembly.h"
 #include "vm/Class.h"
@@ -32,9 +35,11 @@
 #include "utils/Runtime.h"
 #include "utils/Environment.h"
 #include "vm-utils/Debugger.h"
+#include "vm-utils/NativeSymbol.h"
 
 #include "gc/GarbageCollector.h"
 #include "gc/GCHandle.h"
+#include "gc/WriteBarrierValidation.h"
 
 #include <locale.h>
 #include <fstream>
@@ -84,23 +89,15 @@ void* il2cpp_api_lookup_symbol(const char* name)
 
 #endif // IL2CPP_API_DYNAMIC_NO_DLSYM
 
-void il2cpp_init(const char* domain_name)
+int il2cpp_init(const char* domain_name)
 {
     // Use environment's default locale
     setlocale(LC_ALL, "");
 
-    // NOTE(gab): the runtime_version needs to change once we
-    // will support multiple runtimes.
-    // For now we default to the one used by unity and don't
-    // allow the callers to change it.
-#if NET_4_0
-    Runtime::Init(domain_name, "v4.0.30319");
-#else
-    Runtime::Init(domain_name, "v2.0.50727");
-#endif
+    return Runtime::Init(domain_name);
 }
 
-void il2cpp_init_utf16(const Il2CppChar* domain_name)
+int il2cpp_init_utf16(const Il2CppChar* domain_name)
 {
     return il2cpp_init(il2cpp::utils::StringUtils::Utf16ToUtf8(domain_name).c_str());
 }
@@ -430,6 +427,16 @@ int il2cpp_class_get_rank(const Il2CppClass *klass)
     return klass->rank;
 }
 
+uint32_t il2cpp_class_get_data_size(const Il2CppClass *klass)
+{
+    return klass->static_fields_size;
+}
+
+void* il2cpp_class_get_static_field_data(const Il2CppClass *klass)
+{
+    return klass->static_fields;
+}
+
 // testing only
 size_t il2cpp_class_get_bitmap_size(const Il2CppClass *klass)
 {
@@ -573,6 +580,38 @@ void il2cpp_unhandled_exception(Il2CppException* exc)
     Runtime::UnhandledException(exc);
 }
 
+void il2cpp_native_stack_trace(const Il2CppException * ex, uintptr_t** addresses, int* numFrames, char* imageUUID)
+{
+#if IL2CPP_ENABLE_NATIVE_INSTRUCTION_POINTER_EMISSION
+    if (ex == NULL || ex->native_trace_ips == NULL)
+    {
+        *numFrames = 0;
+        *addresses = NULL;
+        *imageUUID = '\0';
+        return;
+    }
+
+    *numFrames = il2cpp_array_length(ex->native_trace_ips);
+
+    if (*numFrames <= 0)
+    {
+        *addresses = NULL;
+        *imageUUID = '\0';
+    }
+    else
+    {
+        *addresses = static_cast<uintptr_t*>(il2cpp_alloc((*numFrames) * sizeof(uintptr_t)));
+        for (int i = 0; i < *numFrames; i++)
+        {
+            uintptr_t ptrAddr = il2cpp_array_get(ex->native_trace_ips, uintptr_t, i);
+            (*addresses)[i] = ptrAddr;
+        }
+
+        il2cpp::os::Image::GetImageUUID(imageUUID);
+    }
+#endif
+}
+
 // field
 
 const char* il2cpp_field_get_name(FieldInfo *field)
@@ -635,6 +674,11 @@ void il2cpp_field_static_set_value(FieldInfo *field, void *value)
     Field::StaticSetValue(field, value);
 }
 
+bool il2cpp_field_is_literal(FieldInfo *field)
+{
+    return (field->type->attrs & FIELD_ATTRIBUTE_LITERAL) != 0;
+}
+
 // gc
 void il2cpp_gc_collect(int maxGenerations)
 {
@@ -644,6 +688,11 @@ void il2cpp_gc_collect(int maxGenerations)
 int32_t il2cpp_gc_collect_a_little()
 {
     return GarbageCollector::CollectALittle();
+}
+
+void il2cpp_gc_start_incremental_collection()
+{
+    GarbageCollector::StartIncrementalCollection();
 }
 
 void il2cpp_gc_enable()
@@ -656,6 +705,31 @@ void il2cpp_gc_disable()
     GarbageCollector::Disable();
 }
 
+bool il2cpp_gc_is_disabled()
+{
+    return GarbageCollector::IsDisabled();
+}
+
+void il2cpp_gc_set_mode(Il2CppGCMode mode)
+{
+    GarbageCollector::SetMode(mode);
+}
+
+bool il2cpp_gc_is_incremental()
+{
+    return GarbageCollector::IsIncremental();
+}
+
+int64_t il2cpp_gc_get_max_time_slice_ns()
+{
+    return GarbageCollector::GetMaxTimeSliceNs();
+}
+
+void il2cpp_gc_set_max_time_slice_ns(int64_t maxTimeSlice)
+{
+    GarbageCollector::SetMaxTimeSliceNs(maxTimeSlice);
+}
+
 int64_t il2cpp_gc_get_used_size()
 {
     return GarbageCollector::GetUsedHeapSize();
@@ -664,6 +738,24 @@ int64_t il2cpp_gc_get_used_size()
 int64_t il2cpp_gc_get_heap_size()
 {
     return GarbageCollector::GetAllocatedHeapSize();
+}
+
+void il2cpp_gc_foreach_heap(void(*func)(void* data, void* context), void* userData)
+{
+    MemoryInformation::IterationContext ctx;
+    ctx.callback = func;
+    ctx.userData = userData;
+    il2cpp::gc::GarbageCollector::ForEachHeapSection(&ctx, MemoryInformation::ReportGcHeapSection);
+}
+
+void il2cpp_stop_gc_world()
+{
+    il2cpp::gc::GarbageCollector::StopWorld();
+}
+
+void il2cpp_start_gc_world()
+{
+    il2cpp::gc::GarbageCollector::StartWorld();
 }
 
 // gchandle
@@ -683,9 +775,72 @@ Il2CppObject* il2cpp_gchandle_get_target(uint32_t gchandle)
     return GCHandle::GetTarget(gchandle);
 }
 
+void il2cpp_gchandle_foreach_get_target(void(*func)(void*, void*), void* userData)
+{
+    MemoryInformation::IterationContext ctx;
+    ctx.callback = func;
+    ctx.userData = userData;
+    il2cpp::gc::GCHandle::WalkStrongGCHandleTargets(MemoryInformation::ReportGcHandleTarget, &ctx);
+}
+
+void il2cpp_gc_wbarrier_set_field(Il2CppObject *obj, void **targetAddress, void *object)
+{
+    *targetAddress = object;
+    GarbageCollector::SetWriteBarrier(targetAddress);
+}
+
+bool il2cpp_gc_has_strict_wbarriers()
+{
+#if IL2CPP_ENABLE_STRICT_WRITE_BARRIERS
+    return true;
+#else
+    return false;
+#endif
+}
+
+void il2cpp_gc_set_external_allocation_tracker(void(*func)(void*, size_t, int))
+{
+#if IL2CPP_ENABLE_WRITE_BARRIER_VALIDATION
+    il2cpp::gc::WriteBarrierValidation::SetExternalAllocationTracker(func);
+#endif
+}
+
+void il2cpp_gc_set_external_wbarrier_tracker(void(*func)(void**))
+{
+#if IL2CPP_ENABLE_WRITE_BARRIER_VALIDATION
+    il2cpp::gc::WriteBarrierValidation::SetExternalWriteBarrierTracker(func);
+#endif
+}
+
 void il2cpp_gchandle_free(uint32_t gchandle)
 {
     GCHandle::Free(gchandle);
+}
+
+// vm runtime info
+uint32_t il2cpp_object_header_size()
+{
+    return static_cast<uint32_t>(sizeof(Il2CppObject));
+}
+
+uint32_t il2cpp_array_object_header_size()
+{
+    return static_cast<uint32_t>(kIl2CppSizeOfArray);
+}
+
+uint32_t il2cpp_offset_of_array_length_in_array_object_header()
+{
+    return kIl2CppOffsetOfArrayLength;
+}
+
+uint32_t il2cpp_offset_of_array_bounds_in_array_object_header()
+{
+    return kIl2CppOffsetOfArrayBounds;
+}
+
+uint32_t il2cpp_allocation_granularity()
+{
+    return static_cast<uint32_t>(2 * sizeof(void*));
 }
 
 // liveness
@@ -822,6 +977,11 @@ void il2cpp_profiler_install_gc(Il2CppProfileGCFunc callback, Il2CppProfileGCRes
 void il2cpp_profiler_install_fileio(Il2CppProfileFileIOFunc callback)
 {
     Profiler::InstallFileIO(callback);
+}
+
+void il2cpp_profiler_install_thread(Il2CppProfileThreadFunc start, Il2CppProfileThreadFunc end)
+{
+    Profiler::InstallThread(start, end);
 }
 
 #endif
@@ -1093,6 +1253,16 @@ int32_t il2cpp_thread_get_stack_depth(Il2CppThread *thread)
     return StackTrace::GetThreadStackDepth(thread);
 }
 
+void il2cpp_set_default_thread_affinity(int64_t affinity_mask)
+{
+    Thread::SetDefaultAffinityMask(affinity_mask);
+}
+
+void il2cpp_override_stack_backtrace(Il2CppBacktraceFunc stackBacktraceFunc)
+{
+    il2cpp::os::StackTrace::OverrideStackBacktrace(stackBacktraceFunc);
+}
+
 // type
 
 Il2CppObject* il2cpp_type_get_object(const Il2CppType *type)
@@ -1143,6 +1313,16 @@ bool il2cpp_type_equals(const Il2CppType* type, const Il2CppType *otherType)
     return Type::IsEqualToType(type, otherType);
 }
 
+bool il2cpp_type_is_static(const Il2CppType *type)
+{
+    return (type->attrs & FIELD_ATTRIBUTE_STATIC) != 0;
+}
+
+bool il2cpp_type_is_pointer_type(const Il2CppType *type)
+{
+    return type->type == IL2CPP_TYPE_PTR;
+}
+
 // image
 
 const Il2CppAssembly* il2cpp_image_get_assembly(const Il2CppImage *image)
@@ -1163,6 +1343,16 @@ const char* il2cpp_image_get_filename(const Il2CppImage *image)
 const MethodInfo* il2cpp_image_get_entry_point(const Il2CppImage *image)
 {
     return Image::GetEntryPoint(image);
+}
+
+size_t il2cpp_image_get_class_count(const Il2CppImage * image)
+{
+    return Image::GetNumTypes(image);
+}
+
+const Il2CppClass* il2cpp_image_get_class(const Il2CppImage * image, size_t index)
+{
+    return Image::GetType(image, static_cast<AssemblyTypeIndex>(index));
 }
 
 Il2CppManagedMemorySnapshot* il2cpp_capture_memory_snapshot()
@@ -1200,7 +1390,74 @@ bool il2cpp_is_debugger_attached()
     return il2cpp::utils::Debugger::GetIsDebuggerAttached();
 }
 
+void il2cpp_register_debugger_agent_transport(Il2CppDebuggerTransport * debuggerTransport)
+{
+#if IL2CPP_MONO_DEBUGGER
+    il2cpp::utils::Debugger::RegisterTransport(debuggerTransport);
+#endif
+}
+
+bool il2cpp_debug_get_method_info(const MethodInfo* method, Il2CppMethodDebugInfo* methodDebugInfo)
+{
+#if IL2CPP_ENABLE_NATIVE_STACKTRACES
+    return il2cpp::utils::NativeSymbol::GetMethodDebugInfo(method, methodDebugInfo);
+#else
+    return false;
+#endif
+}
+
 void il2cpp_unity_install_unitytls_interface(const void* unitytlsInterfaceStruct)
 {
     il2cpp::vm::Runtime::SetUnityTlsInterface(unitytlsInterfaceStruct);
+}
+
+// Custom Attributes
+Il2CppCustomAttrInfo* il2cpp_custom_attrs_from_class(Il2CppClass *klass)
+{
+    return (Il2CppCustomAttrInfo*)(MetadataCache::GetCustomAttributeTypeToken(klass->image, klass->token));
+}
+
+Il2CppCustomAttrInfo* il2cpp_custom_attrs_from_method(const MethodInfo * method)
+{
+    return (Il2CppCustomAttrInfo*)(MetadataCache::GetCustomAttributeTypeToken(method->klass->image, method->token));
+}
+
+bool il2cpp_custom_attrs_has_attr(Il2CppCustomAttrInfo *ainfo, Il2CppClass *attr_klass)
+{
+    return MetadataCache::HasAttribute(reinterpret_cast<Il2CppMetadataCustomAttributeHandle>(ainfo), attr_klass);
+}
+
+Il2CppObject* il2cpp_custom_attrs_get_attr(Il2CppCustomAttrInfo *ainfo, Il2CppClass *attr_klass)
+{
+    return Reflection::GetCustomAttribute(reinterpret_cast<Il2CppMetadataCustomAttributeHandle>(ainfo), attr_klass);
+}
+
+Il2CppArray*  il2cpp_custom_attrs_construct(Il2CppCustomAttrInfo *ainfo)
+{
+    return Reflection::ConstructCustomAttributes(reinterpret_cast<Il2CppMetadataCustomAttributeHandle>(ainfo));
+}
+
+void il2cpp_custom_attrs_free(Il2CppCustomAttrInfo *ainfo)
+{
+    // nothing to free, we cache everything
+}
+
+void il2cpp_type_get_name_chunked(const Il2CppType * type, void(*chunkReportFunc)(void* data, void* userData), void* userData)
+{
+    Type::GetNameChunkedRecurse(type, IL2CPP_TYPE_NAME_FORMAT_IL, chunkReportFunc, userData);
+}
+
+void il2cpp_class_set_userdata(Il2CppClass* klass, void* userdata)
+{
+    klass->unity_user_data = userdata;
+}
+
+int il2cpp_class_get_userdata_offset()
+{
+    return offsetof(struct Il2CppClass, unity_user_data);
+}
+
+void il2cpp_class_for_each(void(*klassReportFunc)(Il2CppClass* klass, void* userData), void* userData)
+{
+    MemoryInformation::ReportIL2CppClasses(klassReportFunc, userData);
 }

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "vm/Domain.h"
-#include "vm/Thread.h"
+struct Il2CppThread;
 
 namespace il2cpp
 {

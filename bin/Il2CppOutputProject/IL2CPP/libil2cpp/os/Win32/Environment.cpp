@@ -2,7 +2,7 @@
 
 #if !IL2CPP_USE_GENERIC_ENVIRONMENT && IL2CPP_TARGET_WINDOWS
 #include "WindowsHelpers.h"
-#if !IL2CPP_TARGET_XBOXONE
+#if !IL2CPP_TARGET_XBOXONE && !IL2CPP_TARGET_WINDOWS_GAMES
 #include <Shlobj.h>
 #endif
 // Windows.h defines GetEnvironmentVariable as GetEnvironmentVariableW for unicode and this will
@@ -14,7 +14,6 @@
 #include "os/Environment.h"
 #include "utils/StringUtils.h"
 #include <string>
-#include <assert.h>
 
 #define BUFFER_SIZE 1024
 
@@ -67,41 +66,39 @@ namespace os
 
     std::string Environment::GetOsUserName()
     {
+#if !IL2CPP_TARGET_WINDOWS_GAMES
         Il2CppChar user_name[256 + 1];
         DWORD user_name_size = ARRAYSIZE(user_name);
         if (GetUserNameW(user_name, &user_name_size))
             return utils::StringUtils::Utf16ToUtf8(user_name);
+#endif // !IL2CPP_TARGET_WINDOWS_GAMES
 
         return "Unknown";
     }
 
     std::string Environment::GetEnvironmentVariable(const std::string& name)
     {
-        Il2CppChar buffer[BUFFER_SIZE];
+        std::vector<Il2CppChar> buffer(BUFFER_SIZE);
 
         const UTF16String varName = utils::StringUtils::Utf8ToUtf16(name.c_str());
 
-        DWORD ret = GetEnvironmentVariableW(varName.c_str(), buffer, BUFFER_SIZE);
+        DWORD ret = GetEnvironmentVariableW(varName.c_str(), &buffer[0], BUFFER_SIZE);
 
         if (ret == 0) // Not found
             return std::string();
 
         if (ret < BUFFER_SIZE) // Found and fits into buffer
-            return utils::StringUtils::Utf16ToUtf8(buffer);
+            return utils::StringUtils::Utf16ToUtf8(&buffer[0]);
 
         // Requires bigger buffer
         IL2CPP_ASSERT(ret >= BUFFER_SIZE);
 
-        Il2CppChar* bigbuffer = new Il2CppChar[ret + 1];
+        buffer.resize(ret + 1);
 
-        ret = GetEnvironmentVariableW(varName.c_str(), bigbuffer, ret + 1);
+        ret = GetEnvironmentVariableW(varName.c_str(), &buffer[0], ret + 1);
         IL2CPP_ASSERT(ret != 0);
 
-        std::string variableValue(utils::StringUtils::Utf16ToUtf8(bigbuffer));
-
-        delete bigbuffer;
-
-        return variableValue;
+        return utils::StringUtils::Utf16ToUtf8(&buffer[0]);
     }
 
     void Environment::SetEnvironmentVariable(const std::string& name, const std::string& value)
@@ -183,10 +180,45 @@ namespace os
 #endif
     }
 
+    std::vector<std::string> SplitLogicalDriveString(Il2CppChar *buffer, DWORD size)
+    {
+        std::vector<std::string> retVal;
+        Il2CppChar *ptr = buffer;
+
+        for (DWORD i = 0; i < size; ++i)
+        {
+            Il2CppChar c = buffer[i];
+            if (c == 0)
+            {
+                retVal.push_back(utils::StringUtils::Utf16ToUtf8(ptr));
+                ptr = &buffer[i + 1];
+            }
+        }
+
+        return retVal;
+    }
+
     std::vector<std::string> Environment::GetLogicalDrives()
     {
-        IL2CPP_NOT_IMPLEMENTED_ICALL(Environment::GetLogicalDrives);
+#if IL2CPP_TARGET_WINDOWS_DESKTOP
+        std::vector<Il2CppChar> buffer(BUFFER_SIZE);
+
+        DWORD size = GetLogicalDriveStringsW(BUFFER_SIZE, &buffer[0]);
+
+        if (size == 0)
+            return std::vector<std::string>();
+
+        if (size > BUFFER_SIZE)
+        {
+            buffer.resize(size + 1);
+            size = GetLogicalDriveStringsW(size + 1, &buffer[0]);
+            IL2CPP_ASSERT(size != 0);
+        }
+
+        return SplitLogicalDriveString(&buffer[0], size);
+#else
         return std::vector<std::string>();
+#endif
     }
 
     void Environment::Exit(int result)
@@ -215,8 +247,6 @@ namespace os
         return std::string();
     }
 
-#if NET_4_0
-
     typedef BOOL(WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
     bool Environment::Is64BitOs()
@@ -230,7 +260,7 @@ namespace os
         //and GetProcAddress to get a pointer to the function if available.
 
         LPFN_ISWOW64PROCESS fnIsWow64Process = (LPFN_ISWOW64PROCESS)GetProcAddress(
-                GetModuleHandle(TEXT("kernel32")), "IsWow64Process");
+            GetModuleHandle(TEXT("kernel32")), "IsWow64Process");
 
         if (NULL != fnIsWow64Process)
         {
@@ -243,7 +273,20 @@ namespace os
         return false;
     }
 
+#elif IL2CPP_TARGET_WINDOWS_GAMES
+    std::string Environment::GetWindowsFolderPath(int32_t folder)
+    {
+        return std::string();
+    }
+
+    bool Environment::Is64BitOs()
+    {
+#if _WIN64 // the IsWow64Process(used above) function is not available on Windows Games,this is the best available.
+        return true;
+#else
+        return false;
 #endif
+    }
 
 #endif
 }

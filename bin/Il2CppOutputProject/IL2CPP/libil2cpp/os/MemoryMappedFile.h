@@ -54,7 +54,7 @@ namespace os
         typedef void* MemoryMappedFileHandle;
 
         static FileHandle* Create(FileHandle* file, const char* mapName, int32_t mode, int64_t *capacity, MemoryMappedFileAccess access, int32_t options, MemoryMappedFileError* error);
-        static MemoryMappedFileHandle View(FileHandle* mappedFileHandle, int64_t* length, int64_t offset, MemoryMappedFileAccess access, MemoryMappedFileError* error);
+        static MemoryMappedFileHandle View(FileHandle* mappedFileHandle, int64_t* length, int64_t offset, MemoryMappedFileAccess access, int64_t* actualOffset, MemoryMappedFileError* error);
         static void Flush(MemoryMappedFileHandle memoryMappedFileData, int64_t length);
         static bool UnmapView(MemoryMappedFileHandle memoryMappedFileData, int64_t length);
         static bool Close(FileHandle* file);
