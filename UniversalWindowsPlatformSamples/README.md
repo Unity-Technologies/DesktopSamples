@@ -1,8 +1,6 @@
 # Universal Windows Platform Samples
 
-The samples are compatible with Unity 5.3 or higher. 
-
-**Note:** Please don't use *default* branch, use *5.3* or *5.4* branches.
+The samples are compatible with Unity 5.3 or higher. Not all of them have been tested with IL2CPP scripting backend.
 
 * **Association Launch**
     * Shows how to launch your application via file type association or protocol. By using this technique you can launch other Windows Store or desktop applications from yours.
