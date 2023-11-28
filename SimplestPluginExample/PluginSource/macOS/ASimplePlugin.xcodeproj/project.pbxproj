@@ -8,10 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		75EC0B592368FA8400157809 /* Plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75EC0B582368FA8400157809 /* Plugin.cpp */; };
+		A9DE73FC2B16480B0054CC69 /* ASimplePlugin.bundle in Copy Bundle into Unity project */ = {isa = PBXBuildFile; fileRef = 75BF2C7D23EA038D00C48203 /* ASimplePlugin.bundle */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		2B6899C81CF83D6200C4BA4F /* Copy Bundle into Unity project */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "../../../../Unity Project/Assets/macOS/Plugins";
+			dstSubfolderSpec = 16;
+			files = (
+				A9DE73FC2B16480B0054CC69 /* ASimplePlugin.bundle in Copy Bundle into Unity project */,
+			);
+			name = "Copy Bundle into Unity project";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		751E8CC02368EE3F0015D357 /* ASimplePlugin.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ASimplePlugin.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		75BF2C7D23EA038D00C48203 /* ASimplePlugin.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ASimplePlugin.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		75BF2C7F23EA038D00C48203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		75EC0B582368FA8400157809 /* Plugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Plugin.cpp; path = ../Plugin.cpp; sourceTree = "<group>"; };
@@ -40,7 +54,6 @@
 		751E8CC12368EE3F0015D357 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				751E8CC02368EE3F0015D357 /* ASimplePlugin.dylib */,
 				75BF2C7D23EA038D00C48203 /* ASimplePlugin.bundle */,
 			);
 			name = Products;
@@ -56,34 +69,7 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		751E8CBC2368EE3F0015D357 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
-		751E8CBF2368EE3F0015D357 /* ASimplePlugin */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 751E8CC42368EE3F0015D357 /* Build configuration list for PBXNativeTarget "ASimplePlugin" */;
-			buildPhases = (
-				751E8CBC2368EE3F0015D357 /* Headers */,
-				751E8CBD2368EE3F0015D357 /* Sources */,
-				751E8CBE2368EE3F0015D357 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ASimplePlugin;
-			productName = ASimplePlugin;
-			productReference = 751E8CC02368EE3F0015D357 /* ASimplePlugin.dylib */;
-			productType = "com.apple.product-type.library.dynamic";
-		};
 		75BF2C7C23EA038D00C48203 /* ASimplePlugin */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 75BF2C8223EA038D00C48203 /* Build configuration list for PBXNativeTarget "ASimplePlugin" */;
@@ -91,6 +77,7 @@
 				751E8CBD2368EE3F0015D357 /* Sources */,
 				751E8CBE2368EE3F0015D357 /* Frameworks */,
 				75BF2C7B23EA038D00C48203 /* Resources */,
+				2B6899C81CF83D6200C4BA4F /* Copy Bundle into Unity project */,
 			);
 			buildRules = (
 			);
@@ -110,9 +97,6 @@
 				LastUpgradeCheck = 1100;
 				ORGANIZATIONNAME = "Unity Technologies";
 				TargetAttributes = {
-					751E8CBF2368EE3F0015D357 = {
-						CreatedOnToolsVersion = 11.0;
-					};
 					75BF2C7C23EA038D00C48203 = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
@@ -131,7 +115,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				751E8CBF2368EE3F0015D357 /* ASimplePlugin */,
 				75BF2C7C23EA038D00C48203 /* ASimplePlugin */,
 			);
 		};
@@ -214,6 +197,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SYMROOT = ./build;
 			};
 			name = Debug;
 		};
@@ -265,26 +249,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
-			};
-			name = Release;
-		};
-		751E8CC52368EE3F0015D357 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		751E8CC62368EE3F0015D357 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = ./build;
 			};
 			name = Release;
 		};
@@ -324,15 +289,6 @@
 			buildConfigurations = (
 				751E8CC22368EE3F0015D357 /* Debug */,
 				751E8CC32368EE3F0015D357 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		751E8CC42368EE3F0015D357 /* Build configuration list for PBXNativeTarget "ASimplePlugin" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				751E8CC52368EE3F0015D357 /* Debug */,
-				751E8CC62368EE3F0015D357 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
