@@ -15,7 +15,7 @@
 		2B6899C81CF83D6200C4BA4F /* Copy Bundle into Unity project */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "../../../../Unity Project/Assets/Plugins/macOS";
+			dstPath = "../../../../Unity Project/Assets/macOS/Plugins";
 			dstSubfolderSpec = 16;
 			files = (
 				A9DE73FC2B16480B0054CC69 /* ASimplePlugin.bundle in Copy Bundle into Unity project */,
